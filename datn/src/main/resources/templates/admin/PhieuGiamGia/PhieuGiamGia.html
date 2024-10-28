@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/b0d3163487.js" crossorigin="anonymous"></script>
+
+    <title>Dashboard - Voler Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
+    <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+
+<!--    &lt;!&ndash; Latest compiled and minified CSS &ndash;&gt;-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    &lt;!&ndash; Latest compiled JavaScript &ndash;&gt;-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>-->
+</head>
+<body>
+
+<div id="app"><!--Main content-->
+    <span th:replace="~{fragments/sidebar :: sidebar}"></span>
+    <div id="main"><!--Content id-->
+        <span th:replace="~{fragments/header :: header}"></span>
+        <div class="main-content container-fluid" layout:fragment="content"><!--dynamic content-->
+            <!--you can replace this using page-->
+
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <!-- Section 1 -->
+                    <h1 class="text-lg-center">Danh Sách Phiếu Giảm Giá</h1>
+                </div>
+                <div class="col-md-12 mb-4">
+                    <!-- Section 2 -->
+                    <h2>Lọc</h2>
+                    <form method="get" id="searchForm">
+                        <div>
+                            <input type="text" id="searchInput" name="keyword" placeholder="Tìm kiếm phiếu giảm giá">
+                        </div>
+                        <div>
+                            <div>
+                                <label for="trangThai">Trạng thái:</label>
+                                <select id="trangThai" name="trangThai">
+                                    <option value="">Tất cả</option>
+                                    <option value="0">Đang hoạt động</option>
+                                    <option value="1">Ngừng hoạt động</option>
+                                    <option value="2">Chưa diễn ra</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="LOAI_VOUCHER">Hình Thức Giảm:</label>
+                                <select id="LOAI_VOUCHER" name="LOAI_VOUCHER">
+                                    <option value="">Tất cả</option>
+                                    <option value="0">Tiền mặt</option>
+                                    <option value="1">Phần trăm</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="ngayBatDau">Ngày Bắt Đầu:</label>
+                                <input type="date" name="ngayBatDau" id="ngayBatDau">
+                            </div>
+                            <div>
+                                <label for="ngayKetThuc">Ngày Kết Thúc:</label>
+                                <input type="date" name="ngayKetThuc" id="ngayKetThuc">
+                            </div>
+                        </div>
+                        <div>
+                            <button type="button" onclick="filterTable()">Tìm kiếm</button>
+                            <button type="button" onclick="resetForm()">Làm Mới</button>
+                        </div>
+                    </form>
+
+                    <hr>
+                </div>
+                <div class="col-md-12">
+                    <!-- Section 3 -->
+                    <h2>table</h2>
+                    <a th:href="@{/addPgg}" class="btn btn-primary" id="addPgg">+ Thêm</a>
+
+                    <table id="phieuGiamGiaTable" class="table table-striped table-hover">
+                        <thead class="bg-blue-300">
+                        <tr>
+                            <th scope="col">STT</th>
+                            <th scope="col">Mã</th>
+                            <th scope="col">Tên</th>
+                            <th scope="col">Số Lượng</th>
+                            <th scope="col">Hình Thức Giảm</th>
+                            <th scope="col">Giá Trị Giảm</th>
+                            <th scope="col">Giảm Tối Đa</th>
+                            <th scope="col">Ngày Bắt Đầu</th>
+                            <th scope="col">Ngày Kết Thúc</th>
+                            <th scope="col">Trạng Thái</th>
+                            <th scope="col">Hành Động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="pgg, iterStat : ${listPgg}">
+                            <td th:text="${iterStat.index + 1}"></td> <!-- STT -->
+                            <td th:text="${pgg.ma}"></td> <!-- Mã -->
+                            <td th:text="${pgg.ten}"></td> <!-- Tên -->
+                            <td th:text="${pgg.soLuong}"></td> <!-- Số Lượng -->
+                            <td th:text="${pgg.loaiVoucher}"></td> <!-- Hình Thức Giảm -->
+                            <td th:text="${pgg.giaTriGiam}"></td> <!-- Giá Trị Giảm -->
+                            <td th:text="${pgg.giaTriMax}"></td> <!-- Giảm Tối Đa -->
+                            <td th:text="${pgg.ngayBatDau}"></td> <!-- Ngày Bắt Đầu -->
+                            <td th:text="${pgg.ngayKetThuc}"></td> <!-- Ngày Kết Thúc -->
+                            <td th:text="${pgg.trangThai == 0 ? 'Hoạt Động' : (pgg.trangThai == 1 ? 'Ngừng Hoạt Động' : 'Chưa Diễn Ra')}"></td>
+
+                            <td>
+                                <a th:href="@{'/updatePGG/' + ${pgg.id}}" class="btn btn-link">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </a>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+
+
+        </div>
+        <span th:replace="~{fragments/footer :: footer}"></span>
+    </div>
+</div>
+
+
+<script th:src="@{/js/feather.min.js}"></script>
+<script th:src="@{/js/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/Chart.min.js}"></script>
+<script th:src="@{/js/apexcharts.min.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
