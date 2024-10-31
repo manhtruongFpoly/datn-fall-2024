@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/b0d3163487.js" crossorigin="anonymous"></script>
+    <title>Dashboard - Voler Admin Dashboard</title>
+
+    <!-- Link CSS files -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
+    <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div id="app"><!-- Main content -->
+    <span th:replace="~{fragments/sidebar :: sidebar}"></span>
+    <div id="main"><!-- Content area -->
+        <span th:replace="~{fragments/header :: header}"></span>
+        <div class="main-content container-fluid" layout:fragment="content"><!-- Dynamic content -->
+
+            <div class="container text-center">
+                <!-- Tabs navigation -->
+                <ul class="nav nav-pills justify-content-center mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pills-all-tab" data-bs-toggle="pill" data-bs-target="#pills-all" type="button" role="tab" aria-controls="pills-all" aria-selected="true">Tất cả</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-waiting-confirm-tab" data-bs-toggle="pill" data-bs-target="#pills-waiting-confirm" type="button" role="tab" aria-controls="pills-waiting-confirm" aria-selected="false">Chờ Xác nhận</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-waiting-delivery-tab" data-bs-toggle="pill" data-bs-target="#pills-waiting-delivery" type="button" role="tab" aria-controls="pills-waiting-delivery" aria-selected="false">Chờ giao</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-completed-tab" data-bs-toggle="pill" data-bs-target="#pills-completed" type="button" role="tab" aria-controls="pills-completed" aria-selected="false">Hoàn thành</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-cancelled-tab" data-bs-toggle="pill" data-bs-target="#pills-cancelled" type="button" role="tab" aria-controls="pills-cancelled" aria-selected="false">Huỷ</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-offline-payment-tab" data-bs-toggle="pill" data-bs-target="#pills-offline-payment" type="button" role="tab" aria-controls="pills-offline-payment" aria-selected="false">Chờ thanh toán offline</button>
+                    </li>
+                </ul>
+
+                <!-- Tabs content -->
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab" tabindex="0">
+                        <div class="container mt-3">
+                            <table class="table table-bordered text-center">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Mã Hóa Đơn</th>
+                                    <th>Loại Hóa Đơn</th>
+                                    <th>Khách Hàng</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Tổng Tiền (VNĐ)</th>
+
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="hoaDon, iterStat : ${hoaDons}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${hoaDon.maHd}"></td>
+                                    <td th:text="${hoaDon.loaiHoaDon}"></td>
+                                    <td th:text="${hoaDon.khachHang.ten}"></td>
+                                    <td th:text="${hoaDon.sdt}"></td>
+                                    <td th:text="${hoaDon.tongTien} + ' VND'"></td>
+
+                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-success btn-sm px-3">Xác nhận</button>
+                                            <button class="btn btn-info btn-sm px-3">Xem</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- If the invoice list is empty -->
+                                <tr th:if="${#lists.isEmpty(hoaDons)}">
+                                    <td colspan="9">Không có hóa đơn nào.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-waiting-confirm" role="tabpanel" aria-labelledby="pills-waiting-confirm-tab" tabindex="0">
+                        <div class="container mt-3">
+                            <table class="table table-bordered text-center">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Mã Hóa Đơn</th>
+                                    <th>Loại Hóa Đơn</th>
+                                    <th>Khách Hàng</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Tổng Tiền (VNĐ)</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <tr th:each="hoaDon, iterStat : ${hoaDons}" th:if="${hoaDon.trangThai == 0}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${hoaDon.maHd}"></td>
+                                    <td th:text="${hoaDon.loaiHoaDon}"></td>
+                                    <td th:text="${hoaDon.khachHang.ten}"></td>
+                                    <td th:text="${hoaDon.sdt}"></td>
+                                    <td th:text="${hoaDon.tongTien} + ' VND'"></td>
+
+                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-success btn-sm px-3">Xác nhận</button>
+                                            <button class="btn btn-info btn-sm px-3">Xem</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- If no cancelled invoices are found -->
+                                <tr th:if="${#lists.isEmpty(hoaDons)}">
+                                    <td colspan="9">Không có hóa đơn nào.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+<!--                    hoa đơn chờ giao-->
+                    <div class="tab-pane fade" id="pills-waiting-delivery" role="tabpanel" aria-labelledby="pills-waiting-delivery-tab" tabindex="0">
+
+                        <div class="container mt-3">
+                            <table class="table table-bordered text-center">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Mã Hóa Đơn</th>
+                                    <th>Loại Hóa Đơn</th>
+                                    <th>Khách Hàng</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Tổng Tiền (VNĐ)</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <tr th:each="hoaDon, iterStat : ${hoaDons}" th:if="${hoaDon.trangThai == 2}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${hoaDon.maHd}"></td>
+                                    <td th:text="${hoaDon.loaiHoaDon}"></td>
+                                    <td th:text="${hoaDon.khachHang.ten}"></td>
+                                    <td th:text="${hoaDon.sdt}"></td>
+                                    <td th:text="${hoaDon.tongTien} + ' VND'"></td>
+
+                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-success btn-sm px-3">Xác nhận</button>
+                                            <button class="btn btn-info btn-sm px-3">Xem</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- If no cancelled invoices are found -->
+                                <tr th:if="${#lists.isEmpty(hoaDons)}">
+                                    <td colspan="9">Không có hóa đơn nào.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+<!--                    hoá dơn ht-->
+                    <div class="tab-pane fade" id="pills-completed" role="tabpanel" aria-labelledby="pills-completed-tab" tabindex="0">
+
+                        <div class="container mt-3">
+                            <table class="table table-bordered text-center">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Mã Hóa Đơn</th>
+                                    <th>Loại Hóa Đơn</th>
+                                    <th>Khách Hàng</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Tổng Tiền (VNĐ)</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <tr th:each="hoaDon, iterStat : ${hoaDons}" th:if="${hoaDon.trangThai == 3}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${hoaDon.maHd}"></td>
+                                    <td th:text="${hoaDon.loaiHoaDon}"></td>
+                                    <td th:text="${hoaDon.khachHang.ten}"></td>
+                                    <td th:text="${hoaDon.sdt}"></td>
+                                    <td th:text="${hoaDon.tongTien} + ' VND'"></td>
+
+                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+
+                                            <button class="btn btn-info btn-sm px-3">Xem</button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr th:if="${#lists.isEmpty(hoaDons)}">
+                                    <td colspan="9">Không có hóa đơn nào.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+<!--                    hoa đơn huỷ-->
+                    <div class="tab-pane fade" id="pills-cancelled" role="tabpanel" aria-labelledby="pills-cancelled-tab" tabindex="0">
+
+                        <div class="container mt-3">
+                            <table class="table table-bordered text-center">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Mã Hóa Đơn</th>
+                                    <th>Loại Hóa Đơn</th>
+                                    <th>Khách Hàng</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Tổng Tiền (VNĐ)</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <tr th:each="hoaDon, iterStat : ${hoaDons}" th:if="${hoaDon.trangThai == 5}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${hoaDon.maHd}"></td>
+                                    <td th:text="${hoaDon.loaiHoaDon}"></td>
+                                    <td th:text="${hoaDon.khachHang.ten}"></td>
+                                    <td th:text="${hoaDon.sdt}"></td>
+                                    <td th:text="${hoaDon.tongTien} + ' VND'"></td>
+
+                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-success btn-sm px-3">Xác nhận</button>
+                                            <button class="btn btn-info btn-sm px-3">Xem</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- If no cancelled invoices are found -->
+                                <tr th:if="${#lists.isEmpty(hoaDons)}">
+                                    <td colspan="9">Không có hóa đơn nào.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+<!--                    Hoá Dơn chờ thanh Toán-->
+                    <div class="tab-pane fade" id="pills-offline-payment" role="tabpanel" aria-labelledby="pills-offline-payment-tab" tabindex="0">
+
+                        <div class="container mt-3">
+                            <table class="table table-bordered text-center">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Mã Hóa Đơn</th>
+                                    <th>Loại Hóa Đơn</th>
+                                    <th>Khách Hàng</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Tổng Tiền (VNĐ)</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <tr th:each="hoaDon, iterStat : ${hoaDons}" th:if="${hoaDon.trangThai == 4}">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${hoaDon.maHd}"></td>
+                                    <td th:text="${hoaDon.loaiHoaDon}"></td>
+                                    <td th:text="${hoaDon.khachHang.ten}"></td>
+                                    <td th:text="${hoaDon.sdt}"></td>
+                                    <td th:text="${hoaDon.tongTien} + ' VND'"></td>
+
+                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-success btn-sm px-3">Xác nhận</button>
+                                            <button class="btn btn-info btn-sm px-3">Xem</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- If no cancelled invoices are found -->
+                                <tr th:if="${#lists.isEmpty(hoaDons)}">
+                                    <td colspan="9">Không có hóa đơn nào.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div>
+        <span th:replace="~{fragments/footer :: footer}"></span>
+    </div>
+</div>
+
+<!-- Script files -->
+<script th:src="@{/js/feather.min.js}"></script>
+<script th:src="@{/js/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/Chart.min.js}"></script>
+<script th:src="@{/js/apexcharts.min.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

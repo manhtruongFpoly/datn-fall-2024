@@ -46,7 +46,7 @@ public class PhieuGiamGiaService {
             existingPgg.setNgaySua(LocalDateTime.now());
             // Lưu
             return phieuGiamGiaRepository.save(existingPgg);
-        }).orElse(null); // Nếu không tìm thấy thì trả về null
+        }).orElse(null);
     }
 
 }

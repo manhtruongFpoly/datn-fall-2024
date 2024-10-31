@@ -17,22 +17,13 @@
 </head>
 
 <body>
-<!--<div id="app">&lt;!&ndash;Main content&ndash;&gt;-->
-<!--    <span th:replace="fragments/sidebar :: sidebar"></span>-->
-<!--    <div id="main">&lt;!&ndash;Content id&ndash;&gt;-->
-<!--        <span th:replace="fragments/header :: header"></span>-->
-<!--        <div class="main-content container-fluid" layout:fragment="content">&lt;!&ndash;dynamic content&ndash;&gt;-->
-<!--            &lt;!&ndash;you can replace this using page&ndash;&gt;-->
-<!--        </div>-->
-<!--                <span th:replace="fragments/footer :: footer"></span>-->
-<!--    </div>-->
-<!--</div>-->
+
 <div id="app"><!--Main content-->
     <span th:replace="~{fragments/sidebar :: sidebar}"></span>
     <div id="main"><!--Content id-->
         <span th:replace="~{fragments/header :: header}"></span>
         <div class="main-content container-fluid" layout:fragment="content"><!--dynamic content-->
-            <!--you can replace this using page-->
+
         </div>
         <span th:replace="~{fragments/footer :: footer}"></span>
     </div>
