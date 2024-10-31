@@ -1,4 +1,4 @@
-package nice.store.datn.model;
+package nice.store.datn.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -60,7 +60,7 @@ public class KhachHang {
     @JsonManagedReference
     private List<GioHang> idGH;
 
-    @OneToMany(mappedBy = "idKH",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "idKH",cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<DiaChi> diaChi = new ArrayList<>();
 
