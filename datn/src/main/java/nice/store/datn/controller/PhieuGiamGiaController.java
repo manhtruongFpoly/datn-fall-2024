@@ -2,7 +2,7 @@ package nice.store.datn.controller;
 
 import jakarta.validation.Valid;
 import nice.store.datn.entity.PhieuGiamGia;
-import nice.store.datn.sevice.PhieuGiamGiaService;
+import nice.store.datn.service.PhieuGiamGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Controller
 

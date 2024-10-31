@@ -1,4 +1,4 @@
-package nice.store.datn.sevice;
+package nice.store.datn.service;
 
 import nice.store.datn.entity.PhieuGiamGia;
 import nice.store.datn.repository.PhieuGiamGiaRepository;
