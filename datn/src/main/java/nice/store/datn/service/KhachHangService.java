@@ -1,6 +1,6 @@
 package nice.store.datn.service;
 
-import nice.store.datn.model.KhachHang;
+import nice.store.datn.entity.KhachHang;
 import nice.store.datn.repository.KhachHangRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +14,7 @@ public class KhachHangService {
 
     @Autowired
     private KhachHangRepository khachHangRepository;
+
 
 
     public KhachHang createKH(KhachHang kh) {
