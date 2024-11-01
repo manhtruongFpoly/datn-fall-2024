@@ -57,7 +57,7 @@ public class PhieuGiamGia {
     @Column(name = "NGAY_SUA")
     private LocalDateTime ngaySua;
 
-    @Column(name = "MO_TA", columnDefinition = "nvarchar(max)")
+    @Column(name = "MO_TA")
     private String moTa;
 
     @Column(name = "TRANG_THAI")
