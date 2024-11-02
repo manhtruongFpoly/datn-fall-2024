@@ -1,130 +1,136 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/b0d3163487.js" crossorigin="anonymous"></script>
 
     <title>Dashboard - Voler Admin Dashboard</title>
+    <!-- Đặt Bootstrap lên đầu tiên -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Link các thư viện CSS và JavaScript cho DataTables và jQuery -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
     <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
     <link rel="stylesheet" th:href="@{/css/app.css}">
-
-
+    <style>
+        .search-form {
+            background-color: white;
+        }
+    </style>
 </head>
 <body>
 
-<div id="app"><!--Main content-->
+<div id="app" class="container-fluid">
     <span th:replace="~{fragments/sidebar :: sidebar}"></span>
-    <div id="main"><!--Content id-->
+    <div id="main">
         <span th:replace="~{fragments/header :: header}"></span>
-        <div class="main-content container-fluid" layout:fragment="content"><!--dynamic content-->
-            <!--you can replace this using page-->
+        <div class="main-content container-fluid" layout:fragment="content">
+            <div class="container text-center">
+                <div class="row">
+                    <!-- Phần tiêu đề -->
+                    <div class="col-md-12 mb-4">
+                        <h1 class="text-lg-center">Danh Sách Phiếu Giảm Giá</h1>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-12 mb-4">
-                    <!-- Section 1 -->
-                    <h1 class="text-lg-center">Danh Sách Phiếu Giảm Giá</h1>
-                </div>
-                <div class="col-md-12 mb-4">
-                    <!-- Section 2 -->
-                    <h2>Lọc</h2>
-                    <form method="get" id="searchForm">
-                        <div>
-                            <input type="text" id="searchInput" name="keyword" placeholder="Tìm kiếm phiếu giảm giá">
-                        </div>
-                        <div>
-                            <div>
-                                <label for="trangThai">Trạng thái:</label>
-                                <select id="trangThai" name="trangThai">
-                                    <option value="">Tất cả</option>
-                                    <option value="0">Đang hoạt động</option>
-                                    <option value="1">Ngừng hoạt động</option>
-                                    <option value="2">Chưa diễn ra</option>
-                                </select>
+                    <!-- Phần lọc -->
+                    <div class="col-md-12 mb-4">
+                        <form method="get" id="searchForm" class="p-3 border rounded search-form">
+                            <h2 class="text-start">Lọc Tìm Kiếm</h2>
+                            <div class="input-group mb-3">
+                                <input type="text" id="searchInput" name="keyword" class="form-control"
+                                       placeholder="Tìm kiếm phiếu giảm giá">
                             </div>
-                            <div>
-                                <label for="LOAI_VOUCHER">Hình Thức Giảm:</label>
-                                <select id="LOAI_VOUCHER" name="LOAI_VOUCHER">
-                                    <option value="">Tất cả</option>
-                                    <option value="0">Tiền mặt</option>
-                                    <option value="1">Phần trăm</option>
-                                </select>
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label for="trangThai">Trạng thái:</label>
+                                    <select id="trangThai" name="trangThai" class="form-control">
+                                        <option value="">Tất cả</option>
+                                        <option value="0">Đang hoạt động</option>
+                                        <option value="1">Ngừng hoạt động</option>
+                                        <option value="2">Chưa diễn ra</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="loaiVoucher">Hình Thức Giảm:</label>
+                                    <select id="loaiVoucher" name="loaiVoucher" class="form-control">
+                                        <option value="">Tất cả</option>
+                                        <option value="Tiền mặt">Tiền mặt</option>
+                                        <option value="Phần trăm">Phần trăm</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="ngayBatDau">Ngày Bắt Đầu:</label>
+                                    <input type="date" name="ngayBatDau" id="ngayBatDau" class="form-control">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="ngayKetThuc">Ngày Kết Thúc:</label>
+                                    <input type="date" name="ngayKetThuc" id="ngayKetThuc" class="form-control">
+                                </div>
                             </div>
-                            <div>
-                                <label for="ngayBatDau">Ngày Bắt Đầu:</label>
-                                <input type="date" name="ngayBatDau" id="ngayBatDau">
+                            <div class="text-center">
+                                <button type="button" class="btn btn-primary mx-2" onclick="filterTable()">Tìm kiếm
+                                </button>
+                                <button type="button" class="btn btn-secondary mx-2" onclick="resetForm()">Làm Mới
+                                </button>
                             </div>
-                            <div>
-                                <label for="ngayKetThuc">Ngày Kết Thúc:</label>
-                                <input type="date" name="ngayKetThuc" id="ngayKetThuc">
-                            </div>
-                        </div>
-                        <div>
-                            <button type="button" onclick="filterTable()">Tìm kiếm</button>
-                            <button type="button" onclick="resetForm()">Làm Mới</button>
-                        </div>
-                    </form>
+                        </form>
+                        <hr>
+                    </div>
 
-                    <hr>
-                </div>
-                <div class="col-md-12">
-                    <!-- Section 3 -->
-                    <h2>table</h2>
-                    <a th:href="@{/addPgg}" class="btn btn-primary" id="addPgg">+ Thêm</a>
-
-                    <table id="phieuGiamGiaTable" class="table table-striped table-hover">
-                        <thead class="bg-blue-300">
-                        <tr>
-                            <th scope="col">STT</th>
-                            <th scope="col">Mã</th>
-                            <th scope="col">Tên</th>
-                            <th scope="col">Số Lượng</th>
-                            <th scope="col">Hình Thức Giảm</th>
-                            <th scope="col">Giá Trị Giảm</th>
-                            <th scope="col">Giảm Tối Đa</th>
-                            <th scope="col">Ngày Bắt Đầu</th>
-                            <th scope="col">Ngày Kết Thúc</th>
-                            <th scope="col">Trạng Thái</th>
-                            <th scope="col">Hành Động</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="pgg, iterStat : ${listPgg}">
-                            <td th:text="${iterStat.index + 1}"></td> <!-- STT -->
-                            <td th:text="${pgg.ma}"></td> <!-- Mã -->
-                            <td th:text="${pgg.ten}"></td> <!-- Tên -->
-                            <td th:text="${pgg.soLuong}"></td> <!-- Số Lượng -->
-                            <td th:text="${pgg.loaiVoucher}"></td> <!-- Hình Thức Giảm -->
-                            <td th:text="${pgg.giaTriGiam}"></td> <!-- Giá Trị Giảm -->
-                            <td th:text="${pgg.giaTriMax}"></td> <!-- Giảm Tối Đa -->
-                            <td th:text="${pgg.ngayBatDau}"></td> <!-- Ngày Bắt Đầu -->
-                            <td th:text="${pgg.ngayKetThuc}"></td> <!-- Ngày Kết Thúc -->
-                            <td th:text="${pgg.trangThai == 0 ? 'Hoạt Động' : (pgg.trangThai == 1 ? 'Ngừng Hoạt Động' : 'Chưa Diễn Ra')}"></td>
-
-                            <td>
-                                <a th:href="@{'/updatePGG/' + ${pgg.id}}" class="btn btn-link">
-                                    <i class="fa-regular fa-pen-to-square"></i>
-                                </a>
-                            </td>
-
-                        </tr>
-                        </tbody>
-                    </table>
-
-
+                    <!-- Bảng danh sách -->
+                    <div class="col-md-12">
+                        <a th:href="@{/addPgg}" class="btn btn-primary mb-3">+ Thêm</a>
+                        <table id="phieuGiamGiaTable" class="table table-striped table-hover">
+                            <thead class="table-primary">
+                            <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Mã</th>
+                                <th scope="col">Tên</th>
+                                <th scope="col">Số Lượng</th>
+                                <th scope="col">Hình Thức Giảm</th>
+                                <th scope="col">Giá Trị Giảm</th>
+                                <th scope="col">Giảm Tối Đa</th>
+                                <th scope="col">Ngày Bắt Đầu</th>
+                                <th scope="col">Ngày Kết Thúc</th>
+                                <th scope="col">Trạng Thái</th>
+                                <th scope="col">Hành Động</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="pgg, iterStat : ${listPgg}">
+                                <td th:text="${iterStat.index + 1}"></td>
+                                <td th:text="${pgg.ma}"></td>
+                                <td th:text="${pgg.ten}"></td>
+                                <td th:text="${pgg.soLuong}"></td>
+                                <td th:text="${pgg.loaiVoucher}"></td>
+                                <td th:text="${pgg.giaTriGiam}"></td>
+                                <td th:text="${pgg.giaTriMax}"></td>
+                                <td th:text="${pgg.ngayBatDau}"></td>
+                                <td th:text="${pgg.ngayKetThuc}"></td>
+                                <td th:text="${pgg.trangThai == 0 ? 'Đang Hoạt Động' : (pgg.trangThai == 1 ? 'Ngừng Hoạt Động' : 'Chưa Diễn Ra')}"></td>
+                                <td>
+                                    <a th:href="@{'/updatePGG/' + ${pgg.id}}" class="btn btn-link">
+                                        <i class="fa-regular fa-pen-to-square"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-
-
         </div>
         <span th:replace="~{fragments/footer :: footer}"></span>
     </div>
 </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script th:src="@{/js/feather.min.js}"></script>
 <script th:src="@{/js/perfect-scrollbar.min.js}"></script>
 <script th:src="@{/js/app.js}"></script>
@@ -133,4 +139,73 @@
 <script th:src="@{/js/dashboard.js}"></script>
 <script th:src="@{/js/main.js}"></script>
 </body>
+
+<script>
+    $(document).ready(function () {
+        // Khởi tạo DataTable với các tùy chọn
+        var table = $('#phieuGiamGiaTable').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "language": {
+                "paginate": {
+                    "previous": "Trước",
+                    "next": "Sau"
+                },
+                "lengthMenu": "Hiển thị _MENU_ bản ghi mỗi trang",
+                "zeroRecords": "Không tìm thấy kết quả phù hợp",
+                "info": "Hiển thị trang _PAGE_ trong tổng số _PAGES_",
+                "infoEmpty": "Không có dữ liệu",
+                "infoFiltered": "(lọc từ tổng số _MAX_ bản ghi)"
+            },
+            "dom": 'lrtip' // Loại bỏ thanh tìm kiếm mặc định của DataTable
+        });
+
+        function filterTable() {
+            var keyword = $('#searchInput').val().toLowerCase();
+            var trangThai = $('#trangThai').val();
+            var hinhThucGiam = $('#loaiVoucher').val();
+            var startDate = $('#ngayBatDau').val();
+            var endDate = $('#ngayKetThuc').val();
+
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    var matchesKeyword = keyword ? (data[1].toLowerCase().includes(keyword) || data[2].toLowerCase().includes(keyword)) : true;
+                    // Lấy trạng thái từ cột tương ứng
+                    var dataStatus = $(table.row(dataIndex).node()).find('td:eq(9)').text().trim().toLowerCase(); // Chỉnh sửa cột trạng thái
+                    var dataHinhThucGiam = $(table.row(dataIndex).node()).find('td:eq(4)').text().trim().toLowerCase();
+
+                    var matchesTrangThai = true;
+                    if (trangThai !== "") {
+                        matchesTrangThai = (trangThai === '0' && dataStatus === 'đang hoạt động') ||
+                            (trangThai === '1' && dataStatus === 'ngừng hoạt động') ||
+                            (trangThai === '2' && dataStatus === 'chưa diễn ra');
+                    }
+                    var matchesHinhThucGiam = true;
+                    if (hinhThucGiam !== "") {
+                        matchesHinhThucGiam = (hinhThucGiam === 'Tiền mặt' && dataHinhThucGiam === 'tiền mặt') ||
+                            (hinhThucGiam === 'Phần trăm' && dataHinhThucGiam === 'phần trăm');
+                    }
+                    var matchesStartDate = startDate ? new Date(data[7]) >= new Date(startDate) : true;
+                    var matchesEndDate = endDate ? new Date(data[8]) <= new Date(endDate) : true;
+
+                    return matchesKeyword && matchesTrangThai && matchesHinhThucGiam && matchesStartDate && matchesEndDate;
+                }
+            );
+            table.draw();
+            $.fn.dataTable.ext.search.pop();
+        }
+        // Gọi hàm filterTable khi các trường trong form thay đổi
+        $('#searchInput, #trangThai, #loaiVoucher, #ngayBatDau, #ngayKetThuc').on('input change', function () {
+            filterTable();
+        });
+        // Hàm đặt lại form tìm kiếm và làm mới bảng
+        window.resetForm = function () {
+            $('#searchForm')[0].reset(); // Đặt lại các trường trong form
+            filterTable(); // Gọi hàm filterTable để cập nhật lại bảng
+        };
+    });
+</script>
+
 </html>
