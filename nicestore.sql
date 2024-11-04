@@ -1,4 +1,5 @@
-﻿USE [NICESTORE]
+﻿create database  [NICESTORE2]
+USE [NICESTORE2]
 GO
 /****** Object:  Table [dbo].[CHAT_LIEU]    Script Date: 31-10-2024 04:16:04 CH ******/
 SET ANSI_NULLS ON
