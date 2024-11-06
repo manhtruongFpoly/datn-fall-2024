@@ -526,5 +526,36 @@ GO
 ALTER TABLE [dbo].[THANH_TOAN] CHECK CONSTRAINT [FK_THANH_TOAN_HOA_DON]
 GO
 
+INSERT INTO [dbo].[VOUCHER] 
+(MA_VOUCHER, TEN, LOAI_VOUCHER, NGAY_BAT_DAU, NGAY_KET_THUC, GIA_TRI_MIN, GIA_TRI_MAX, SO_LUONG, NGAY_TAO, NGAY_SUA, MO_TA, TRANG_THAI) 
+VALUES 
+(N'VOUCHER001', N'Giảm giá 10%', N'Phần trăm', '2024-11-01', '2024-11-30', 50000, 200000, 100, GETDATE(), GETDATE(), N'Voucher giảm 10% cho các đơn hàng trên 50,000', 1),
+(N'VOUCHER002', N'Giảm giá 20%', N'Tiền mặt', '2024-11-01', '2024-12-31', 100000, 300000, 50, GETDATE(), GETDATE(), N'Voucher giảm giá trực tiếp 20,000', 1),
+(N'VOUCHER003', N'Miễn phí vận chuyển', N'Tiền mặt', '2024-11-05', '2024-12-05', 0, 50000, 200, GETDATE(), GETDATE(), N'Voucher miễn phí vận chuyển với đơn trên 50,000', 1),
+(N'VOUCHER004', N'Giảm giá 15%', N'Phần trăm', '2024-11-10', '2024-11-30', 70000, 250000, 150, GETDATE(), GETDATE(), N'Voucher giảm 15% cho khách hàng VIP', 1),
+(N'VOUCHER005', N'Giảm 30,000 cho đơn trên 100,000', N'Tiền mặt', '2024-11-15', '2024-12-15', 100000, 1000000, 75, GETDATE(), GETDATE(), N'Voucher giảm 30,000 cho đơn hàng trên 100,000', 1);
 
 
+INSERT INTO [dbo].[Loai_Giay] (Ma_Loai_Giay, Ten_Loai_Giay, Ngay_Tao, Ngay_Sua, Trang_Thai) 
+VALUES 
+(N'LG001', N'Sneaker', GETDATE(), NULL, 1),
+(N'LG002', N'Sandals', GETDATE(), NULL, 1),
+(N'LG003', N'Boots', GETDATE(), NULL, 1),
+(N'LG004', N'Loafer', GETDATE(), NULL, 1),
+(N'LG005', N'Oxford', GETDATE(), NULL, 0);
+
+INSERT INTO [dbo].[Loai_Giay] ([Ma_Loai_Giay], [Ten_Loai_Giay], [Ngay_Tao], [Ngay_Sua], [Trang_Thai])
+VALUES
+    ('LG001', 'Giày Thể Thao', GETDATE(), GETDATE(), 1),
+    ('LG002', 'Giày Dây', GETDATE(), GETDATE(), 1),
+    ('LG003', 'Giày Slip-On', GETDATE(), GETDATE(), 1),
+    ('LG004', 'Giày Bóng Đá', GETDATE(), GETDATE(), 1),
+    ('LG005', 'Giày Sandal', GETDATE(), GETDATE(), 1);
+
+	INSERT INTO [dbo].[CHAT_LIEU] ([Ma_Chat_Lieu], [Ten_Chat_Lieu], [NGAY_TAO], [NGAY_SUA], [TRANG_THAI])
+VALUES
+    ('CL001', 'Vải Cotton', GETDATE(), GETDATE(), 1),
+    ('CL002', 'Da Tổng Hợp', GETDATE(), GETDATE(), 1),
+    ('CL003', 'Nhung', GETDATE(), GETDATE(), 1),
+    ('CL004', 'Chất Liệu Nylon', GETDATE(), GETDATE(), 1),
+    ('CL005', 'Vải Lụa', GETDATE(), GETDATE(), 1);

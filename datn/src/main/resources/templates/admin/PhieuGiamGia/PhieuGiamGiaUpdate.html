@@ -20,80 +20,86 @@
         <span th:replace="~{fragments/header :: header}"></span>
         <div class="main-content container-fluid" layout:fragment="content"><!--dynamic content-->
 
+<!--            from-->
+            <div class="container mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <!-- Khung với border -->
+                        <div class="card">
+                            <div class="card-header bg-primary text-white text-center">
+                                <h2 class="h4">Cập Nhật Voucher</h2>
+                            </div>
+                            <div class="card-body">
+                                <form th:action="@{'/SavePhieuGiamGia/' + ${pgg.id}}" th:object="${pgg}" method="post" id="updateVoucherForm" class="container" style="max-width: 100%;">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="ma" class="form-label">Mã Voucher:</label>
+                                            <input type="text" id="ma" name="ma" class="form-control form-control-sm" th:field="*{ma}" required maxlength="50" placeholder="Nhập mã voucher">
+                                        </div>
 
-            <form th:action="@{'/SavePhieuGiamGia/' + ${pgg.id}}" th:object="${pgg}" method="post"
-                  id="updateVoucherForm" class="container" style="max-width: 800px;">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="ma" class="form-label">Mã Voucher:</label>
-                        <input type="text" id="ma" name="ma" class="form-control form-control-sm" th:field="*{ma}" required
-                               maxlength="50" placeholder="Nhập mã voucher">
-                    </div>
+                                        <div class="col-md-6">
+                                            <label for="ten" class="form-label">Tên:</label>
+                                            <input type="text" id="ten" name="ten" class="form-control form-control-sm" th:field="*{ten}" required maxlength="50" placeholder="Nhập tên voucher">
+                                        </div>
+                                    </div>
 
-                    <div class="col-md-6">
-                        <label for="ten" class="form-label">Tên:</label>
-                        <input type="text" id="ten" name="ten" class="form-control form-control-sm" th:field="*{ten}"
-                               required maxlength="50" placeholder="Nhập tên voucher">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="loaiVoucher" class="form-label">Loại Voucher:</label>
+                                            <select id="loaiVoucher" name="loaiVoucher" class="form-control form-control-sm" th:field="*{loaiVoucher}" required>
+                                                <option value="">Chọn loại voucher</option>
+                                                <option value="Tiền mặt">Tiền mặt</option>
+                                                <option value="Phần trăm">Phần trăm</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="ngayBatDau" class="form-label">Ngày Bắt Đầu:</label>
+                                            <input type="date" id="ngayBatDau" name="ngayBatDau" class="form-control form-control-sm" th:field="*{ngayBatDau}" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="ngayKetThuc" class="form-label">Ngày Kết Thúc:</label>
+                                            <input type="date" id="ngayKetThuc" name="ngayKetThuc" class="form-control form-control-sm" th:field="*{ngayKetThuc}" required>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="giaTriGiam" class="form-label">Giá Trị Giảm:</label>
+                                            <input type="number" id="giaTriGiam" name="giaTriGiam" class="form-control form-control-sm" th:field="*{giaTriGiam}" required step="0.01" placeholder="Nhập giá trị giảm">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="giaTriMax" class="form-label">Giá Trị Tối Đa:</label>
+                                            <input type="number" id="giaTriMax" name="giaTriMax" class="form-control form-control-sm" th:field="*{giaTriMax}" required step="0.01" placeholder="Nhập giá trị tối đa">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="soLuong" class="form-label">Số Lượng:</label>
+                                            <input type="number" id="soLuong" name="soLuong" class="form-control form-control-sm" th:field="*{soLuong}" required min="1" placeholder="Nhập số lượng">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="moTa" class="form-label">Mô Tả:</label>
+                                        <textarea id="moTa" name="moTa" class="form-control form-control-sm" th:field="*{moTa}" rows="3" placeholder="Nhập mô tả"></textarea>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-success btn-sm">Cập Nhật Voucher</button>
+                                        <button type="button" class="btn btn-secondary btn-sm" onclick="resetForm()">Làm Mới</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="loaiVoucher" class="form-label">Loại Voucher:</label>
-                        <select id="loaiVoucher" name="loaiVoucher" class="form-control form-control-sm"
-                                th:field="*{loaiVoucher}" required>
-                            <option value="">Chọn loại voucher</option>
-                            <option value="Tiền mặt">Tiền mặt</option>
-                            <option value="Phần trăm">Phần trăm</option>
-                        </select>
-                    </div>
 
-                    <div class="col-md-6">
-                        <label for="ngayBatDau" class="form-label">Ngày Bắt Đầu:</label>
-                        <input type="date" id="ngayBatDau" name="ngayBatDau" class="form-control form-control-sm"
-                               th:field="*{ngayBatDau}" required>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="ngayKetThuc" class="form-label">Ngày Kết Thúc:</label>
-                        <input type="date" id="ngayKetThuc" name="ngayKetThuc" class="form-control form-control-sm"
-                               th:field="*{ngayKetThuc}" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="giaTriGiam" class="form-label">Giá Trị Giảm:</label>
-                        <input type="number" id="giaTriGiam" name="giaTriGiam" class="form-control form-control-sm"
-                               th:field="*{giaTriGiam}" required step="0.01" placeholder="Nhập giá trị giảm">
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="giaTriMax" class="form-label">Giá Trị Tối Đa:</label>
-                        <input type="number" id="giaTriMax" name="giaTriMax" class="form-control form-control-sm"
-                               th:field="*{giaTriMax}" required step="0.01" placeholder="Nhập giá trị tối đa">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="soLuong" class="form-label">Số Lượng:</label>
-                        <input type="number" id="soLuong" name="soLuong" class="form-control form-control-sm"
-                               th:field="*{soLuong}" required min="1" placeholder="Nhập số lượng">
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="moTa" class="form-label">Mô Tả:</label>
-                    <textarea id="moTa" name="moTa" class="form-control form-control-sm" th:field="*{moTa}" rows="3"
-                              placeholder="Nhập mô tả"></textarea>
-                </div>
-
-                <div>
-                    <button type="submit" class="btn btn-primary btn-sm">Cập Nhật Voucher</button>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="resetForm()">Làm Mới</button>
-                </div>
-            </form>
 
         </div>
         <span th:replace="~{fragments/footer :: footer}"></span>
@@ -107,7 +113,11 @@
 <script th:src="@{/js/apexcharts.min.js}"></script>
 <script th:src="@{/js/dashboard.js}"></script>
 <script th:src="@{/js/main.js}"></script>
-
+<script>
+    function resetForm() {
+        document.getElementById("updateVoucherForm").reset();
+    }
+</script>
 <!-- Link tới Bootstrap 5.0 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
