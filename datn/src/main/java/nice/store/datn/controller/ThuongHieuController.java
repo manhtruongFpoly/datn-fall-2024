@@ -2,7 +2,9 @@ package nice.store.datn.controller;
 
 import jakarta.validation.Valid;
 import nice.store.datn.entity.SanPham;
+import nice.store.datn.entity.ThuongHieu;
 import nice.store.datn.service.SanPhamService;
+import nice.store.datn.service.ThuongHieuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,103 +17,80 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/san-pham")
 public class ThuongHieuController {
 
     @Autowired
-    private SanPhamService service;
+    private ThuongHieuService service;
 
-    @GetMapping("/danh-sach-san-pham")
+    @GetMapping("/danh-sach-thuong-hieu")
     public String getAll(Model model){
-        List<SanPham> listSp = service.getAllSp();
-        model.addAttribute("listSanPham", listSp);
-        return "/admin/SanPham/SanPhamIndex";
+        List<ThuongHieu> list = service.getAllTh();
+        model.addAttribute("listThuongHieu", list);
+        return "/admin/ThuongHieu/ThuongHieuIndex";
     }
     @GetMapping("/add-view")
-    public String SanPhamViewTable(Model model) {
-        model.addAttribute("sanPhamAdd", new SanPham());
-        return "/admin/SanPham/SanPhamAdd";
+    public String ThuongHieuViewTable(Model model) {
+        model.addAttribute("thuongHieu", new ThuongHieu());
+        return "/admin/ThuongHieu/ThuongHieuAdd";
     }
 
-//    @PostMapping("/add")
-//    public String add(@Valid
-//                      @ModelAttribute ("themSanPham") SanPham sp
-//                      , BindingResult result
-//                       , Model model,
-//                      RedirectAttributes redirectAttributes){
-//        try {
-//            service.create(sp);
-//            return "/admin/SanPham/SanPhamIndex"; // Chuyển hướng đến trang danh sách
-//        } catch (RuntimeException e) {
-//            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-//            return "/admin/SanPham/SanPhamAdd"; // Quay lại trang tạo sản phẩm
-//        }
-//    }
 @PostMapping("/add")
-public String add(@Valid @ModelAttribute("themSanPham") SanPham sp,
+public String add(@Valid @ModelAttribute("themSanPham") ThuongHieu sp,
                   BindingResult result,
-                  RedirectAttributes redirectAttributes) {
+                  Model model) {
     // Kiểm tra lỗi từ BindingResult
     if (result.hasErrors()) {
-        return "admin/SanPham/SanPhamAdd"; // Quay lại trang tạo sản phẩm với thông báo lỗi
+        return "admin/ThuongHieu/ThuongHieuAdd"; // Quay lại trang tạo sản phẩm với thông báo lỗi
     }
 
     try {
         service.create(sp);
-        redirectAttributes.addFlashAttribute("successMessage", "Thêm sản phẩm thành công!");
-        return "/admin/SanPham/SanPhamIndex";// Chuyển hướng đến trang thêm sản phẩm
+        model.addAttribute("successMessage", "Thêm sản phẩm thành công!");
+        return "redirect:/danh-sach-thuong-hieu";// Chuyển hướng đến trang thêm sản phẩm
     } catch (RuntimeException e) {
-        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        return "admin/SanPham/SanPhamAdd"; // Quay lại trang thêm sản phẩm
+        model.addAttribute("errorMessage","Trùng mã");
+        return "/admin/ThuongHieu/ThuongHieuIndex"; // Quay lại trang thêm sản phẩm
     }
 }
 
-//    @GetMapping("/update/{id}")
-//    public String ViewUpdate(@PathVariable("id") Integer id , Model model){
-//        Optional<SanPham> sanPham = service.getIdSanPham(id);
-//        model.addAttribute("sp" , sanPham);
-//        return "admin/SanPham/SanPhamUpdate";
-//
-//    }
-
-    @GetMapping("/update/{id}")
+    @GetMapping("/update-view-th/{id}")
     public String ViewUpdate(@PathVariable("id") Integer id, Model model) {
-        Optional<SanPham> sanPham = service.getIdSanPham(id);
-        if (sanPham.isPresent()) {
-            model.addAttribute("sp", sanPham.get());
+        Optional<ThuongHieu> th = service.getIdTh(id);
+        if (th.isPresent()) {
+            model.addAttribute("sp", th.get());
         } else {
             // Xử lý trường hợp không tìm thấy sản phẩm
 //            model.addAttribute("errorMessage", "Sản phẩm không tồn tại.");
             System.out.println("Loi");
             return "error"; // Chuyển hướng đến trang lỗi hoặc trang khác
         }
-        return "admin/SanPham/SanPhamUpdate";
+        return "admin/ThuongHieu/ThuongHieuUpdate";
     }
 
 
-    @PostMapping("/update-san-pham/{id}")
-    public String updatePhieuGiamGia(@PathVariable("id") Integer id, @Valid
-    @ModelAttribute("sp") SanPham sp, BindingResult result) {
+    @PostMapping("/update/thuong-hieu/{id}")
+    public String updateTH(@PathVariable("id") Integer id, @Valid
+    @ModelAttribute("sp") ThuongHieu sp, BindingResult result) {
         LocalDate now = LocalDate.now();
         if (result.hasErrors()) {
-            return "admin/SanPham/SanPhamIndex";
+            return "admin/ThuongHieu/ThuongHieuIndex";
         }
-        SanPham updateSp = service.updateSp(id, sp);
+        ThuongHieu updateSp = service.updateSp(id, sp);
         if (updateSp != null) {
-            return "redirect:/san-pham/danh-sach-san-pham";
+            return "redirect:/danh-sach-thuong-hieu";
         }
-        return "admin/SanPham/SanPhamUpdate";
+        return "admin/ThuongHieu/ThuongHieuUpdate";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteSanPham(@PathVariable("id") Integer id) {
-        Optional<SanPham> sanPhamOptional = service.getIdSanPham(id);
+    @GetMapping("/delete-thuong-hieu/{id}")
+    public String deleteTh(@PathVariable("id") Integer id) {
+        Optional<ThuongHieu> thuongHieuOptional = service.getIdTh(id);
 
-        if (sanPhamOptional.isPresent()) {
-            service.deleteSanPham(id);
-            return "redirect:/san-pham/danh-sach-san-pham";
+        if (thuongHieuOptional.isPresent()) {
+            service.deleteThuongHieu(id);
+            return "redirect:/danh-sach-thuong-hieu";
         } else {
-            return "redirect:/san-pham/danh-sach-san-pham";
+            return "redirect:/danh-sach-thuong-hieu";
         }
     }
 

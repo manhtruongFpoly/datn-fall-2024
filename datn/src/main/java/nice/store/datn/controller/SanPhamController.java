@@ -53,7 +53,7 @@ public class SanPhamController {
 @PostMapping("/add")
 public String add(@Valid @ModelAttribute("themSanPham") SanPham sp,
                   BindingResult result,
-                  RedirectAttributes redirectAttributes) {
+                  Model model) {
     // Kiểm tra lỗi từ BindingResult
     if (result.hasErrors()) {
         return "admin/SanPham/SanPhamAdd"; // Quay lại trang tạo sản phẩm với thông báo lỗi
@@ -61,10 +61,10 @@ public String add(@Valid @ModelAttribute("themSanPham") SanPham sp,
 
     try {
         service.create(sp);
-        redirectAttributes.addFlashAttribute("successMessage", "Thêm sản phẩm thành công!");
-        return "/admin/SanPham/SanPhamIndex";// Chuyển hướng đến trang thêm sản phẩm
+        model.addAttribute("successMessage", "Thêm sản phẩm thành công!");
+        return "redirect:/san-pham/danh-sach-san-pham";// Chuyển hướng đến trang thêm sản phẩm
     } catch (RuntimeException e) {
-        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        model.addAttribute("errorMessage", e.getMessage());
         return "admin/SanPham/SanPhamAdd"; // Quay lại trang thêm sản phẩm
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -24,10 +25,10 @@ public class ThuongHieu {
     private String TenThuongHieu;
 
 
-    private LocalDate ngayTao;
+    private LocalDateTime ngayTao;
 
 
-    private LocalDate ngaySua;
+    private LocalDateTime ngaySua;
 
 
     private int trangThai;
