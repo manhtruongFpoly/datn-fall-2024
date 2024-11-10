@@ -32,6 +32,7 @@ public class SanPhamService {
     }
 
     public Optional<SanPham> getIdSanPham(int id) {
+
         return sanPhamRepository.findById(id);
     }
 

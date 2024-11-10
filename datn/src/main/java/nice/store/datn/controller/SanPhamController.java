@@ -1,5 +1,6 @@
 package nice.store.datn.controller;
 
+import ch.qos.logback.core.model.Model;
 import jakarta.validation.Valid;
 import nice.store.datn.entity.PhieuGiamGia;
 import nice.store.datn.entity.SanPham;
@@ -61,7 +62,7 @@ public String add(@Valid @ModelAttribute("themSanPham") SanPham sp,
 
     try {
         service.create(sp);
-        redirectAttributes.addFlashAttribute("successMessage", "Thêm sản phẩm thành công!");
+        redirectAttributes.addFlashAttribute("successMessage" , "Thêm sản phẩm thành công!");
         return "/admin/SanPham/SanPhamIndex";// Chuyển hướng đến trang thêm sản phẩm
     } catch (RuntimeException e) {
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
