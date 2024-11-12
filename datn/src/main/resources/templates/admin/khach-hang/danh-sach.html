@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
@@ -7,12 +6,12 @@
     <title>Danh Sách Khách Hàng</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+
     <link rel="stylesheet" th:href="@{/css/fontawesome.min.css}">
     <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
     <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
-    <link rel="stylesheet" th:href="@{/css/app.css}">
-
-    <!-- Custom CSS for row padding -->
+    <link rel="stylesheet" th:href="@{/css/fontawesome-all.min.css}">
     <style>
         /* Tăng chiều cao dòng một cách vừa phải */
         .table td, .table th {
@@ -23,16 +22,14 @@
 </head>
 
 <body>
-<div id="app"><!-- Main content -->
-    <span th:replace="~{fragments/sidebar :: sidebar}"></span> <!-- Sidebar -->
-    <div id="main"><!-- Content id -->
-        <span th:replace="~{fragments/header :: header}"></span> <!-- Header -->
-
-        <!-- Main Content for Customer List -->
+<div id="app">
+    <span th:replace="~{fragments/sidebar :: sidebar}"></span>
+    <div id="main">
+        <span th:replace="~{fragments/header :: header}"></span>
         <div class="main-content container-fluid">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="text-primary">Danh Sách Khách Hàng</h1>
-                <a href="/khach-hang/them" class="btn btn-success">Thêm Khách Hàng Mới</a>
+                <a th:href="@{/khach-hang/them}" class="btn btn-success">Thêm Khách Hàng Mới</a>
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">
@@ -57,31 +54,22 @@
                         <td th:text="${khachHang.sdt}"></td>
                         <td th:text="${khachHang.email}"></td>
                         <td th:text="${khachHang.trangThai == 0 ? 'Hoạt động' : (khachHang.trangThai == 1 ? 'Không hoạt động' : 'Chờ xử lý')}"></td>
-
-
                         <td>
-                            <!-- Icons for actions -->
-
-                            <a th:href="@{/khach-hang/update/{id}(id=${khachHang.id})}" class="text-warning me-2" title="Cập nhập">
+                            <a th:href="@{/khach-hang/update/{id}(id=${khachHang.id})}" class="text-warning me-2" title="Cập nhật">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a href="#" class="text-danger" title="Xóa" onclick="showDeleteModal([[${khachHang.id}]])">
+                            <a href="#" class="text-danger" title="Xóa" th:onclick="'showDeleteModal(' + ${khachHang.id} + ')'" >
                                 <i class="fas fa-trash-alt"></i>
                             </a>
-
-
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
-        <span th:replace="~{fragments/footer :: footer}"></span> <!-- Footer -->
+        <span th:replace="~{fragments/footer :: footer}"></span>
     </div>
 </div>
-
-
 
 <!-- Modal xác nhận xóa -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -95,7 +83,6 @@
             </div>
             <div class="modal-body">
                 Bạn có chắc chắn muốn xóa khách hàng này?
-                <!-- Input ẩn chứa ID của khách hàng cần xóa -->
                 <input type="hidden" id="deleteId" value="">
             </div>
             <div class="modal-footer">
@@ -105,26 +92,21 @@
         </div>
     </div>
 </div>
+
 <script>
+    // Mở modal với ID khách hàng
     function showDeleteModal(id) {
-        // Gán ID của khách hàng vào input ẩn trong modal
         document.getElementById('deleteId').value = id;
-        // Hiển thị modal xác nhận xóa
         $('#deleteModal').modal('show');
     }
 
-    // Hàm xác nhận xóa khách hàng
+    // Xác nhận và thực hiện xóa khách hàng
     function confirmDelete() {
-        // Lấy ID khách hàng cần xóa từ input ẩn
-        var customerId = document.getElementById('deleteId').value;
-
-        // Kiểm tra xem ID có hợp lệ không
+        const customerId = document.getElementById('deleteId').value;
         if (!customerId) {
             alert('Không có ID khách hàng để xóa!');
             return;
         }
-
-        // Gửi yêu cầu xóa khách hàng tới backend (sử dụng Fetch API)
         fetch('/khach-hang/delete/' + customerId, {
             method: 'DELETE',
             headers: {
@@ -134,9 +116,7 @@
             .then(response => {
                 if (response.ok) {
                     alert('Khách hàng đã được xóa!');
-                    // Đóng modal sau khi xóa thành công
                     $('#deleteModal').modal('hide');
-                    // Làm mới trang hoặc danh sách khách hàng
                     location.reload();
                 } else {
                     alert('Xóa khách hàng thất bại!');
@@ -146,11 +126,15 @@
                 alert('Đã xảy ra lỗi khi xóa khách hàng!');
                 console.error(error);
             });
+    }
+
+    // Đóng modal khi click vào nút Hủy
+    document.querySelector('.btn-secondary').addEventListener('click', function() {
+        $('#deleteModal').modal('hide');
+    });
 </script>
 
-
-
-<!-- JavaScript files -->
+<!-- Không dùng th:src cho các URL ngoài -->
 <script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/feather.min.js}"></script>
@@ -160,5 +144,7 @@
 <script th:src="@{/js/apexcharts.min.js}"></script>
 <script th:src="@{/js/dashboard.js}"></script>
 <script th:src="@{/js/main.js}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

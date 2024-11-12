@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cập Nhật Khách Hàng</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
+    <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <style>
+        .card-body {
+            background-color: white;
+        }
+        .no-gutters {
+            margin-right: 0;
+            margin-left: 0;
+        }
+        .font-bold {
+            font-weight: bold;
+        }
+        .text-success {
+            color: green;
+        }
+        .text-danger {
+            color: red;
+        }
+        .form-group {
+            width: 100%;
+        }
+        .col-md-6 {
+            padding-right: 15px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <span th:replace="~{fragments/sidebar :: sidebar}"></span> <!-- Sidebar -->
+    <div id="main">
+        <span th:replace="~{fragments/header :: header}"></span> <!-- Header -->
+
+        <div class="main-content container-fluid">
+            <h1 class="text-primary mb-4" th:text="'Cập Nhật Khách Hàng - ' + ${khachHang.orElse(null).ho} + ' ' + ${khachHang.orElse(null).tenDem} + ' ' + ${khachHang.orElse(null).ten}"></h1>
+            <div class="card">
+                <div class="card-body">
+                    <form th:action="@{/khach-hang/update/{id}(id=${khachHang.orElse(null).id})}" method="POST">
+                        <div class="row no-gutters">
+                            <!-- Cột 1: Thông tin cá nhân -->
+                            <input type="hidden" th:value="${khachHang.orElse(null).maKH}" name="maKH"/>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="maKH">Mã Khách Hàng:</label>
+                                    <input type="text" class="form-control" id="maKH" th:value="${khachHang.orElse(null).maKH}" disabled>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="ho">Họ:</label>
+                                    <input type="text" class="form-control" id="ho" th:value="${khachHang.orElse(null).ho}" name="ho">
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="ten">Tên:</label>
+                                    <input type="text" class="form-control" id="ten" th:value="${khachHang.orElse(null).ten}" name="ten">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email:</label>
+                                    <input type="email" class="form-control" id="email" th:value="${khachHang.orElse(null).email}" name="email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ngaySinh">Ngày Sinh:</label>
+                                    <input type="date" class="form-control" id="ngaySinh" th:value="${#dates.format(khachHang.orElse(null).ngaySinh, 'yyyy-MM-dd')}" name="ngaySinh">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gioiTinh">Giới Tính:</label>
+                                    <select class="form-control" id="gioiTinh" name="gioiTinh">
+                                        <option th:value="0" th:text="'Nam'" th:selected="${khachHang.orElse(null).gioiTinh == 0}"></option>
+                                        <option th:value="1" th:text="'Nữ'" th:selected="${khachHang.orElse(null).gioiTinh == 1}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="trangThai">Trạng Thái:</label>
+                                    <select class="form-control" id="trangThai" name="trangThai">
+                                        <option th:value="0" th:selected="${khachHang.orElse(null).trangThai == 0}" th:text="'Hoạt động'"></option>
+                                        <option th:value="1" th:selected="${khachHang.orElse(null).trangThai == 1}" th:text="'Không hoạt động'"></option>
+                                        <option th:value="2" th:selected="${khachHang.orElse(null).trangThai == 2}" th:text="'Chờ xử lý'"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="sdt">Số Điện Thoại:</label>
+                                    <input type="text" class="form-control" id="sdt" th:value="${khachHang.orElse(null).sdt}" name="sdt">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tenDem">Tên Đệm:</label>
+                                    <input type="text" class="form-control" id="tenDem" th:value="${khachHang.orElse(null).tenDem}" name="tenDem">
+                                </div>
+
+
+
+                                <div th:each="dc, iterStat : ${khachHang.orElse(null).diaChi}">
+                                    <div class="form-group">
+                                        <label>Địa chỉ cụ thể:</label>
+                                        <input type="text" class="form-control" th:id="'diaChiCuThe' + ${iterStat.index}" th:value="${dc.diaChiCuThe}" th:name="'diaChi[' + ${iterStat.index} + '].diaChiCuThe'">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Phường/Xã:</label>
+                                        <input type="text" class="form-control" th:id="'phuongXa' + ${iterStat.index}" th:value="${dc.phuongXa}" th:name="'diaChi[' + ${iterStat.index} + '].phuongXa'">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Quận/Huyện:</label>
+                                        <input type="text" class="form-control" th:id="'quanHuyen' + ${iterStat.index}" th:value="${dc.quanHuyen}" th:name="'diaChi[' + ${iterStat.index} + '].quanHuyen'">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Tỉnh/Thành phố:</label>
+                                        <input type="text" class="form-control" th:id="'tinhThanh' + ${iterStat.index}" th:value="${dc.tinhThanh}" th:name="'diaChi[' + ${iterStat.index} + '].tinhThanh'">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                            <a href="/khach-hang/danh-sach" class="btn btn-secondary">Hủy</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <span th:replace="~{fragments/footer :: footer}"></span> <!-- Footer -->
+</div>
+
+
+<!-- JavaScript files -->
+<script th:src="@{/js/feather.min.js}"></script>
+<script th:src="@{/js/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/Chart.min.js}"></script>
+<script th:src="@{/js/apexcharts.min.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

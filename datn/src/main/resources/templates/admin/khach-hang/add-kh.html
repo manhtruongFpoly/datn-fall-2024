@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm Khách Hàng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+
+<body>
+<div id="app">
+    <span th:replace="~{fragments/sidebar :: sidebar}"></span>
+    <div id="main">
+        <span th:replace="~{fragments/header :: header}"></span>
+
+
+        <div class="main-content container-fluid">
+            <h1 class="text-primary mb-4">Thêm Khách Hàng Mới</h1>
+            <form th:action="@{/khach-hang/them}" th:object="${khachHang}" method="post">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label  class="form-label">Mã KH</label>
+                        <input type="text" class="form-control" th:field="*{maKH}" required>
+                        <div th:if="${#fields.hasErrors('maKH')}" th:errors="*{maKH}" class="text-danger"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Họ</label>
+                        <input type="text" class="form-control" th:field="*{ho}" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label  class="form-label">Tên Đệm</label>
+                        <input type="text" class="form-control" th:field="*{tenDem}">
+                    </div>
+                    <div class="col-md-6">
+                        <label  class="form-label">Tên</label>
+                        <input type="text" class="form-control" th:field="*{ten}" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label  class="form-label">Giới Tính</label>
+                        <select class="form-select" th:field="*{gioiTinh}">
+                            <option value="0">Nam</option>
+                            <option value="1">Nữ</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label  class="form-label">Ngày Sinh</label>
+                        <input type="date" class="form-control" th:field="*{ngaySinh}" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label  class="form-label">Số Điện Thoại</label>
+                        <input type="tel" class="form-control" th:field="*{sdt}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label  class="form-label">Email</label>
+                        <input type="email" class="form-control" th:field="*{email}" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label  class="form-label">Địa Chỉ Cụ Thể</label>
+                        <input type="text" class="form-control" th:field="*{diaChi[0].diaChiCuThe}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label  class="form-label">Phường/Xã</label>
+                        <input type="text" class="form-control" th:field="*{diaChi[0].phuongXa}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label  class="form-label">Quận/Huyện</label>
+                        <input type="text" class="form-control" th:field="*{diaChi[0].quanHuyen}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label  class="form-label">Tỉnh/Thành Phố</label>
+                        <input type="text" class="form-control" th:field="*{diaChi[0].tinhThanh}" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label  class="form-label">Trạng Thái</label>
+                        <select class="form-select" th:field="*{trangThai}">
+                            <option value="0">Hoạt động</option>
+                            <option value="1">Không hoạt động</option>
+                            <option value="2">Chờ xử lí</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">Thêm Khách Hàng</button>
+                </div>
+            </form>
+        </div>
+
+        <span th:replace="~{fragments/footer :: footer}"></span>
+    </div>
+</div>
+
+
+<script th:src="@{/js/feather.min.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/Chart.min.js}"></script>
+<script th:src="@{/js/apexcharts.min.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

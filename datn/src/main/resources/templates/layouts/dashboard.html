@@ -17,16 +17,6 @@
 </head>
 
 <body>
-<!--<div id="app">&lt;!&ndash;Main content&ndash;&gt;-->
-<!--    <span th:replace="fragments/sidebar :: sidebar"></span>-->
-<!--    <div id="main">&lt;!&ndash;Content id&ndash;&gt;-->
-<!--        <span th:replace="fragments/header :: header"></span>-->
-<!--        <div class="main-content container-fluid" layout:fragment="content">&lt;!&ndash;dynamic content&ndash;&gt;-->
-<!--            &lt;!&ndash;you can replace this using page&ndash;&gt;-->
-<!--        </div>-->
-<!--                <span th:replace="fragments/footer :: footer"></span>-->
-<!--    </div>-->
-<!--</div>-->
 <div id="app"><!--Main content-->
     <span th:replace="~{fragments/sidebar :: sidebar}"></span>
     <div id="main"><!--Content id-->
@@ -47,5 +37,7 @@
 <script th:src="@{/js/dashboard.js}"></script>
 
 <script th:src="@{/js/main.js}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

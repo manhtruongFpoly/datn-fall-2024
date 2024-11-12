@@ -3,6 +3,7 @@ package nice.store.datn.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
@@ -46,7 +47,12 @@ public class KhachHang {
     private String email;
 
     @Column(name = "NGAY_TAO", length = 50)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime ngayTao;
+
+    @Column(name = "NGAY_SUA")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime ngaySua;
 
     @Column(name = "TRANG_THAI", length = 50)
     private int trangThai;
@@ -56,12 +62,11 @@ public class KhachHang {
     @JsonManagedReference
     private TaiKhoan idTK;
 
-    @OneToMany(mappedBy = "idKH", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "idKH", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<GioHang> idGH;
 
-    @OneToMany(mappedBy = "idKH",cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "idKH", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<DiaChi> diaChi = new ArrayList<>();
-
 }
