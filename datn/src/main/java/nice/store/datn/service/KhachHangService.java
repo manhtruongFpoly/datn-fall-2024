@@ -16,7 +16,6 @@ public class KhachHangService {
     private KhachHangRepository khachHangRepository;
 
 
-
     public KhachHang createKH(KhachHang kh) {
         kh.setNgayTao(LocalDateTime.now());
         return khachHangRepository.save(kh);
@@ -32,10 +31,6 @@ public class KhachHangService {
 
     public KhachHang updateKH(Integer id, KhachHang kh) {
         if (khachHangRepository.existsById(id)) {
-            // Set lại id cho đối tượng khachHang để đảm bảo khi save() sẽ sử dụng id này
-            kh.setId(id);
-
-
 
             // Lấy ra khách hàng hiện tại từ database
             KhachHang khachHang = khachHangRepository.findById(id).orElseThrow(() ->
@@ -66,10 +61,13 @@ public class KhachHangService {
         throw new RuntimeException("KhachHang id " + id + " not found");
     }
 
-    public void deleteKHById(int id) {
+    public boolean deleteKhachHang(Integer id) {
         if (khachHangRepository.existsById(id)) {
-            khachHangRepository.deleteById(id); // Xóa khách hàng theo ID
+            khachHangRepository.deleteById(id);
+            return true;
         }
+        return false;
     }
+
 
 }

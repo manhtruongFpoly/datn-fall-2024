@@ -22,8 +22,7 @@ import java.util.*;
 public class KhachHangController {
 
     @Autowired
-    private  KhachHangService khService;
-
+    private KhachHangService khService;
 
 
     @GetMapping("/danh-sach")
@@ -54,7 +53,7 @@ public class KhachHangController {
     public String showAddKHForm(KhachHang khachHang, Model model) {
 
         model.addAttribute("khachHang", new KhachHang());
-        return"admin/khach-hang/add-kh";
+        return "admin/khach-hang/add-kh";
     }
 
     @PostMapping("/them")
@@ -88,33 +87,28 @@ public class KhachHangController {
     @PostMapping("/update/{id}")
     public String updateKhachHang(
             @PathVariable Integer id,
-            @ModelAttribute KhachHang khachHang,
+            @ModelAttribute KhachHang khachHang,  // KhachHang nhận các thông tin chung
             @RequestParam("gioiTinh") Integer gioiTinh,
             @RequestParam("ngaySinh") String ngaySinh,
             @RequestParam("email") String email,
-            @RequestParam("sdt") Integer sdt,
+            @RequestParam("sdt") String sdt,  // Nhận sdt là String, sau đó chuyển sang Integer nếu cần
             @RequestParam("trangThai") Integer trangThai,
-            @RequestParam("hoTen") String hoTen,
             @RequestParam Map<String, String> diaChiParams) {
 
         // Cập nhật các thông tin cơ bản
         khachHang.setGioiTinh(gioiTinh);
         khachHang.setNgaySinh(Date.valueOf(ngaySinh));  // Chuyển đổi từ String sang Date nếu cần
         khachHang.setEmail(email);
-        khachHang.setSdt(sdt);
+
+        // Chuyển đổi sdt từ String sang Integer nếu cần thiết
+        try {
+            khachHang.setSdt(Integer.parseInt(sdt));
+        } catch (NumberFormatException e) {
+            // Nếu có lỗi khi chuyển đổi số điện thoại
+            e.printStackTrace();
+        }
+
         khachHang.setTrangThai(trangThai);
-
-        if (khachHang.getMaKH() == null || hoTen.trim().isEmpty()) {
-            throw new RuntimeException("Các trường Họ tên và Mã KH không thể để trống.");
-        }
-
-        // Tách họ và tên thành các phần riêng biệt (giả định tách theo khoảng trắng)
-        String[] nameParts = hoTen.split(" ");
-        khachHang.setHo(nameParts[0]); // Họ
-        if (nameParts.length > 2) {
-            khachHang.setTenDem(String.join(" ", Arrays.copyOfRange(nameParts, 1, nameParts.length - 1))); // Tên đệm
-        }
-        khachHang.setTen(nameParts[nameParts.length - 1]);
 
         // Kiểm tra và xử lý các địa chỉ nếu có
         if (diaChiParams != null && !diaChiParams.isEmpty()) {
@@ -144,19 +138,19 @@ public class KhachHangController {
         // Gọi Service để cập nhật khách hàng
         khService.updateKH(id, khachHang);
 
+        // Sau khi cập nhật, điều hướng đến danh sách khách hàng
         return "redirect:/khach-hang/danh-sach";
     }
 
 
-
-
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteKhachHang(@PathVariable("id") Integer id) {
-        try {
-            khService.deleteKHById(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi xóa khách hàng!");
+    public ResponseEntity<String> deleteKhachHang(@PathVariable Integer id) {
+        boolean isDeleted = khService.deleteKhachHang(id);
+        if (isDeleted) {
+            return ResponseEntity.ok("Khách hàng đã được xóa!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Khách hàng không tồn tại!");
         }
     }
+
 }
