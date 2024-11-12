@@ -36,7 +36,7 @@
 
                 </li>
                 <li class="sidebar-item  ">
-                    <a th:href="@{/pages/test}" class='sidebar-link'>
+                    <a th:href="@{hoa-don}" class='sidebar-link'>
                         <i data-feather="briefcase" width="20"></i>
                         <span>Đơn Hàng</span>
                     </a>
@@ -51,13 +51,13 @@
                     <ul class="submenu ">
 
                         <li>
-                            <a href="component-alert.html">Sản Phẩm</a>
+                            <a th:href="@{/san-pham/danh-sach-san-pham}">Sản Phẩm</a>
                         </li>
                         <li>
                             <a href="component-badge.html">Màu Sắc</a>
                         </li>
                         <li>
-                            <a href="component-badge.html">Chất Liệu</a>
+                            <a th:href="@{/chat-lieu}">Chất Liệu</a>
                         </li>
 
                         <li>
@@ -69,44 +69,15 @@
                         </li>
 
                         <li>
-                            <a href="component-card.html">Loại Giày</a>
+                            <a th:href="@{/loai-giay}">Loại Giày</a>
                         </li>
+
 
                         <li>
                             <a href="component-carousel.html">Thương hiệu</a>
                         </li>
 
-<!--                        <li>-->
-<!--                            <a href="component-dropdowns.html">Dropdowns</a>-->
-<!--                        </li>-->
 
-<!--                        <li>-->
-<!--                            <a href="component-list-group.html">List Group</a>-->
-<!--                        </li>-->
-
-<!--                        <li>-->
-<!--                            <a href="component-modal.html">Modal</a>-->
-<!--                        </li>-->
-
-<!--                        <li>-->
-<!--                            <a href="component-navs.html">Navs</a>-->
-<!--                        </li>-->
-
-<!--                        <li>-->
-<!--                            <a href="component-pagination.html">Pagination</a>-->
-<!--                        </li>-->
-
-<!--                        <li>-->
-<!--                            <a href="component-progress.html">Progress</a>-->
-<!--                        </li>-->
-
-<!--                        <li>-->
-<!--                            <a href="component-spinners.html">Spinners</a>-->
-<!--                        </li>-->
-
-<!--                        <li>-->
-<!--                            <a href="component-tooltips.html">Tooltips</a>-->
-<!--                        </li>-->
 
                     </ul>
 
@@ -118,19 +89,11 @@
 
 
 
-
-
-
-
-
-                <li class="sidebar-item  ">
-                    <a href="#" class='sidebar-link'>
+                <li class="sidebar-item">
+                    <a th:href="@{/phieu-giam-gia}" class='sidebar-link'>
                         <i data-feather="dollar-sign" width="20"></i>
-                        <span>Voucher</span>
+                        <span th:text="'Voucher'">Voucher</span>
                     </a>
-
-
-
                 </li>
 
                 <li class="sidebar-item  has-sub">

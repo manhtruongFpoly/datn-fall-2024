@@ -113,4 +113,8 @@
   .ps {
     overflow: auto !important;
   }
+  .table td, .table th {
+    font-family: Arial, Arial; /* Change to your preferred font */
+    font-size: 14px; /* Adjust the size as needed */
+  }
 }
