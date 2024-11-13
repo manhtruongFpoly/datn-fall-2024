@@ -27,21 +27,35 @@ public class MauSacService {
     }
 
 
-    public Optional<MauSac> getMauSacById(int id) {
+
+    public Optional<MauSac> getMauSacById(Integer id) {
         return mauSacRepository.findById(id);
     }
 
-
     public MauSac update(Integer id, MauSac mauSac) {
         if (mauSacRepository.existsById(id)) {
-            mauSac.setId(id);
-            return mauSacRepository.save(mauSac);
+            MauSac existingMauSac = mauSacRepository.findById(id).orElseThrow(() ->
+                    new RuntimeException("MauSac id " + id + " not found"));
+
+
+            existingMauSac.setTenMauSac(mauSac.getTenMauSac());
+            existingMauSac.setMaMauSac(mauSac.getMaMauSac());
+            existingMauSac.setTrangThai(mauSac.getTrangThai());
+
+
+            return mauSacRepository.save(existingMauSac);
         }
-        throw new RuntimeException("Mau Sac id" + id + " not found");
+
+        // Throw exception if MauSac not found
+        throw new RuntimeException("MauSac id " + id + " not found");
     }
 
 
-    public void deleteMauSacById(int id) {
-        mauSacRepository.deleteById(id);
+    public boolean deleteMauSacById(int id) {
+        if (mauSacRepository.existsById(id)) {
+            mauSacRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
