@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @Getter
 @Setter
-@Table(name = "[MAU_SAC]")
+@Table(name = "MAU_SAC")
 public class MauSac {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,47 +1,73 @@
 package nice.store.datn.controller;
 
-
-import nice.store.datn.entity.DiaChi;
-import nice.store.datn.entity.GioHang;
+import jakarta.persistence.EntityNotFoundException;
 import nice.store.datn.entity.MauSac;
-import nice.store.datn.service.DiaChiService;
-import nice.store.datn.service.GioHangService;
 import nice.store.datn.service.MauSacService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-
-@RestController
-@RequestMapping("/mau-sac")
+@Controller
 public class MauSacController {
+
     @Autowired
     private MauSacService mauSacService;
 
-    @GetMapping("/danh-sach")
-    public List<MauSac> getAllMS() {
-        return mauSacService.getAllMauSac();
+
+    @GetMapping("mau-sac")
+    public String listMauSac(Model model) {
+        model.addAttribute("listMauSac", mauSacService.getAllMauSac());
+        return "/admin/MauSac/MauSacIndex";
     }
 
-    @GetMapping("/{id}")
-    public Optional<MauSac> getGioHangById(@PathVariable int id) {
-        return mauSacService.getMauSacById(id);
+    // Hiển thị form thêm mới Màu Sắc
+    @GetMapping("/view-Mau-Sac")
+    public String addView(Model model) {
+        model.addAttribute("mauSac", new MauSac());
+        return "/admin/MauSac/MauSacAdd";
     }
 
-    @PostMapping("/add")
-    public MauSac createMS(@RequestBody MauSac ms) {
-        return  mauSacService.create(ms);
+    // Xử lý thêm Màu Sắc mới
+    @PostMapping("/addMau-Sac")
+    public String addMauSac(@ModelAttribute MauSac mauSac, Model model) {
+        if (mauSacService.existsByTenMauSac(mauSac.getTenMauSac())) {
+            model.addAttribute("errorMessage", "Tên Màu Sắc đã tồn tại. Vui lòng nhập tên khác.");
+            model.addAttribute("mauSac", mauSac); // Giữ lại dữ liệu đã nhập
+            return "/admin/MauSac/MauSacAdd";
+        }
+
+        mauSacService.addMauSac(mauSac);
+        model.addAttribute("successMessage", "Màu Sắc đã được thêm thành công.");
+        return "redirect:/mau-sac"; // Chuyển hướng đến trang danh sách sau khi thêm thành công
     }
 
-    @PutMapping("/update/{id}")
-    public MauSac updateMS(@PathVariable int id, @RequestBody MauSac ms) {
-        return mauSacService.update(id, ms);
+    // Hiển thị form cập nhật Màu Sắc
+    @GetMapping("/view-updateMauSac/{id}")
+    public String updateView(@PathVariable("id") Integer id, Model model) {
+        model.addAttribute("mauSac", mauSacService.getMauSacById(id).orElse(new MauSac()));
+        return "/admin/MauSac/MauSacUpdate";
     }
 
-    @DeleteMapping("/delete/{id}")
-    public String deleteMS(@PathVariable int id) {
-        mauSacService.deleteMauSacById(id);
-        return "Mau Sac deleted";
+    // Xử lý cập nhật Màu Sắc
+    @PostMapping("/updateMauSac")
+    public String updateMauSac(@RequestParam("maMauSac") String maMauSac, @ModelAttribute MauSac mauSac, Model model) {
+        try {
+            mauSacService.updateMauSac(maMauSac, mauSac); // Truyền `maMauSac` vào service
+            return "redirect:/mau-sac"; // Chuyển hướng sau khi cập nhật thành công
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage()); // Hiển thị thông báo lỗi nếu không tìm thấy
+            return "/admin/MauSac/MauSacUpdate"; // Quay lại form cập nhật
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Đã xảy ra lỗi khi cập nhật Màu Sắc.");
+            return "/admin/MauSac/MauSacUpdate";
+        }
+    }
+
+    // Xử lý xóa Màu Sắc
+    @GetMapping("/deleteMauSac/{id}")
+    public String deleteMauSac(@PathVariable Integer id) {
+        mauSacService.deleteMauSac(id);
+        return "redirect:/mau-sac";
     }
 }

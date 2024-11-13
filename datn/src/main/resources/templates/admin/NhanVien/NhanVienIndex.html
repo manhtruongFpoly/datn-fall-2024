@@ -26,20 +26,22 @@
             <div class="row">
                 <div class="col-md-12 mb-4">
                     <!-- Section 1 -->
-                    <h1 class="text-lg-center">Danh Sách Thương Hiệu</h1>
+                    <h1 class="text-lg-center">Danh Sách Nhân Viên</h1>
                 </div>
 
                 <div class="col-md-12">
                     <!-- Section 3 -->
 
-                    <a th:href="@{/add-view/th}" class="btn btn-primary" id="add-view">+ Thêm</a>
+                    <a th:href="@{/nhan-vien/add-view}" class="btn btn-primary" id="add-view">+ Thêm</a>
 
-                    <table id="ThuongHieuTable" class="table table-striped table-hover">
+                    <table id="NhanVienTable" class="table table-striped table-hover">
                         <thead class="bg-blue-300">
                         <tr>
                             <th scope="col">STT</th>
-                            <th scope="col">Mã</th>
-                            <th scope="col">Tên Thương hiệu</th>
+                            <th scope="col">Mã NV</th>
+                            <th scope="col">Họ Nhân Viên</th>
+                            <th scope="col">Tên Nhân Viên</th>
+                            <th scope="col">Email</th>
                             <th scope="col">Ngày tạo</th>
                             <th scope="col">Ngày sửa</th>
                             <th scope="col">Trạng thái</th>
@@ -48,23 +50,24 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="sp, iterStat : ${listThuongHieu}">
+                        <tr th:each="nv, iterStat : ${listNhanVien}">
                             <td th:text="${iterStat.index + 1}"></td>
-                            <td th:text="${sp.maThuongHieu}"></td>
-                            <td th:text="${sp.TenThuongHieu}"></td>
-                            <td th:text="${#temporals.format(sp.ngayTao,'dd-MM-yyyy HH:mm:ss')}"></td>
+                            <td th:text="${nv.maNV}"></td>
+                            <td th:text="${nv.ho}"></td>
+                            <td th:text="${nv.ten}"></td>
+                            <td th:text="${nv.email}"></td>
+                            <td th:text="${#temporals.format(nv.dateCreate,'dd-MM-yyyy HH:mm:ss')}"></td>
 
-                            <td th:text="${#temporals.format(sp.ngaySua,'dd-MM-yyyy HH:mm:ss')}"></td>
-
-                            <td th:text="${sp.trangThai == 1 ? 'Hoạt Động' : (sp.trangThai == 0 ? 'Không Hoạt Động' : 'Đang chờ xử lý')}"></td>
+                            <td th:text="${#temporals.format(nv.dateFix,'dd-MM-yyyy HH:mm:ss')}"></td>
+                            <td th:text="${nv.status == 1 ? 'Hoạt Động' : (nv.status == 0 ? 'Không Hoạt Động' : 'Đang chờ xử lý')}"></td>
                             <td>
-                                <a th:href="@{'/update-view-th/' + ${sp.id}}" class="btn btn-link">
+                                <a th:href="@{'/updateNV/' + ${nv.id}}" class="btn btn-link">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </a>
                             </td>
                             <td>
-                                <a th:href="@{/delete-thuong-hieu/{id}(id=${sp.id})}" class="btn btn-danger"
-                                   onclick="return confirm('Bạn có chắc chắn muốn xóa Thương Hiệu này không?');">
+                                <a th:href="@{/deleteNV/{id}(id=${nv.id})}" class="btn btn-danger"
+                                   onclick="return confirm('Bạn có chắc chắn muốn xóa Nhân Viên này không?');">
                                     <i class="fa-regular fa-trash-can"></i>
                                 </a>
                             </td>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/b0d3163487.js" crossorigin="anonymous"></script>
+
+    <title>Dashboard - Voler Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
+    <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+
+    <style>
+        /* Make the inputs look more visually appealing */
+        #searchInput, #statusFilter {
+            border-radius: 5px; /* Round the corners */
+            padding: 10px; /* Add some padding for better spacing */
+            font-size: 14px; /* Set font size for readability */
+        }
+
+        /* Additional Styling for Search Bar and Status Filter */
+        #searchInput {
+            max-width: 400px; /* Limit maximum width for search input */
+        }
+
+        #statusFilter {
+            max-width: 250px; /* Limit maximum width for the filter dropdown */
+        }
+
+        /* Add some spacing between search and filter */
+        .d-flex {
+            gap: 15px;
+        }
+
+        /* Optional: add some spacing around the entire section */
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Styling for Placeholder text */
+        #searchInput::placeholder {
+            color: #6c757d; /* Placeholder color */
+        }
+    </style>
+</head>
+<body>
+
+<div id="app"><!-- Main content -->
+    <span th:replace="~{fragments/sidebar :: sidebar}"></span>
+    <div id="main"><!-- Content ID -->
+        <span th:replace="~{fragments/header :: header}"></span>
+        <div class="main-content container-fluid" layout:fragment="content"><!-- Dynamic content -->
+
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <!-- Section Title -->
+                    <h1 class="text-lg-center">Danh Sách Kích Cỡ</h1>
+                </div>
+
+                <div class="col-md-12 mb-4">
+                    <!-- Row for Search and Status Filter (same line) -->
+                    <div class="d-flex justify-content-between">
+                        <!-- Search Input -->
+                        <input type="text" id="searchInput" class="form-control w-50" placeholder="Tìm kiếm theo tên kích cỡ hoặc mã kích cỡ...">
+
+                        <!-- Status Filter Dropdown -->
+                        <select id="statusFilter" class="form-select" >
+                            <option value="">Lọc theo trạng thái</option>
+                            <option value="1">Hoạt Động</option>
+                            <option value="0">Không Hoạt Động</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <!-- Add Button -->
+                    <a th:href="@{/view-Kich-Co}" class="btn btn-primary" id="add-view">+ Thêm Kích Cỡ</a>
+
+                    <!-- Table for Kích Cỡ -->
+                    <table id="KichCoTable" class="table table-striped table-hover">
+                        <thead class="bg-blue-300">
+                        <tr>
+                            <th scope="col">STT</th>
+                            <th scope="col">Mã Kích Cỡ</th>
+                            <th scope="col">Tên Kích Cỡ</th>
+                            <th scope="col">Ngày Tạo</th>
+                            <th scope="col">Ngày Sửa</th>
+                            <th scope="col">Trạng Thái</th>
+                            <th scope="col">Thao Tác</th>
+                        </tr>
+                        </thead>
+                        <tbody id="kichCoTableBody">
+                        <tr th:each="kc, iterStat : ${listKichCo}">
+                            <td th:text="${iterStat.index + 1}"></td>
+                            <td th:text="${kc.maKichCo}"></td>
+                            <td th:text="${kc.size}"></td>
+                            <td th:text="${#temporals.format(kc.ngayTao, 'dd-MM-yyyy')}"></td>
+                            <td th:text="${#temporals.format(kc.ngaySua, 'dd-MM-yyyy')}"></td>
+                            <td th:text="${kc.trangThai == 1 ? 'Hoạt Động' : 'Không Hoạt Động'}"></td>
+                            <td>
+                                <!-- Edit Button -->
+                                <a th:href="@{'/view-updateKichCo/' + ${kc.id}}" class="btn btn-link">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </a>
+                                <!-- Delete Button -->
+                                <a th:href="@{/deleteKichCo/{id}(id=${kc.id})}" class="btn btn-danger"
+                                   onclick="return confirm('Bạn có chắc chắn muốn xóa kích cỡ này không?');">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span th:replace="~{fragments/footer :: footer}"></span>
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/js/feather.min.js}"></script>
+<script th:src="@{/js/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/Chart.min.js}"></script>
+<script th:src="@{/js/apexcharts.min.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+<script>
+    // JavaScript for Search and Status Filter
+    document.addEventListener("DOMContentLoaded", function() {
+        let searchInput = document.getElementById('searchInput');
+        let statusFilter = document.getElementById('statusFilter');
+
+        searchInput.addEventListener('input', function() {
+            let searchTerm = searchInput.value.toLowerCase();
+            filterTable(searchTerm, statusFilter.value);
+        });
+
+        statusFilter.addEventListener('change', function() {
+            filterTable(searchInput.value.toLowerCase(), statusFilter.value);
+        });
+
+        function filterTable(searchTerm, status) {
+            let rows = document.querySelectorAll('#KichCoTable tbody tr');
+            rows.forEach(function(row) {
+                let name = row.cells[2].textContent.toLowerCase();
+                let code = row.cells[1].textContent.toLowerCase();
+                let statusText = row.cells[5].textContent.toLowerCase();
+
+                let matchesSearch = name.includes(searchTerm) || code.includes(searchTerm);
+                let matchesStatus = status === "" || statusText.includes(status === "1" ? "hoạt động" : "không hoạt động");
+
+                if (matchesSearch && matchesStatus) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

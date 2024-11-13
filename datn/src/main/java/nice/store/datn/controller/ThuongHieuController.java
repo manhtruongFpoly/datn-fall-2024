@@ -28,7 +28,7 @@ public class ThuongHieuController {
         model.addAttribute("listThuongHieu", list);
         return "/admin/ThuongHieu/ThuongHieuIndex";
     }
-    @GetMapping("/add-view")
+    @GetMapping("/add-view/th")
     public String ThuongHieuViewTable(Model model) {
         model.addAttribute("thuongHieu", new ThuongHieu());
         return "/admin/ThuongHieu/ThuongHieuAdd";
