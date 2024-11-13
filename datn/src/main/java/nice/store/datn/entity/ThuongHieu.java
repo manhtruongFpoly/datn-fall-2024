@@ -17,19 +17,9 @@ public class ThuongHieu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-
     private String maThuongHieu;
-
-
     private String TenThuongHieu;
-
-
     private LocalDateTime ngayTao;
-
-
     private LocalDateTime ngaySua;
-
-
     private int trangThai;
 }

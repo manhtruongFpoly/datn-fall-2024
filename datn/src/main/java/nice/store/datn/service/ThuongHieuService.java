@@ -46,8 +46,7 @@ public class ThuongHieuService {
     public ThuongHieu updateSp(Integer id, ThuongHieu sp ) {
 
         if (THrepository.existsById(id)) {
-            ThuongHieu getProduct = THrepository.findById(id).orElseThrow(() ->
-                    new RuntimeException("Thuonghieu id " + id + " not found"));
+            ThuongHieu getProduct = THrepository.findById(id).orElseThrow(() -> new RuntimeException("Thuonghieu id " + id + " not found"));
             sp.setId(id);
             sp.setNgayTao(getProduct.getNgayTao());
             sp.setNgaySua(LocalDateTime.now());
