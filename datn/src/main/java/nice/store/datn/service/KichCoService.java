@@ -73,7 +73,7 @@ public class KichCoService {
         return kichCoRepository.findById(id);
     }
 
-    public boolean existsBySize(int size) {
+    public boolean existsBySize(String size) {
         return kichCoRepository.existsKichCoBySize(size);
     }
 }

@@ -22,7 +22,7 @@ public class KichCo {
     private String maKichCo;
 
     @Column(name = "size")
-    private int size;
+    private String size;
 
     @Column(name = "ngay_tao")
     private LocalDateTime ngayTao;

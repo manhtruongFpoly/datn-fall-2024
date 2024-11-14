@@ -9,27 +9,27 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Getter
 @Setter
-@ToString
-@Builder
+@Table(name="THUONG_HIEU")
 public class ThuongHieu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
-
+    @Column(name = "MA_THUONG_HIEU", length = 50)
     private String maThuongHieu;
 
+    @Column(name = "TEN_THUONG_HIEU", length = 50)
+    private String tenThuongHieu;
 
-    private String TenThuongHieu;
-
-
+    @Column(name = "NGAY_TAO")
     private LocalDateTime ngayTao;
 
-
+    @Column(name = "NGAY_SUA")
     private LocalDateTime ngaySua;
 
-
+    @Column(name = "TRANG_THAI")
     private int trangThai;
 }

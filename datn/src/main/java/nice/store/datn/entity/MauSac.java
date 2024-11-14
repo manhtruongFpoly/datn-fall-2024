@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @Getter
 @Setter
-@Table(name = "MAU_SAC")
+@Table(name = "[MAU_SAC]")
 public class MauSac {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +38,4 @@ public class MauSac {
     @Column(name = "TRANG_THAI")
     private int trangThai;
 
-    @OneToMany(mappedBy = "idMauSac", cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<SanPhamChiTiet> idSPCT;
 }

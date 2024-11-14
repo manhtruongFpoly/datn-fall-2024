@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
@@ -15,7 +16,26 @@
     <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
+<style>
+    /* Custom styles */
+    .form-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        font-size: 16px;
+        padding: 10px 20px;
+        border-radius: 5px;
+    }
+</style>
 <body>
 <div id="app"><!--Main content-->
     <span th:replace="~{fragments/sidebar :: sidebar}"></span>
@@ -24,35 +44,38 @@
         <div class="main-content container-fluid"
              layout:fragment="content"><!--dynamic content-->
 
-            <form th:action="@{'/san-pham/update-san-pham/' + ${sp.id}}"
+            <form th:action="@{'/sanpham/update/' + ${sp.id}}"
                   th:object="${sp}" method="post" id="updateForm" class="container" style="max-width: 500px;">
                 <div class="mb-3">
                     <label for="productId" class="form-label">Mã Sản phẩm:</label>
                     <input type="text" id="productId" name="productId" class="form-control form-control-sm"
-                           th:field="*{productId}" required maxlength="50" placeholder="Nhập mã">
+                           th:field="*{maSP}" required maxlength="50" placeholder="Nhập mã">
                 </div>
 
                 <div class="mb-3">
                     <label for="name" class="form-label">Tên:</label>
                     <input type="text" id="name" name="name"
-                           class="form-control form-control-sm" th:field="*{name}" required maxlength="50" placeholder="Nhập tên">
+                           class="form-control form-control-sm" th:field="*{tenSP}" required maxlength="50" placeholder="Nhập tên">
                 </div>
                 <div class="mb-3">
                     <label for="status" class="form-label">Trạng thái:</label>
                     <select id="status" name="status" class="form-control form-control-sm" required>
-<!--                        <option th:field="*{status}" value="">Chọn trạng thái</option>-->
-                        <option th:field="*{status}" value="1">Hoạt động</option>
-                        <option th:field="*{status}" value="0">Không hoạt động</option>
-                        <option th:field="*{status}" value="2">Đang chờ xử lý</option>
+                        <!--                        <option th:field="*{status}" value="">Chọn trạng thái</option>-->
+                        <option th:field="*{trangThai}" value="1">Còn Hàng</option>
+                        <option th:field="*{trangThai}" value="0">Hết Hàng</option>
+
                     </select>
                 </div>
                 <div>
                     <button type="submit" class="btn btn-primary btn-sm">Cập Nhật</button>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="resetForm()">Làm Mới</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="window.location.href='/products';">Quay Lại</button>
+
                 </div>
+
             </form>
 
         </div>
+    </div>
         <span th:replace="~{fragments/footer :: footer}"></span>
     </div>
 </div>

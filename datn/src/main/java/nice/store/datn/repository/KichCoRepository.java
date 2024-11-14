@@ -11,13 +11,13 @@ import java.util.Optional;
 public interface KichCoRepository extends JpaRepository<KichCo, Integer> {
 
 
-    Optional<KichCo> findKichCoBySize(int size);
+    Optional<KichCo> findKichCoBySize(String size);
 
 
     Optional<KichCo> findByMaKichCo(String maKichCo);
 
 
-    boolean existsKichCoBySize(int size);
+    boolean existsKichCoBySize(String size);
 
     List<KichCo> findAllByOrderByNgayTaoDesc();
     Optional<KichCo> findById(Integer id);
