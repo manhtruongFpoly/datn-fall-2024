@@ -15,4 +15,9 @@ public class LoginController {
     public String loginSubmit(){
         return "index";
     }
+
+    @RequestMapping("PhieuGiamGia")
+    public String PhieuGiamGia(){
+        return "/admin/PhieuGiamGia/PhieuGiamGia";
+    }
 }
