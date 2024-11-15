@@ -330,9 +330,11 @@ function saveProductDetails() {
                 }
             });
 
+            const productId = document.getElementById('sanPhamSelect').value;
+            console.log(productId); // In ra ID sản phẩm
 
             //chuyen
-            // window.location.href = 'http://localhost:8080/products';
+            window.location.href = 'http://localhost:8080/products/view/' + productId;
 
         })
         .catch(error => {
@@ -341,8 +343,89 @@ function saveProductDetails() {
 }
 
 
+
+
 document.getElementById('hoanTatButton').addEventListener('click', function () {
-    saveProductDetails();
+    // Lấy các trường cần kiểm tra
+    const productName = document.getElementById('sanPhamSelect').value; // Tên sản phẩm
+    const category = document.getElementById('theLoaiSelect').value; // Thể loại
+    const material = document.getElementById('chatLieuSelect').value; // Chất liệu
+    const sole = document.getElementById('deGiaySelect').value; // Đế giày
+    const brand = document.getElementById('thuongHieuSelect').value; // Thương hiệu
+    const productDescription = document.getElementById('moTa').value; // Mô tả sản phẩm
+
+    // Kiểm tra xem tất cả các trường đã được điền chưa
+    if (!productName || !category || !material || !sole || !brand || !productDescription) {
+        // Nếu có trường nào chưa được điền, hiển thị thông báo lỗi
+        Swal.fire({
+            title: 'Lỗi!',
+            text: 'Vui lòng điền đầy đủ thông tin sản phẩm.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        return; // Dừng lại, không gọi saveProductDetails
+    }
+
+    // Kiểm tra xem đã chọn ít nhất một checkbox trong modal Kích Cỡ và Màu Sắc chưa
+    const kichCoCheckboxes = document.querySelectorAll('#kichCoList .kichCoCheckbox');
+    const mauSacCheckboxes = document.querySelectorAll('#mauSacList .mauSacCheckbox');
+
+    let isKichCoChecked = false;
+    let isMauSacChecked = false;
+
+    // Kiểm tra checkbox Kích Cỡ
+    kichCoCheckboxes.forEach(function (checkbox) {
+        if (checkbox.checked) {
+            isKichCoChecked = true; // Có checkbox Kích Cỡ được chọn
+        }
+    });
+
+    // Kiểm tra checkbox Màu Sắc
+    mauSacCheckboxes.forEach(function (checkbox) {
+        if (checkbox.checked) {
+            isMauSacChecked = true; // Có checkbox Màu Sắc được chọn
+        }
+    });
+
+    if (!isKichCoChecked) {
+        Swal.fire({
+            title: 'Lỗi!',
+            text: 'Vui lòng chọn ít nhất một kích cỡ.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        return; // Dừng lại nếu không chọn kích cỡ
+    }
+
+    if (!isMauSacChecked) {
+        Swal.fire({
+            title: 'Lỗi!',
+            text: 'Vui lòng chọn ít nhất một màu sắc.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        return; // Dừng lại nếu không chọn màu sắc
+    }
+
+    // Nếu tất cả trường đã được điền và có ít nhất một lựa chọn, hiển thị hộp thoại xác nhận
+    Swal.fire({
+        title: 'Bạn có muốn lưu sản phẩm?',
+        text: "Bạn không thể hoàn tác hành động này!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Vâng, tiếp tục!',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        // Nếu người dùng chọn "Tiếp tục"
+        if (result.isConfirmed) {
+            saveProductDetails();  // Gọi hàm lưu thông tin sản phẩm
+        } else {
+            // Nếu người dùng chọn "Hủy"
+            console.log("Hành động bị hủy.");
+        }
+    });
 });
 
 // Chỉnh sửa số lượng và giá chung cho các sản phẩm

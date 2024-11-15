@@ -14,7 +14,8 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet,I
 
 
     List<SanPhamChiTiet> findBySanPhamId(Integer sanPhamId);
-    @Query("SELECT count(spct) FROM SanPhamChiTiet spct WHERE spct.sanPham.id = :productId")
+//    @Query("SELECT count(spct) FROM SanPhamChiTiet spct WHERE spct.sanPham.id = :productId")
+@Query("SELECT SUM(spct.soLuong) FROM SanPhamChiTiet spct WHERE spct.sanPham.id = :productId")
     Integer findTotalQuantityByProductId(@Param("productId") Integer productId);
 
 

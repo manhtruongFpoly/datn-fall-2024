@@ -12,6 +12,16 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,6 +46,7 @@ public class SanPhamChiTietAPI {
         return ResponseEntity.ok(sanPhamCTService.saveToDatabase(sanPhamChiTiets));
     }
 
+
     @PostMapping("/uploadImage")
     public ResponseEntity<?> uploadImage(@RequestParam("files") List<MultipartFile> files, @RequestParam("spctId") Integer spctId) {
         try {
@@ -48,12 +59,13 @@ public class SanPhamChiTietAPI {
             // Duyệt qua các file ảnh được upload
             for (MultipartFile file : files) {
                 // Tạo tên file ngẫu nhiên
-                String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());  // Đảm bảo tên file an toàn
+                String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
                 String fileName = UUID.randomUUID().toString() + "_" + originalFileName;
 
-                // Đảm bảo thư mục images tồn tại trong thư mục lưu trữ
-                Path uploadDir = Paths.get("src/main/resources/static/images");
-                Files.createDirectories(uploadDir);  // Tạo thư mục nếu chưa tồn tại
+                // Thay đổi đường dẫn lưu file về Desktop
+                String userHome = System.getProperty("user.home"); // Thư mục người dùng
+                Path uploadDir = Paths.get(userHome, "Desktop", "images"); // Thư mục Desktop/images
+                Files.createDirectories(uploadDir); // Tạo thư mục nếu chưa tồn tại
                 Path filePath = uploadDir.resolve(fileName);
 
                 // Lưu file vào thư mục
@@ -61,7 +73,7 @@ public class SanPhamChiTietAPI {
 
                 // Lưu thông tin hình ảnh vào database
                 HinhAnh hinhAnh = new HinhAnh();
-                hinhAnh.setUrl(fileName);  // Lưu tên file vào database
+                hinhAnh.setUrl(fileName); // Lưu tên file vào database
                 hinhAnh.setSanPhamChiTiet(sanPhamChiTiet); // Liên kết với sản phẩm chi tiết
                 hinhAnhService.addHinhAnh(hinhAnh); // Lưu thông tin ảnh vào database
             }
@@ -74,5 +86,23 @@ public class SanPhamChiTietAPI {
     }
 
 
+    @GetMapping("/desktop-images/{url}")
+    public ResponseEntity<Resource> getImage(@PathVariable String url) {
+        try {
+            String userHome = System.getProperty("user.home");
+            Path filePath = Paths.get(userHome, "Desktop", "images", url);
+            System.out.println("File path: " + filePath.toString());
+
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists() || resource.isReadable()) {
+                return ResponseEntity.ok(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            System.out.println("Error loading image: " + e.getMessage());  // Log lỗi
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 }

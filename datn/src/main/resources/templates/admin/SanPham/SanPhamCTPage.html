@@ -145,13 +145,18 @@
                         <td th:text="${spct.moTa}"></td>
                         <td th:text="${spct.trangThai == 1 ? 'Còn Hàng' : 'Hết Hàng'}"></td>
                         <td>
-                            <!-- Hiển thị hình ảnh của sản phẩm chi tiết -->
-                            <div th:each="hinhAnh : ${spct.hinhAnhs}">
-                                <img th:src="@{/images/{filename}(filename=${hinhAnh.url})}" alt="Hình ảnh"
-                                     style="width: 50px; height: 40px; object-fit: cover;"/>
-
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                                <div th:each="hinhAnh : ${spct.hinhAnhs}"
+                                     style="border: 1px solid #ccc; text-align: center; padding: 2px;">
+                                    <img th:src="@{/desktop-images/{url}(url=${hinhAnh.url})}" alt="Hình ảnh"
+                                         style="width: 50px; height: 40px; object-fit: cover; display: block; margin: 0 auto;" />
+                                </div>
                             </div>
                         </td>
+
+
+
+
                         <!--                        buton update spct-->
                         <td>
                             <a th:href="@{/products/{productId}/updateSPCT/{spctId}(productId=${spct.sanPham.id}, spctId=${spct.id})}"

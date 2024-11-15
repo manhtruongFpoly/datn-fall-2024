@@ -9,6 +9,11 @@
 
     <!-- Link tới Bootstrap 5.0 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <!-- Thêm CSS của SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.min.css">
+
+    <!-- Thêm JavaScript của SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.all.min.js"></script>
 
     <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
     <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
@@ -84,7 +89,8 @@
                                         </div>
 
                                         <div class="col-md-12 text-center">
-                                            <button type="submit" class="btn btn-success btn-sm">Thêm Voucher</button>
+                                            <button type="submit" class="btn btn-success btn-sm" id="addVoucherBtn">Thêm Voucher</button>
+
                                             <button type="button" class="btn btn-secondary btn-sm" onclick="resetForm()">Làm Mới</button>
                                         </div>
                                     </div>
@@ -109,10 +115,61 @@
 <script th:src="@{/js/main.js}"></script>
 
 <script>
+    document.getElementById('addVoucherBtn').addEventListener('click', function(event) {
+        event.preventDefault();
+
+        const ma = document.getElementById('ma').value;
+        const ten = document.getElementById('ten').value;
+        const loaiVoucher = document.getElementById('loaiVoucher').value;
+        const ngayBatDau = document.getElementById('ngayBatDau').value;
+        const ngayKetThuc = document.getElementById('ngayKetThuc').value;
+        const giaTriGiam = document.getElementById('giaTriGiam').value;
+        const giaTriMax = document.getElementById('giaTriMax').value;
+        const soLuong = document.getElementById('soLuong').value;
+        const moTa = document.getElementById('moTa').value;
+
+        if (!ma || !ten || !loaiVoucher || !ngayBatDau || !ngayKetThuc || !giaTriGiam || !giaTriMax || !soLuong || !moTa) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Vui lòng điền đầy đủ thông tin các trường!',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        if (new Date(ngayBatDau) > new Date(ngayKetThuc)) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Ngày kết thúc không thể trước ngày bắt đầu.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Bạn có muốn lưu Voucher?',
+            text: "Bạn không thể hoàn tác hành động này!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Vâng, tiếp tục!',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('addVoucherForm').submit(); // Gửi form khi người dùng đồng ý
+            }
+        });
+    });
+
+    // Hàm làm mới form
     function resetForm() {
-        document.getElementById("addVoucherForm").reset();
+        document.getElementById('addVoucherForm').reset();
     }
 </script>
+
 <!-- Link tới Bootstrap 5.0 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -54,6 +54,7 @@ public class SanPhamController {
 
         try {
             sanPhamService.createProduct(sanPham);
+
             redirectAttributes.addFlashAttribute("successMessage", "Tạo sản phẩm thành công!");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

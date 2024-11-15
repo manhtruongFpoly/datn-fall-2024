@@ -238,6 +238,7 @@ public class SanPhamCTController {
 
         model.addAttribute("sanPham", sanPham);
         model.addAttribute("sanPhamChiTiets", sanPhamChiTiets);
+        model.addAttribute("selectedSanPhamId", sanPham);
 
         return "admin/sanPham/SanPhamCTPage";
     }
