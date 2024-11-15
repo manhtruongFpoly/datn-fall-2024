@@ -21,18 +21,84 @@
     <div id="main"><!--Content id-->
         <span th:replace="~{fragments/header :: header}"></span>
         <div class="main-content container-fluid" layout:fragment="content"><!--dynamic content-->
-            <!--you can replace this using page-->
 
             <div class="row">
                 <div class="col-md-12 mb-4">
-                    <!-- Section 1 -->
                     <h1 class="text-lg-center">Danh Sách Thương Hiệu</h1>
                 </div>
-
+                <div th:if="${errorMessage}" class="alert alert-danger">
+                    <span th:text="${errorMessage}"></span>
+                </div>
                 <div class="col-md-12">
-                    <!-- Section 3 -->
+                    <!--backup-->
+                    <!--tim kiem-->
+<!--                    <form th:action="@{/tim-kiem-thuong-hieu}" method="get">-->
+<!--                        <label for="searchTerm">Tìm kiếm:</label>-->
+<!--                        <input type="text" id="searchTerm" name="searchTerm" />-->
 
-                    <a th:href="@{/add-view/th}" class="btn btn-primary" id="add-view">+ Thêm</a>
+<!--                        <button class="btn btn-primary" type="submit">Tìm Kiếm</button>-->
+<!--                    </form>-->
+                    <!-- end tim kiem-->
+                    <!-- Tìm kiếm -->
+<!--                    <div class="row">-->
+<!--                        <div>-->
+<!--                            <label for="searchTerm">Tìm kiếm:</label>-->
+<!--                            <input type="text" id="searchTerm" onkeyup="searchThuongHieu()"/>-->
+<!--                        </div>-->
+
+<!--                        <div>-->
+<!--                            <form th:action="@{/loc-trang-thai}" method="get" class="form-inline mb-3">-->
+<!--                                <label for="trangThai" class="mr-2">Lọc theo trạng thái:</label>-->
+<!--                                <select id="trangThai" name="trangThai" class="form-control" onchange="this.form.submit()">-->
+<!--                                    <option value="" th:selected="${trangThai == null}">Tất cả</option>-->
+<!--                                    <option value="1" th:selected="${trangThai == 1}">Hoạt Động</option>-->
+<!--                                    <option value="0" th:selected="${trangThai == 0}">Không Hoạt Động</option>-->
+<!--                                    <option value="2" th:selected="${trangThai == 2}">Đang chờ xử lý</option>-->
+<!--                                </select>-->
+<!--                            </form>-->
+<!--                        </div>-->
+<!--                        <div>-->
+<!--                            <a th:href="@{/add-view}" class="btn btn-primary" id="add-view">+ Thêm</a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    <div class="row">
+                        <!-- Tìm kiếm -->
+                        <div class="col-md-4 mb-3">
+                            <label for="searchTerm">Tìm kiếm:</label>
+                            <input type="text" id="searchTerm" class="form-control" onkeyup="searchThuongHieu()"/>
+                        </div>
+
+                        <!-- Lọc theo trạng thái -->
+                        <div class="col-md-4 mb-3">
+                            <form th:action="@{/loc-trang-thai}" method="get" class="form-inline">
+                                <label for="trangThai" class="mr-2">Lọc theo trạng thái:</label>
+                                <select id="trangThai" name="trangThai" class="form-control" onchange="this.form.submit()">
+                                    <option value="" th:selected="${trangThai == null}">Tất cả</option>
+                                    <option value="1" th:selected="${trangThai == 1}">Hoạt Động</option>
+                                    <option value="0" th:selected="${trangThai == 0}">Không Hoạt Động</option>
+                                    <option value="2" th:selected="${trangThai == 2}">Đang chờ xử lý</option>
+                                </select>
+                            </form>
+                        </div>
+                        <!-- Nút thêm -->
+                        <div class="col-md-4 mb-3 text-right">
+                            <a th:href="@{/add-view}" class="btn btn-primary" id="add-view">+ Thêm</a>
+                        </div>
+                        <!-- Lọc theo ngày -->
+                        <div class="col-md-4 mb-3 ">
+                            <form th:action="@{/tim-kiem-theo-khoang-ngay}" method="get" class="form-inline">
+                                <label for="ngayBatDau" class="mr-2">Từ ngày:</label>
+                                <input type="text" id="ngayBatDau" name="ngayBatDau" class="form-control" placeholder="DD-MM-YYYY" />
+
+                                <label for="ngayKetThuc" class="mr-2 ml-3">Đến ngày:</label>
+                                <input type="text" id="ngayKetThuc" name="ngayKetThuc" class="form-control" placeholder="DD-MM-YYYY" />
+
+                                <button type="submit" class="btn btn-primary ml-3">Tìm kiếm</button>
+                            </form>
+                        </div>
+                    </div>
+
+
 
                     <table id="ThuongHieuTable" class="table table-striped table-hover">
                         <thead class="bg-blue-300">
@@ -48,11 +114,11 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="sp, iterStat : ${listThuongHieu}">
+                        <tr th:each="sp, iterStat : ${listThuongHieu.content}">
                             <td th:text="${iterStat.index + 1}"></td>
                             <td th:text="${sp.maThuongHieu}"></td>
                             <td th:text="${sp.TenThuongHieu}"></td>
-                            <td th:text="${#temporals.format(sp.ngayTao,'dd-MM-yyyy HH:mm:ss')}"></td>
+                            <td th:text="${#temporals.format(sp.ngayTao,'dd-MM-yyyy   ')}"></td>
 
                             <td th:text="${#temporals.format(sp.ngaySua,'dd-MM-yyyy HH:mm:ss')}"></td>
 
@@ -68,13 +134,62 @@
                                     <i class="fa-regular fa-trash-can"></i>
                                 </a>
                             </td>
-
                         </tr>
                         </tbody>
                     </table>
+                    <!-- Phân trang -->
+                    <div class="pagination">
+                        <span th:if="${currentPage > 0}">
+                         <a th:href="@{/tim-kiem-thuong-hieu(page=${currentPage - 1}, size=${size}, searchTerm=${searchTerm})}">Prev</a>
+                        </span>
+                        <span th:if="${currentPage < totalPages - 1}">
+                            <a th:href="@{/tim-kiem-thuong-hieu(page=${currentPage + 1}, size=${size}, searchTerm=${searchTerm})}">Next</a>
+                        </span>
+                    </div>
+<!--                    <div class="pagination">-->
+<!--    <span th:if="${currentPage > 0}">-->
+<!--        <a th:href="@{/tim-kiem-thuong-hieu?page=${currentPage - 1}&size=${size}&searchTerm=${searchTerm}}">Prev</a>-->
+<!--    </span>-->
+<!--                        <span th:if="${currentPage < totalPages - 1}">-->
+<!--        <a th:href="@{/tim-kiem-thuong-hieu?page=${currentPage + 1}&size=${size}&searchTerm=${searchTerm}}">Next</a>-->
+<!--    </span>-->
+
+<!--                        &lt;!&ndash; Hiển thị phân trang đầy đủ từ 1 đến totalPages &ndash;&gt;-->
+<!--                        <ul class="pagination">-->
+<!--                            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"-->
+<!--                                th:classappend="${i == currentPage} ? 'active' : ''">-->
+<!--                                <a th:href="@{/tim-kiem-thuong-hieu?page=${i}&size=${size}&searchTerm=${searchTerm}}"-->
+<!--                                   th:text="${i + 1}">1</a>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
 
 
                 </div>
+
+
+
+                <script>
+                    function searchThuongHieu() {
+                        var input = document.getElementById("searchTerm");
+                        var filter = input.value.toLowerCase();
+                        var table = document.getElementById("ThuongHieuTable");
+                        var rows = table.getElementsByTagName("tr");
+
+                        for (var i = 1; i < rows.length; i++) {
+                            var cells = rows[i].getElementsByTagName("td");
+                            var brandName = cells[2].textContent || cells[2].innerText; // Cột "Tên Thương hiệu"
+                            var brandCode = cells[1].textContent || cells[1].innerText; // Cột "Mã"
+
+                            // Tìm kiếm trong cả tên và mã thương hiệu
+                            if (brandName.toLowerCase().indexOf(filter) > -1 || brandCode.toLowerCase().indexOf(filter) > -1) {
+                                rows[i].style.display = "";
+                            } else {
+                                rows[i].style.display = "none";
+                            }
+                        }
+                    }
+                </script>
             </div>
 
 

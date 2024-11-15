@@ -25,7 +25,7 @@ public class ThuongHieu {
     private String tenThuongHieu;
 
     @Column(name = "NGAY_TAO")
-    private LocalDateTime ngayTao;
+    private LocalDate ngayTao;
 
     @Column(name = "NGAY_SUA")
     private LocalDateTime ngaySua;
