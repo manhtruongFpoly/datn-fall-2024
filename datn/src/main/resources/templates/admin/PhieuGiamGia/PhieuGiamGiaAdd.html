@@ -37,10 +37,10 @@
                                 <h2 class="h4">Thêm Mới Voucher</h2>
                             </div>
                             <div class="card-body">
-                                <form th:action="@{/SavePhieuGiamGia}" th:object="${phieuGiamGia}" method="post" id="addVoucherForm" class="container" style="max-width: 100%;">
+                                <form th:action="@{/SavePhieuGiamGia}" th:object="${phieuGiamGia}" method="post" id="addVoucherForm" class="container" style="max-width: 100%;" >
                                     <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="ma" class="form-label">Mã Voucher:</label>
+                                        <div class="col-md-6 mb-3" hidden>
+                                            <label for="ma" class="form-label" hidden>Mã Voucher:</label>
                                             <input type="text" id="ma" name="ma" class="form-control form-control-sm" required maxlength="50" placeholder="Nhập mã voucher">
                                         </div>
 
@@ -66,6 +66,11 @@
                                         <div class="col-md-6 mb-3">
                                             <label for="ngayKetThuc" class="form-label">Ngày Kết Thúc:</label>
                                             <input type="date" id="ngayKetThuc" name="ngayKetThuc" class="form-control form-control-sm" required>
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <label for="giaTriGiam" class="form-label">Đơn Tối Thiểu:</label>
+                                            <input type="number" id="donToiThieu" name="donToiThieu" class="form-control form-control-sm" required step="0.01" placeholder="Nhập đơn tối thiểu">
                                         </div>
 
                                         <div class="col-md-6 mb-3">
@@ -118,17 +123,18 @@
     document.getElementById('addVoucherBtn').addEventListener('click', function(event) {
         event.preventDefault();
 
-        const ma = document.getElementById('ma').value;
+
         const ten = document.getElementById('ten').value;
         const loaiVoucher = document.getElementById('loaiVoucher').value;
         const ngayBatDau = document.getElementById('ngayBatDau').value;
         const ngayKetThuc = document.getElementById('ngayKetThuc').value;
+        const donToiThieu = document.getElementById('donToiThieu').value;
         const giaTriGiam = document.getElementById('giaTriGiam').value;
         const giaTriMax = document.getElementById('giaTriMax').value;
         const soLuong = document.getElementById('soLuong').value;
         const moTa = document.getElementById('moTa').value;
 
-        if (!ma || !ten || !loaiVoucher || !ngayBatDau || !ngayKetThuc || !giaTriGiam || !giaTriMax || !soLuong || !moTa) {
+        if ( !ten || !loaiVoucher || !ngayBatDau || !ngayKetThuc || !donToiThieu || !giaTriGiam || !giaTriMax || !soLuong || !moTa) {
             Swal.fire({
                 title: 'Lỗi!',
                 text: 'Vui lòng điền đầy đủ thông tin các trường!',

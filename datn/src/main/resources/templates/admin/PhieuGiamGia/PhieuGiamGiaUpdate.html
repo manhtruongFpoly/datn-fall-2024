@@ -71,17 +71,24 @@
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label for="giaTriGiam" class="form-label">Giá Trị Giảm:</label>
-                                            <input type="number" id="giaTriGiam" name="giaTriGiam" class="form-control form-control-sm" th:field="*{giaTriGiam}" required step="0.01" placeholder="Nhập giá trị giảm">
+                                            <label for="donToiThieu" class="form-label">Đơn Tối Thiểu:</label>
+                                            <input type="number" id="donToiThieu" name="donToiThieu" class="form-control form-control-sm" th:field="*{donToiThieu}" required step="0.01" placeholder="Nhập đơn tối thiểu">
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
                                         <div class="col-md-6">
+                                            <label for="giaTriGiam" class="form-label">Giá Trị Giảm:</label>
+                                            <input type="number" id="giaTriGiam" name="giaTriGiam" class="form-control form-control-sm" th:field="*{giaTriGiam}" required step="0.01" placeholder="Nhập giá trị giảm">
+                                        </div>
+
+                                        <div class="col-md-6">
                                             <label for="giaTriMax" class="form-label">Giá Trị Tối Đa:</label>
                                             <input type="number" id="giaTriMax" name="giaTriMax" class="form-control form-control-sm" th:field="*{giaTriMax}" required step="0.01" placeholder="Nhập giá trị tối đa">
                                         </div>
+                                    </div>
 
+                                    <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label for="soLuong" class="form-label">Số Lượng:</label>
                                             <input type="number" id="soLuong" name="soLuong" class="form-control form-control-sm" th:field="*{soLuong}" required min="1" placeholder="Nhập số lượng">
@@ -100,6 +107,7 @@
                                 </form>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

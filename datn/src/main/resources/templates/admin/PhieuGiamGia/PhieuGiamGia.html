@@ -90,12 +90,14 @@
                                 <th scope="col">Tên</th>
                                 <th scope="col">Số Lượng</th>
                                 <th scope="col">Hình Thức Giảm</th>
+                                <th scope="col">Đơn Tối Thiểu </th>
                                 <th scope="col">Giá Trị Giảm</th>
                                 <th scope="col">Giảm Tối Đa</th>
                                 <th scope="col">Ngày Bắt Đầu</th>
                                 <th scope="col">Ngày Kết Thúc</th>
                                 <th scope="col">Trạng Thái</th>
                                 <th scope="col">Hành Động</th>
+
                             </tr>
                             </thead>
                             <tbody>
@@ -105,16 +107,20 @@
                                 <td th:text="${pgg.ten}"></td>
                                 <td th:text="${pgg.soLuong}"></td>
                                 <td th:text="${pgg.loaiVoucher}"></td>
+                                <td th:text="${pgg.donToiThieu}"></td>
                                 <td th:text="${pgg.giaTriGiam}"></td>
                                 <td th:text="${pgg.giaTriMax}"></td>
                                 <td th:text="${pgg.ngayBatDau}"></td>
                                 <td th:text="${pgg.ngayKetThuc}"></td>
                                 <td th:text="${pgg.trangThai == 0 ? 'Đang Hoạt Động' : (pgg.trangThai == 1 ? 'Ngừng Hoạt Động' : 'Chưa Diễn Ra')}"></td>
                                 <td>
+
                                     <a th:href="@{'/updatePGG/' + ${pgg.id}}" class="btn btn-link">
                                         <i class="fa-regular fa-pen-to-square"></i>
                                     </a>
                                 </td>
+
+
                             </tr>
                             </tbody>
                         </table>
@@ -171,7 +177,7 @@
                 function (settings, data, dataIndex) {
                     var matchesKeyword = keyword ? (data[1].toLowerCase().includes(keyword) || data[2].toLowerCase().includes(keyword)) : true;
                     // Lấy trạng thái từ cột tương ứng
-                    var dataStatus = $(table.row(dataIndex).node()).find('td:eq(9)').text().trim().toLowerCase(); // Chỉnh sửa cột trạng thái
+                    var dataStatus = $(table.row(dataIndex).node()).find('td:eq(10)').text().trim().toLowerCase(); // Chỉnh sửa cột trạng thái
                     var dataHinhThucGiam = $(table.row(dataIndex).node()).find('td:eq(4)').text().trim().toLowerCase();
 
                     var matchesTrangThai = true;
@@ -185,8 +191,8 @@
                         matchesHinhThucGiam = (hinhThucGiam === 'Tiền mặt' && dataHinhThucGiam === 'tiền mặt') ||
                             (hinhThucGiam === 'Phần trăm' && dataHinhThucGiam === 'phần trăm');
                     }
-                    var matchesStartDate = startDate ? new Date(data[7]) >= new Date(startDate) : true;
-                    var matchesEndDate = endDate ? new Date(data[8]) <= new Date(endDate) : true;
+                    var matchesStartDate = startDate ? new Date(data[8]) >= new Date(startDate) : true;
+                    var matchesEndDate = endDate ? new Date(data[9]) <= new Date(endDate) : true;
 
                     return matchesKeyword && matchesTrangThai && matchesHinhThucGiam && matchesStartDate && matchesEndDate;
                 }

@@ -39,11 +39,15 @@ public class PhieuGiamGiaController {
             model.addAttribute("errors", result.getAllErrors());
             return "redirect:/phieu-giam-gia";
         }
-        pgg.setMa(pgg.getMa());
+        int maxId = phieuGiamGiaService.getMaxId();
+        String maPGG = String.format("V%03d", maxId + 1);
+
+        pgg.setMa(maPGG);
         pgg.setTen(pgg.getTen());
         pgg.setLoaiVoucher(pgg.getLoaiVoucher());
         pgg.setNgayBatDau(pgg.getNgayBatDau());
         pgg.setNgayKetThuc(pgg.getNgayKetThuc());
+        pgg.setDonToiThieu(pgg.getDonToiThieu());
         pgg.setGiaTriGiam(pgg.getGiaTriGiam());
         pgg.setGiaTriMax(pgg.getGiaTriMax());
         pgg.setSoLuong(pgg.getSoLuong());
@@ -64,9 +68,9 @@ public class PhieuGiamGiaController {
 
 
     @GetMapping("updatePGG/{id}")
-    public String ShowPGGDetail(@PathVariable("id") Integer id , Model model){
+    public String ShowPGGDetail(@PathVariable("id") Integer id, Model model) {
         PhieuGiamGia phieuGiamGia = phieuGiamGiaService.findById(id);
-        model.addAttribute("pgg" , phieuGiamGia);
+        model.addAttribute("pgg", phieuGiamGia);
         return "/admin/PhieuGiamGia/PhieuGiamGiaUpdate";
 
     }

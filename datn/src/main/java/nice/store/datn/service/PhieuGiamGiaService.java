@@ -37,6 +37,7 @@ public class PhieuGiamGiaService {
             existingPgg.setLoaiVoucher(newpgg.getLoaiVoucher());
             existingPgg.setNgayBatDau(newpgg.getNgayBatDau());
             existingPgg.setNgayKetThuc(newpgg.getNgayKetThuc());
+            existingPgg.setDonToiThieu(newpgg.getDonToiThieu());
             existingPgg.setGiaTriGiam(newpgg.getGiaTriGiam());
             existingPgg.setGiaTriMax(newpgg.getGiaTriMax());
             existingPgg.setSoLuong(newpgg.getSoLuong());
@@ -47,6 +48,11 @@ public class PhieuGiamGiaService {
             // Lưu
             return phieuGiamGiaRepository.save(existingPgg);
         }).orElse(null);
+    }
+
+    public int getMaxId() {
+        Integer maxId = phieuGiamGiaRepository.findMaxId();
+        return (maxId == null) ? 0 : maxId;
     }
 
 }
