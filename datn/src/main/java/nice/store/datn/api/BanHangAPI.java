@@ -1,7 +1,9 @@
 package nice.store.datn.api;
 
 import nice.store.datn.entity.*;
+import nice.store.datn.repository.KhachHangRepository;
 import nice.store.datn.response.HoaDonChiTietDTO;
+import nice.store.datn.response.KhachHangDTO;
 import nice.store.datn.response.SanPhamChiTietDTO;
 import nice.store.datn.service.BanHangService;
 import nice.store.datn.service.HoaDonChiTietService;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -30,6 +33,7 @@ public class BanHangAPI {
     @Autowired
     HoaDonChiTietService hoaDonChiTietService;
 
+    @Autowired KhachHangRepository khachHangRepository;
 
     @GetMapping("/api/ban-hang")
     public List<HoaDon> hienThiHoaDonApi() {
@@ -114,6 +118,52 @@ public class BanHangAPI {
 
         return ResponseEntity.ok(danhSachDTO);
     }
+
+    @GetMapping("/api/ban-hang/danh-sach-khach-hang")
+    public ResponseEntity<List<KhachHangDTO>> danhSachKhachHang() {
+        // Lấy danh sách khách hàng từ service (giả sử bạn có hàm này trong Service)
+
+        List<KhachHang> danhSach = khachHangRepository.findAll();
+
+        // Chuyển đổi từ KhachHang sang KhachHangDTO
+        List<KhachHangDTO> danhSachDTO = danhSach.stream()
+                .map(kh -> new KhachHangDTO(
+                        kh.getId(),
+                        kh.getMaKh(),
+                        kh.getTen(),
+                        kh.getGioiTinh(),
+                        kh.getEmail(),
+                        kh.getSdt(),
+                        kh.getTrangThai()
+                ))
+                .collect(Collectors.toList());
+
+        // Trả về danh sách DTO
+        return ResponseEntity.ok(danhSachDTO);
+    }
+
+        @GetMapping("/api/ban-hang/khach-hang/{id}")
+        public ResponseEntity<KhachHangDTO> getKhachHangById(@PathVariable Integer id) {
+            Optional<KhachHang> khachHangOpt = khachHangRepository.findById(id);
+
+            if (khachHangOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();  // Trả về Not Found nếu không tìm thấy khách hàng
+            }
+
+            KhachHang khachHang = khachHangOpt.get();
+
+            KhachHangDTO khachHangDTO = new KhachHangDTO(
+                    khachHang.getId(),
+                    khachHang.getMaKh(),
+                    khachHang.getTen(),
+                    khachHang.getGioiTinh(),
+                    khachHang.getEmail(),
+                    khachHang.getSdt(),
+                    khachHang.getTrangThai()
+            );
+            return ResponseEntity.ok(khachHangDTO);
+        }
+
 
 
 

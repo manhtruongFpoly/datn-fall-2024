@@ -143,7 +143,7 @@
             display: none; /* Mặc định modal bị ẩn */
             position: fixed;
             top: 0;
-            left: 0;
+            left: 10%;
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.6); /* Màu nền đen mờ */
@@ -295,7 +295,14 @@
 
                     <div class="p-4">
                         <!-- Nút kích hoạt modal -->
-                        <button id="hienThiDanhSachSanPham">Thêm sản phẩm</button>
+                        <button id="hienThiDanhSachSanPham" style="background-color: #4CAF50; color: white; padding: 10px 20px; font-size: 16px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; transition: all 0.3s ease;"
+                                onmouseover="this.style.backgroundColor='#45a049'; this.style.transform='scale(1.05)';"
+                                onmouseout="this.style.backgroundColor='#4CAF50'; this.style.transform='scale(1)';"
+                                onfocus="this.style.boxShadow='0 0 5px rgba(72, 212, 67, 0.8)';"
+                                onblur="this.style.boxShadow='none';">
+                            Thêm sản phẩm
+                        </button>
+
 
                         <!-- Modal (cửa sổ hiện ra) dành riêng cho danh sách sản phẩm -->
                         <div id="modalDachSachSanPham" class="modal-overlay-danh-sach-san-pham-unique"
@@ -340,7 +347,7 @@
                         <div class="row">
                             <!-- Phần tiêu đề -->
                             <div class="col-md-12 mb-4">
-                                <h3 class="text-lg-center">Tài Khoản</h3>
+                                <h3 class="">Tên khách hàng: <span id="tenKhachHang">Đang tải...</span></h3>
                             </div>
 
                             <!-- Nút chọn khách hàng -->
@@ -354,12 +361,33 @@
                             <div id="modalChonKhachHang" class="modal-overlay-customer">
                                 <div class="modal-content-customer">
                                     <h1>Danh sách khách hàng</h1>
+
+                                    <table id="tableKhachHang" class="table table-striped mt-3">
+                                        <thead class="table-primary">
+                                        <tr>
+                                            <th class="text-center">STT</th>
+                                            <th class="text-left">Tên khách hàng</th>
+                                            <th class="text-left">Email</th>
+                                            <th class="text-left">Số điện thoại</th>
+                                            <th class="text-center">Trạng thái</th>
+                                            <th class="text-center">Hành động</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="listKhachHang">
+                                        <!-- Dữ liệu sẽ được điền vào đây từ JS -->
+                                        </tbody>
+                                    </table>
+
                                     <button onclick="hideModalKhachHang()">Đóng</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+
+                    <hr>
+                    <br>
+                    <h1>Form Thanh Toán</h1>
 
                 </div>
 
@@ -505,6 +533,7 @@
                             PhieuGiamGiaPhuHop(tongTienTrongHD);
 
                             getDuLieu(tabsData[lastTabIndex].id);
+                            loadTenKhachHang(1);
                         });
                         showNotification("Tạo hóa đơn thành công", "thanhCong");
                     },
@@ -732,8 +761,64 @@
         });
     }
 
+    // load Khach hang
+    function loadDanhSachKhachHang() {
+        $("#listKhachHang").html('<tr><td colspan="6" class="text-center">Đang tải...</td></tr>'); // Hiển thị thông báo đang tải
+        $.ajax({
+            url: '/api/ban-hang/danh-sach-khach-hang',  // Gọi API lấy danh sách khách hàng
+            method: 'GET',
+            success: function (result) {
+                console.log(result);
+                let list = "";
+                // Duyệt qua kết quả trả về từ API và xây dựng bảng dữ liệu
+                result.forEach((kh, index) => {
+                    list += `
+                    <tr class="hover:bg-gray-100">
+                        <td class="text-center">${index + 1}</td>
+                        <td>${kh.ten || 'N/A'}</td>
+                        <td>${kh.email || 'N/A'}</td>
+                        <td class="text-center">${kh.sdt || 'N/A'}</td>
+                        <td class="text-center">${kh.trangThai === 1 ? 'Hoạt động' : 'Không hoạt động'}</td>
+                        <td class="text-center">
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" data-id="${kh.id}">
+                                Chọn
+                            </button>
+                        </td>
+                    </tr>`;
+                });
+                $("#listKhachHang").html(list);  // Cập nhật danh sách khách hàng vào bảng
+            },
+            error: function () {
+                $("#listKhachHang").html('<tr><td colspan="6" class="text-center text-red-500">Không thể tải dữ liệu!</td></tr>');  // Thông báo lỗi khi không thể tải dữ liệu
+            }
+        });
+    }
 
-        // Hàm để hiển thị modal
+
+    function loadTenKhachHang(id) {
+        // Hiển thị "Đang tải..." trước khi gọi API
+        $("#tenKhachHang").text("Đang tải...");
+
+        $.ajax({
+            url: `/api/ban-hang/khach-hang/${id}`,
+            method: 'GET',
+            success: function (response) {
+                $("#tenKhachHang").text(response.ten);
+            },
+            error: function () {
+                $("#tenKhachHang").text("Không thể tải tên khách hàng!");
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        loadTenKhachHang(1);  // Gọi API với ID mặc định là 1
+    });
+
+
+
+
+    // Hàm để hiển thị modal
         function showModalDanhSachSanPham() {
             document.getElementById('modalDachSachSanPham').style.display = 'flex'; // Hiển thị modal
             loadDanhSachSanPham();
@@ -753,6 +838,7 @@
         // Hàm hiển thị modal chọn khách hàng
         function showModalKhachHang() {
             document.getElementById('modalChonKhachHang').classList.add('show');
+            loadDanhSachKhachHang();
         }
 
         // Hàm ẩn modal chọn khách hàng

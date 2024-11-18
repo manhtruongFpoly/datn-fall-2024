@@ -31,7 +31,8 @@ public class HoaDon {
     private Nhanvien nhanVien; // ánh xạ với entity NhanVien
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_KH", referencedColumnName = "ID", insertable = false, updatable = false)
+    @JoinColumn(name = "ID_KH", referencedColumnName = "ID")
+    @JsonIgnore
     private KhachHang khachHang; // ánh xạ với entity KhachHang
 
     @Column(name = "MA_HD")
