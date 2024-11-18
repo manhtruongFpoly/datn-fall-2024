@@ -55,4 +55,8 @@ public class PhieuGiamGiaService {
         return (maxId == null) ? 0 : maxId;
     }
 
+    public List<PhieuGiamGia> PhieuGiamGiaPhuHop(Long max){
+        return phieuGiamGiaRepository.getVoucherPhuHop(max);
+    }
+
 }

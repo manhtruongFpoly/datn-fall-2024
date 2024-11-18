@@ -3,7 +3,10 @@ package nice.store.datn.repository;
 import nice.store.datn.entity.PhieuGiamGia;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 
 public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia , Integer> {
@@ -11,6 +14,7 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia , Int
     @Query("SELECT MAX(pgg.id) FROM PhieuGiamGia pgg")
     Integer findMaxId();
 
-
+    @Query(value = "SELECT * FROM [dbo].[VOUCHER] WHERE GETDATE() BETWEEN NGAY_BAT_DAU AND NGAY_KET_THUC AND DON_TOI_THIEU <= :maxValue ORDER BY GIA_TRI_MAX DESC", nativeQuery = true)
+    List<PhieuGiamGia> getVoucherPhuHop(@Param("maxValue") Long maxValue);
 
 }

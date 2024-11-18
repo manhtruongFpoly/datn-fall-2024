@@ -1,5 +1,6 @@
 package nice.store.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,19 +15,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "HOA_DON_CT")
-public class HoaDonChiTiet {
+public class    HoaDonChiTiet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_HOA_DON", referencedColumnName = "ID", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "ID_HOA_DON")
+    @JsonIgnore
     private HoaDon hoaDon;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_CTSP", referencedColumnName = "ID", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "ID_CTSP")
     private SanPhamChiTiet sanPhamChiTiet;
 
     @Column(name = "SO_LUONG")

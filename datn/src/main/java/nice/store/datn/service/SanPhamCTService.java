@@ -89,21 +89,18 @@ public class SanPhamCTService {
     ;
 
     public SanPhamCTResponse saveSanPhamChiTiet(SanPhamChiTiet sanPhamChiTiet, List<MultipartFile> files) {
-        // Thiết lập ngày tạo và trạng thái
         sanPhamChiTiet.setNgayTao(LocalDateTime.now());
         sanPhamChiTiet.setNgaySua(LocalDateTime.now());
-        sanPhamChiTiet.setTrangThai(1); // 1 có thể là trạng thái "hoạt động"
+        sanPhamChiTiet.setTrangThai(1);
 
-        // Lưu sản phẩm chi tiết vào database
         SanPhamChiTiet savedSanPham = sanPhamChiTietRepository.save(sanPhamChiTiet);
 
-        // Lưu hình ảnh vào thư mục và database
         List<HinhAnh> hinhAnhs = saveImages(files, savedSanPham);
 
-        // Trả về thông tin phản hồi
         return buildSanPhamCTResponse(savedSanPham, hinhAnhs);
     }
 
+    //Trưởng k dùng hải coment
     private List<HinhAnh> saveImages(List<MultipartFile> files, SanPhamChiTiet sanPhamChiTiet) {
         List<HinhAnh> hinhAnhs = new ArrayList<>();
 
@@ -155,12 +152,11 @@ public class SanPhamCTService {
     }
 
 
-
+    //hải
     public List<SanPhamChiTiet> saveToDatabase(List<SanPhamChiTiet> sanPhamChiTiets) {
         // Lưu danh sách sản phẩm chi tiết vào database và trả về danh sách đã lưu (bao gồm ID)
         return sanPhamCTRepository.saveAll(sanPhamChiTiets);
     }
-
 
     public List<SanPhamChiTiet> findBySanPhamId(Integer productId) {
         return sanPhamChiTietRepository.findBySanPhamId(productId);
