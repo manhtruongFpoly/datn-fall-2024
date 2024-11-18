@@ -1,10 +1,8 @@
 package nice.store.datn.api;
 
-import nice.store.datn.entity.HoaDon;
-import nice.store.datn.entity.HoaDonChiTiet;
-import nice.store.datn.entity.KhachHang;
-import nice.store.datn.entity.PhieuGiamGia;
+import nice.store.datn.entity.*;
 import nice.store.datn.response.HoaDonChiTietDTO;
+import nice.store.datn.response.SanPhamChiTietDTO;
 import nice.store.datn.service.BanHangService;
 import nice.store.datn.service.HoaDonChiTietService;
 import nice.store.datn.service.HoaDonService;
@@ -76,12 +74,45 @@ public class BanHangAPI {
 
         HoaDon savedHoaDon = hoaDonService.add(hoaDon);
 
-        String maHoaDon = "HD0" + String.format("%01d", savedHoaDon.getId());
+        String maHoaDon = "HD" + String.format("%03d", savedHoaDon.getId());
         savedHoaDon.setMaHd(maHoaDon);
 
         hoaDonService.taoMaHoaDon(savedHoaDon.getId(), savedHoaDon);
 
         return ResponseEntity.ok(savedHoaDon);
+    }
+
+
+    @GetMapping("/api/ban-hang/danh-sach-san-pham-chi-tiet")
+    public ResponseEntity<List<SanPhamChiTietDTO>> danhSachSanPham() {
+        List<SanPhamChiTiet> danhSach = banHangService.getAllDSSanPham();
+
+        List<SanPhamChiTietDTO> danhSachDTO = danhSach.stream()
+                .map(spct -> {
+                    String hinhAnh = spct.getHinhAnhs() != null && !spct.getHinhAnhs().isEmpty()
+                            ? spct.getHinhAnhs().get(0).getUrl()  // Lấy URL của ảnh đầu tiên
+                            : null;
+
+                    return new SanPhamChiTietDTO(
+                            spct.getId(),
+                            spct.getMaSpct(),
+                            spct.getGiaBan(),
+                            spct.getSoLuong(),
+                            spct.getMoTa(),
+                            spct.getTrangThai(),
+                            spct.getKichCo() != null ? spct.getKichCo().getSize() : null,
+                            spct.getMauSac() != null ? spct.getMauSac().getTenMauSac() : null,
+                            spct.getLoaiGiay() != null ? spct.getLoaiGiay().getTenLoaiGiay() : null,
+                            spct.getChatLieu() != null ? spct.getChatLieu().getTenChatLieu() : null,
+                            spct.getDeGiay() != null ? spct.getDeGiay().getTenDeGiay() : null,
+                            spct.getThuongHieu() != null ? spct.getThuongHieu().getTenThuongHieu() : null,
+                            spct.getSanPham() != null ? spct.getSanPham().getTenSP() : null,
+                            hinhAnh
+                    );
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(danhSachDTO);
     }
 
 

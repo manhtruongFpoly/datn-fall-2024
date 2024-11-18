@@ -85,13 +85,14 @@
             background-color: white;
             padding: 30px;
             border-radius: 8px;
-            width: 60%;
-            max-height: 80%;
+            width: 83%;
+            max-height: 90%;
             overflow-y: auto;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transform: scale(0.8);
+            transform: scale(0.8) translateX(10%); /* Dịch sang phải 10% */
             transition: transform 0.3s ease-in-out;
         }
+
 
         /* Khi modal được hiển thị, thêm hiệu ứng zoom */
         .modal-overlay-danh-sach-san-pham-unique.show {
@@ -221,6 +222,20 @@
             transition: width 3s linear;
         }
 
+        .table {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table thead {
+            background-color: #f8f9fa; /* Màu sáng nhẹ hơn */
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f5f9; /* Hiệu ứng hover nhạt hơn */
+        }
+
     </style>
 
     <style>
@@ -283,9 +298,31 @@
                         <button id="hienThiDanhSachSanPham">Thêm sản phẩm</button>
 
                         <!-- Modal (cửa sổ hiện ra) dành riêng cho danh sách sản phẩm -->
-                        <div id="modalDachSachSanPham" class="modal-overlay-danh-sach-san-pham-unique">
+                        <div id="modalDachSachSanPham" class="modal-overlay-danh-sach-san-pham-unique"
+                             style="display: none;">
                             <div class="modal-content-danh-sach-san-pham-unique">
                                 <h1>Danh sách sản phẩm</h1>
+
+                                <!-- Load danh sách sản phẩm -->
+                                <table id="tableDanhSachSanPham" class="table table-hover table-bordered align-middle">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col" class="text-center">STT</th>
+                                        <th scope="col" class="text-center">Ảnh</th>
+                                        <th scope="col" class="text-center">Tên Sản Phẩm</th>
+                                        <th scope="col" class="text-center">Giá Bán</th>
+                                        <th scope="col" class="text-center">Số Lượng</th>
+                                        <th scope="col" class="text-center">Kích Thước</th>
+                                        <th scope="col" class="text-center">Màu Sắc</th>
+                                        <th scope="col" class="text-center">Trạng Thái</th>
+                                        <th scope="col" class="text-center">Hành Động</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="danhSachSanPham">
+                                    <!-- Dữ liệu sẽ được thêm vào đây -->
+                                    </tbody>
+                                </table>
+
                                 <button onclick="hideModalDanhSachSanPham()">Đóng</button>
                             </div>
                         </div>
@@ -647,70 +684,116 @@
             },
         });
     }
+    //Load modal themsp
+    function loadDanhSachSanPham() {
+        $("#danhSachSanPham").html('<tr><td colspan="9" class="text-center">Đang tải...</td></tr>'); // Hiển thị thông báo đang tải
+        $.ajax({
+            url: '/api/ban-hang/danh-sach-san-pham-chi-tiet',  // Gọi API
+            method: 'GET',
+            success: function (result) {
+                console.log(result);
+                let list = "";
+                // Duyệt qua kết quả trả về từ API và xây dựng bảng dữ liệu
+                result.forEach((sp, index) => {
+                    let hinhAnhSrc = sp.hinhAnh ? `/desktop-images/${sp.hinhAnh}` : '/desktop-images/xs10109.jpg';
 
+                    list += `
+                    <tr class="hover:bg-gray-100">
+                        <td class="text-center">${index + 1}</td>
 
-    //San Phẩm
-
-    // Hàm để hiển thị modal
-    function showModalDanhSachSanPham() {
-        document.getElementById('modalDachSachSanPham').style.display = 'flex'; // Hiển thị modal
+                        <td>
+                            <div style="border: 1px solid #ccc; text-align: center; padding: 2px;">
+                                <img src="${hinhAnhSrc}" alt="Hình ảnh"
+                                    style="width: 50px; height: 40px; object-fit: cover; display: block; margin: 0 auto;" />
+                            </div>
+                        </td>
+                        <td class="font-bold">
+                            <h4>${sp.tenSanPham}</h4>
+                            <h7 style="color: #3dd5f3">${sp.thuongHieu}</h7>
+                            <h7 style="color: #3dd5f3">${sp.chatLieu}</h7>
+                        </td>
+                        <td>${sp.giaBan}</td>
+                        <td class="text-center">${sp.soLuong}</td>
+                        <td class="text-center">${sp.kichCo || 'N/A'}</td>
+                        <td class="text-center">${sp.mauSac || 'N/A'}</td>
+                        <td class="text-center">${sp.trangThai === 1 ? 'Còn hàng' : 'Hết hàng'}</td>
+                        <td class="text-center">
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" data-id="${sp.id}">
+                                Thêm
+                            </button>
+                        </td>
+                    </tr>`;
+                });
+                $("#danhSachSanPham").html(list);  // Cập nhật danh sách sản phẩm vào bảng
+            },
+            error: function () {
+                $("#danhSachSanPham").html('<tr><td colspan="9" class="text-center text-red-500">Không thể tải dữ liệu!</td></tr>');  // Thông báo lỗi khi không thể tải dữ liệu
+            }
+        });
     }
 
-    // Hàm để ẩn modal
-    function hideModalDanhSachSanPham() {
-        document.getElementById('modalDachSachSanPham').style.display = 'none'; // Ẩn modal
-    }
 
-    // Sự kiện khi nhấn nút "Thêm sản phẩm"
-    document.getElementById('hienThiDanhSachSanPham').addEventListener('click', function () {
-        showModalDanhSachSanPham(); // Hiển thị modal
-    });
-
-    //Khach hang
-    // Hàm hiển thị modal chọn khách hàng
-    function showModalKhachHang() {
-        document.getElementById('modalChonKhachHang').classList.add('show');
-    }
-
-    // Hàm ẩn modal chọn khách hàng
-    function hideModalKhachHang() {
-        document.getElementById('modalChonKhachHang').classList.remove('show');
-    }
-
-    // Sự kiện khi nhấn nút chọn khách hàng
-    document.getElementById('chon-khach-hang').addEventListener('click', function () {
-        showModalKhachHang(); // Hiển thị modal chọn khách hàng
-
-    });
-
-    //Thanh thông báo
-    function showNotification(message, status) {
-        var notification = document.getElementById('notification');
-        var notificationMessage = document.getElementById('notification-message');
-        var progressBar = document.getElementById('progress-bar');
-
-        notification.className = 'notification'; // Reset class
-        if (status === 'thanhCong') {
-            notification.classList.add('thanhCong');
-        } else if (status === 'thatBai') {
-            notification.classList.add('thatBai');
+        // Hàm để hiển thị modal
+        function showModalDanhSachSanPham() {
+            document.getElementById('modalDachSachSanPham').style.display = 'flex'; // Hiển thị modal
+            loadDanhSachSanPham();
         }
 
-        if (message) {
-            notificationMessage.textContent = message;
-            notification.style.display = 'block';
-            progressBar.style.width = '100%';
+        // Hàm để ẩn modal
+        function hideModalDanhSachSanPham() {
+            document.getElementById('modalDachSachSanPham').style.display = 'none'; // Ẩn modal
+        }
 
-            setTimeout(function () {
-                progressBar.style.width = '0';
-            }, 10);
+        // Sự kiện khi nhấn nút "Thêm sản phẩm"
+        document.getElementById('hienThiDanhSachSanPham').addEventListener('click', function () {
+            showModalDanhSachSanPham(); // Hiển thị modal
+        });
 
-            setTimeout(function () {
-                notification.style.display = 'none';
+        //Khach hang
+        // Hàm hiển thị modal chọn khách hàng
+        function showModalKhachHang() {
+            document.getElementById('modalChonKhachHang').classList.add('show');
+        }
+
+        // Hàm ẩn modal chọn khách hàng
+        function hideModalKhachHang() {
+            document.getElementById('modalChonKhachHang').classList.remove('show');
+        }
+
+        // Sự kiện khi nhấn nút chọn khách hàng
+        document.getElementById('chon-khach-hang').addEventListener('click', function () {
+            showModalKhachHang(); // Hiển thị modal chọn khách hàng
+
+        });
+
+        //Thanh thông báo
+        function showNotification(message, status) {
+            var notification = document.getElementById('notification');
+            var notificationMessage = document.getElementById('notification-message');
+            var progressBar = document.getElementById('progress-bar');
+
+            notification.className = 'notification'; // Reset class
+            if (status === 'thanhCong') {
+                notification.classList.add('thanhCong');
+            } else if (status === 'thatBai') {
+                notification.classList.add('thatBai');
+            }
+
+            if (message) {
+                notificationMessage.textContent = message;
+                notification.style.display = 'block';
                 progressBar.style.width = '100%';
-            }, 3010);
+
+                setTimeout(function () {
+                    progressBar.style.width = '0';
+                }, 10);
+
+                setTimeout(function () {
+                    notification.style.display = 'none';
+                    progressBar.style.width = '100%';
+                }, 3010);
+            }
         }
-    }
 
 </script>
 
