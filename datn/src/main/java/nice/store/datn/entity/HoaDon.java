@@ -1,5 +1,6 @@
 package nice.store.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,17 +26,23 @@ public class HoaDon {
     @Column(name = "ID")
     private Integer id;
 
-    @Column(name = "ID_NV")
-    private Integer idNv;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_NV", referencedColumnName = "ID")
+    private Nhanvien nhanVien; // ánh xạ với entity NhanVien
 
-    @Column(name = "ID_KH", insertable = false, updatable = false)
-    private Integer idKh;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_KH", referencedColumnName = "ID")
+    @JsonIgnore
+    private KhachHang khachHang; // ánh xạ với entity KhachHang
 
     @Column(name = "MA_HD")
     private String maHd;
 
-    @Column(name = "ID_VOUCHER")
-    private Integer idVoucher;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_VOUCHER", referencedColumnName = "ID")
+    @JsonIgnore
+    private PhieuGiamGia phieuGiamGia; // ánh xạ với entity PhieuGiamGia
+
 
     @Column(name = "DIA_CHI_NGUOI_NHAN")
     private String diaChiNguoiNhan;
@@ -50,7 +57,7 @@ public class HoaDon {
     private String ghiChu;
 
     @Column(name = "TONG_TIEN")
-    private Integer tongTien;
+    private BigDecimal tongTien;
 
     @Column(name = "NGAY_TAO")
     private LocalDateTime ngayTao;
@@ -76,11 +83,11 @@ public class HoaDon {
     @Column(name = "PHI_SHIP")
     private Integer phiShip;
 
-    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<HoaDonChiTiet> hoaDonChiTietList;
-    @ManyToOne
-    @JoinColumn(name = "ID_KH", referencedColumnName = "ID")
-    private KhachHang khachHang;
+//    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<HoaDonChiTiet> hoaDonChiTietList;
+//    @ManyToOne
+//    @JoinColumn(name = "ID_KH", referencedColumnName = "ID")
+//    private KhachHang khachHang;
 
 
     public String getStringTrangThai() {
@@ -91,7 +98,6 @@ public class HoaDon {
                 return "Chờ giao";
             case 2:
                 return "Đang giao";
-
             case 3:
                 return "Hoàn thành";
             case 4:

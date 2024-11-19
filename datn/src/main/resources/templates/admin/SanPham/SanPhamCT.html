@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/b0d3163487.js" crossorigin="anonymous"></script>
+    <title>Dashboard - Voler Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- Thêm SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.7/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <!-- Thêm SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.7/dist/sweetalert2.all.min.js"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
+    <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+
+    <!-- DataTable CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+
+</head>
+<body>
+
+<div id="app"><!--Main content-->
+    <span th:replace="~{fragments/sidebar :: sidebar}"></span>
+    <div id="main"><!--Content id-->
+        <span th:replace="~{fragments/header :: header}"></span>
+        <div class="main-content container-fluid" layout:fragment="content">
+
+            <div class="container mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+                        <!-- Khung với border -->
+                        <div class="card">
+                            <div class="card-header bg-primary text-white text-center">
+                                <!--tIÊU ĐỀ-->
+                                <h2 class="centered-bold" style="text-align: center; font-weight: bold;">Thêm thuộc tính sản
+                                    phẩm chi tiết</h2>
+                            </div>
+                            <div class="card-body">
+                                <!-- Nội dung form hoặc các thành phần khác sẽ được chèn vào đây -->
+
+                                <!-- Bootstrap Select và Button Thêm Sản Phẩm -->
+                                <label for="sanPhamSelect" class="form-label">Sản Phẩm</label>
+                                <div class="input-group flex-nowrap">
+
+                                    <select class="form-select" id="sanPhamSelect" name="sanPhamId"
+                                            aria-label="Chọn sản phẩm">
+                                        <option value="" disabled selected>Chọn sản phẩm</option>
+                                        <option th:each="sanPham : ${listSanPham}" th:value="${sanPham.id}"
+                                                th:text="${sanPham.tenSP}"></option>
+                                    </select>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#themSanPhamModal">
+                                        +
+                                    </button>
+                                </div>
+
+                                <!-- Bootstrap Modal Thêm Sản Phẩm -->
+                                <div class="modal fade" id="themSanPhamModal" tabindex="-1"
+                                     aria-labelledby="themSanPhamModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Thêm Sản Phẩm Mới</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- Form Thêm Sản Phẩm -->
+                                                <form id="formThemSanPham" th:action="@{/tao-moi}" method="post">
+                                                    <div class="mb-3">
+                                                        <label for="tenSP" class="form-label">Tên sản phẩm:</label>
+                                                        <input type="text" name="tenSP" class="form-control" id="tenSP"
+                                                               placeholder="Nhập tên sản phẩm" required>
+                                                    </div>
+                                                    <div id="error-message" class="alert alert-danger d-none"></div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Đóng
+                                                        </button>
+                                                        <button type="submit" class="btn btn-primary">Lưu</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--            Mô Tả-->
+                                <div class="mb-3">
+                                    <label for="moTa" class="form-label">Mô tả</label>
+                                    <textarea class="form-control" id="moTa"
+                                              placeholder="Nhập mô tả sản phẩm"></textarea>
+                                </div>
+
+
+                                <div class="row">
+                                    <!-- Cột bên trái -->
+                                    <div class="col-md-6">
+                                        <!-- Thương Hiệu -->
+                                        <label for="sanPhamSelect" class="form-label">Thương Hiệu</label>
+                                        <div class="input-group flex-nowrap">
+                                            <select class="form-select" id="thuongHieuSelect" name="sanPhamId"
+                                                    aria-label="Chọn sản phẩm">
+                                                <option value="" disabled selected>Chọn Thương Hiệu</option>
+                                                <!-- Các thương hiệu sẽ được thêm vào từ database -->
+                                                <option th:each="thuongHieu : ${listThuongHieu}"
+                                                        th:value="${thuongHieu.id}"
+                                                        th:text="${thuongHieu.tenThuongHieu}"></option>
+                                            </select>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#themThuongHieuModal">+
+                                            </button>
+                                        </div>
+
+                                        <!-- Modal Thương Hiệu -->
+                                        <div class="modal fade" id="themThuongHieuModal" tabindex="-1"
+                                             aria-labelledby="themThuongHieuModalLabel"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Thêm Thương Hiệu Mới</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="formThemThuongHieu" method="post">
+                                                            <div class="mb-3">
+                                                                <label for="thuongHieuInput" class="form-label">Tên
+                                                                    Thương Hiệu:</label>
+                                                                <input type="text" class="form-control"
+                                                                       id="thuongHieuInput"
+                                                                       placeholder="Nhập tên thương hiệu" required>
+                                                            </div>
+                                                            <div id="error-message1"
+                                                                 class="alert alert-danger d-none"></div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Đóng
+                                                                </button>
+                                                                <button type="button" class="btn btn-primary"
+                                                                        id="btnLuuThuongHieu">Lưu
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Chất liệu -->
+                                        <div class="mb-3">
+                                            <label for="chatLieuSelect" class="form-label">Chất liệu</label>
+                                            <div class="input-group flex-nowrap">
+                                                <select class="form-select" id="chatLieuSelect" name="chatLieuId"
+                                                        aria-label="Chọn chất liệu">
+                                                    <option value="" disabled selected>Chọn chất liệu</option>
+                                                    <th:block th:each="chatLieu : ${listChatLieu}">
+                                                        <option th:value="${chatLieu.id}"
+                                                                th:text="${chatLieu.tenChatLieu}"></option>
+                                                    </th:block>
+                                                </select>
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#themChatLieuModal">+
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Modal Thêm Chất Liệu -->
+                                        <div class="modal fade" id="themChatLieuModal" tabindex="-1"
+                                             aria-labelledby="themChatLieuModalLabel"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Thêm Chất Liệu Mới</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="formThemChatLieu" th:action="@{/tao-chat-lieu}"
+                                                              method="post">
+                                                            <div class="mb-3">
+                                                                <label for="tenChatLieu" class="form-label">Tên chất
+                                                                    liệu:</label>
+                                                                <input type="text" name="tenChatLieu"
+                                                                       class="form-control" id="tenChatLieu"
+                                                                       placeholder="Nhập tên chất liệu" required>
+                                                            </div>
+                                                            <div id="error-message"
+                                                                 class="alert alert-danger d-none"></div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Đóng
+                                                                </button>
+                                                                <button type="submit" class="btn btn-primary">Lưu
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Cột bên phải -->
+                                    <div class="col-md-6">
+                                        <!-- Đế giày -->
+                                        <div class="mb-3">
+                                            <label for="deGiaySelect" class="form-label">Đế giày</label>
+                                            <div class="input-group flex-nowrap">
+                                                <select class="form-select" id="deGiaySelect" name="deGiayId"
+                                                        aria-label="Chọn đế giày">
+                                                    <option value="" disabled selected>Chọn đế giày</option>
+                                                    <th:block th:each="deGiay : ${listDeGiay}">
+                                                        <option th:value="${deGiay.id}"
+                                                                th:text="${deGiay.tenDeGiay}"></option>
+                                                    </th:block>
+                                                </select>
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#themDeGiayModal">+
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Modal Thêm Đế Giày -->
+                                        <div class="modal fade" id="themDeGiayModal" tabindex="-1"
+                                             aria-labelledby="themDeGiayModalLabel"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Thêm Đế Giày Mới</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="formThemDeGiay" th:action="@{/tao-de-giay}"
+                                                              method="post">
+                                                            <div class="mb-3">
+                                                                <label for="tenDeGiay" class="form-label">Tên đế
+                                                                    giày:</label>
+                                                                <input type="text" name="tenDeGiay" class="form-control"
+                                                                       id="tenDeGiay"
+                                                                       placeholder="Nhập tên đế giày" required>
+                                                            </div>
+                                                            <div id="error-message"
+                                                                 class="alert alert-danger d-none"></div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Đóng
+                                                                </button>
+                                                                <button type="submit" class="btn btn-primary">Lưu
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Thể loại -->
+                                        <div class="mb-3">
+                                            <label for="theLoaiSelect" class="form-label">Thể loại</label>
+                                            <div class="input-group flex-nowrap">
+                                                <select class="form-select" id="theLoaiSelect" name="theLoaiId"
+                                                        aria-label="Chọn thể loại">
+                                                    <option value="" disabled selected>Chọn thể loại</option>
+                                                    <th:block th:each="loaiGiay : ${listLoaiGiay}">
+                                                        <option th:value="${loaiGiay.id}"
+                                                                th:text="${loaiGiay.tenLoaiGiay}"></option>
+                                                    </th:block>
+                                                </select>
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#themLoaiGiayModal">+
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Modal Thêm Thể Loại -->
+                                        <div class="modal fade" id="themLoaiGiayModal" tabindex="-1"
+                                             aria-labelledby="themLoaiGiayModalLabel"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Thêm Thể Loại Mới</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="formThemLoaiGiay" th:action="@{/tao-loai-giay}"
+                                                              method="post">
+                                                            <div class="mb-3">
+                                                                <label for="tenLoaiGiay" class="form-label">Tên thể
+                                                                    loại:</label>
+                                                                <input type="text" name="tenLoaiGiay"
+                                                                       class="form-control" id="tenLoaiGiay"
+                                                                       placeholder="Nhập tên thể loại" required>
+                                                            </div>
+                                                            <div id="error-message"
+                                                                 class="alert alert-danger d-none"></div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Đóng
+                                                                </button>
+                                                                <button type="submit" class="btn btn-primary">Lưu
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!--  Màu sắc và  kích cỡ  gen code-->
+                                <div class="border p-3 rounded">
+                                    <!-- Kích Cỡ Input -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Kích cỡ</label>
+                                        <div class="d-flex align-items-center">
+                                            <button type="button" class="btn btn-primary me-3" data-bs-toggle="modal"
+                                                    data-bs-target="#kichCoModal">Chọn Kích Cỡ
+                                            </button>
+                                            <div id="kichCoTags" class="d-flex flex-wrap"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal Kích Cỡ -->
+                                    <div class="modal fade" id="kichCoModal" tabindex="-1"
+                                         aria-labelledby="kichCoModalLabel"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Chọn Kích Cỡ</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <ul id="kichCoList" class="list-group">
+                                                        <li th:each="kichCo : ${listKichCo}" class="list-group-item">
+                                                            <input type="checkbox" class="kichCoCheckbox"
+                                                                   th:value="${kichCo.size}"
+                                                                   th:id="${kichCo.id}">
+                                                            <label th:for="${kichCo.id}"
+                                                                   th:text="${kichCo.size}"></label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Đóng
+                                                    </button>
+                                                    <button type="button" class="btn btn-primary" id="saveKichCoBtn"
+                                                            data-bs-dismiss="modal">Chọn
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Màu Sắc Input -->
+                                    <div class="mb-3 mt-4">
+                                        <label class="form-label">Màu sắc</label>
+                                        <div class="d-flex align-items-center">
+                                            <button type="button" class="btn btn-primary me-3" data-bs-toggle="modal"
+                                                    data-bs-target="#mauSacModal">Chọn Màu Sắc
+                                            </button>
+                                            <div id="mauSacTags" class="d-flex flex-wrap"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal Màu Sắc -->
+                                    <div class="modal fade" id="mauSacModal" tabindex="-1"
+                                         aria-labelledby="mauSacModalLabel"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Chọn Màu Sắc</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <ul id="mauSacList" class="list-group">
+                                                        <li th:each="mauSac : ${listMauSac}" class="list-group-item">
+                                                            <input type="checkbox" class="mauSacCheckbox"
+                                                                   th:value="${mauSac.tenMauSac}"
+                                                                   th:id="${mauSac.id}">
+                                                            <label th:for="${mauSac.id}"
+                                                                   th:text="${mauSac.tenMauSac}"></label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Đóng
+                                                    </button>
+                                                    <button type="button" class="btn btn-primary" id="saveMauSacBtn"
+                                                            data-bs-dismiss="modal">Chọn
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--//button them spct-->
+                                <button class="btn btn-primary" id="createProductDetailsBtn" onclick="generateProductDetails()">Tạo sản phẩm chi
+                                    tiết
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Modal để nhập số lượng và giá mới -->
+            <div class="modal fade" id="batchEditModal" tabindex="-1" aria-labelledby="batchEditModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="batchEditModalLabel">Chỉnh sửa số lượng và giá</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="modalQuantity" class="form-label">Số lượng mới</label>
+                                <input type="number" class="form-control" id="modalQuantity" value="1" min="1">
+                            </div>
+                            <div class="mb-3">
+                                <label for="modalPrice" class="form-label">Giá bán mới</label>
+                                <input type="text" class="form-control" id="modalPrice" value="100000">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="button" class="btn btn-primary" onclick="applyBatchEdit()">Áp dụng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="container mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-14">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <!-- Bảng sản phẩm chi tiết -->
+                                <table class="table table-bordered table-striped mt-4" id="productDetailsTable">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 5%"><input type="checkbox" id="selectAll"></th>
+                                        <th style="width: 5%">#</th>
+                                        <th scope="col" style="width: 20%;">Tên sản phẩm</th>
+                                        <th scope="col" style="width: 5%;" data-id="sizeColumn">Kích Cỡ</th>
+                                        <th scope="col" style="width: 5%;" data-id="colorColumn">Màu Sắc</th>
+                                        <th scope="col" style="width: 5%;">Số lượng</th>
+                                        <th scope="col" style="width: 15%;">Giá bán</th>
+                                        <th scope="col" style="width: 30%; text-align: center;">Hình ảnh</th>
+                                        <th scope="col" style="width: 10%;">Hành động</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!-- Các dòng sản phẩm chi tiết sẽ được thêm vào đây -->
+
+
+                                    </tbody>
+                                    <div class="text-end mb-3">
+                                        <button class="btn btn-primary me-2" onclick="openBatchEditModal()">Chỉnh số
+                                            lượng và giá chung
+                                        </button>
+                                    </div>
+
+                                </table>
+                                <button id="hoanTatButton" class="btn btn-success" type="button">Hoàn Tất</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span th:replace="~{fragments/footer :: footer}"></span>
+    </div>
+</div>
+
+<script th:src="@{/js/feather.min.js}"></script>
+<script th:src="@{/js/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/Chart.min.js}"></script>
+<script th:src="@{/js/apexcharts.min.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/spct-add.js}"></script>
+<!-- Link tới Bootstrap 5.0 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tagify/4.9.0/tagify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+

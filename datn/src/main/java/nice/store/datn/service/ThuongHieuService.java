@@ -6,9 +6,13 @@ import nice.store.datn.entity.ThuongHieu;
 import nice.store.datn.repository.ChatLieuRepository;
 import nice.store.datn.repository.ThuongHieuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +38,7 @@ public class ThuongHieuService {
         if (THrepository.findByMaThuongHieu(sp.getMaThuongHieu()).isPresent()) {
             throw new RuntimeException("Mã sản phẩm đã tồn tại: " + sp.getMaThuongHieu());
         }
-        sp.setNgayTao(LocalDateTime.now());
+        sp.setNgayTao(LocalDate.now());
         sp.setNgaySua(LocalDateTime.now());
         return THrepository.save(sp);
     }
@@ -56,5 +60,29 @@ public class ThuongHieuService {
         throw new RuntimeException("Product id " + id + " not found");
     }
 
+    public Page<ThuongHieu> timKiemTheoMaVaTen(String searchTerm, Pageable pageable) {
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            return THrepository.timKiemTheoMaVaTen(searchTerm, pageable);
+        }
+        return THrepository.findAll(pageable);  // Trả về tất cả nếu không có searchTerm
+    }
+    public List<ThuongHieu> timKiemTheoTrangThai(Integer trangThai) {
+        if (trangThai == null) {
+            return THrepository.findAll();  // Trả về tất cả nếu không lọc theo trạng thái
+        }
+        return THrepository.timKiemTheoTrangThai(trangThai);
+    }
+
+    public List<ThuongHieu> timKiemTheoKhoangNgay(LocalDate ngayBatDau, LocalDate ngayKetThuc) {
+        return THrepository.findByNgayTaoBetween(ngayBatDau, ngayKetThuc);
+    }
+
+    public List<ThuongHieu> getNewestThuongHieu() {
+        return THrepository.findNewestThuongHieu();
+    }
+
+    public List<ThuongHieu> getOldestThuongHieu() {
+        return THrepository.findOldestThuongHieu();
+    }
 
 }

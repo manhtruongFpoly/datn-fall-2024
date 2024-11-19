@@ -42,6 +42,9 @@ public class PhieuGiamGia {
     @Column(name = "NGAY_KET_THUC")
     private LocalDate ngayKetThuc;
 
+    @Column(name = "DON_TOI_THIEU")
+    private BigDecimal donToiThieu;
+
     @Column(name = "GIA_TRI_MIN")
     private BigDecimal giaTriGiam;
 

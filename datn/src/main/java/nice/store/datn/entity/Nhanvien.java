@@ -1,22 +1,25 @@
 package nice.store.datn.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Getter
 @Setter
-@Entity
-@Table(name = "NHAN_VIEN")
+@Table(name = "Nhan_vien")
 public class Nhanvien {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name = "ID", length = 50)
     private int ID;
     @Column(name = "MA_NV", length = 50)
-    private String MA_NV;
+    private String MANV;
 
     @Column(name = "HO", length = 50)
     private String HO;
@@ -24,46 +27,14 @@ public class Nhanvien {
     @Column(name = "TEN", length = 50)
     private String TEN;
 
-    @Column(name = "email", length = 50)
+    @Column(name = "EMAIL", length = 50)
     private String email;
 
-    public int getID() {
-        return ID;
-    }
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime dateCreate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dateFix;
 
-    public void setID(int ID) {
-        this.ID = ID;
-    }
-
-    public String getMA_NV() {
-        return MA_NV;
-    }
-
-    public void setMA_NV(String MA_NV) {
-        this.MA_NV = MA_NV;
-    }
-
-    public String getHO() {
-        return HO;
-    }
-
-    public void setHO(String HO) {
-        this.HO = HO;
-    }
-
-    public String getTEN() {
-        return TEN;
-    }
-
-    public void setTEN(String TEN) {
-        this.TEN = TEN;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @Column(name = "TRANG_THAI", length = 50)
+    private Integer status;
 }

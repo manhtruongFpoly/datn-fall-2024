@@ -14,4 +14,7 @@ import java.util.List;
 @Repository
 public interface HoaDonRepository  extends JpaRepository<HoaDon, Integer> {
 
+    @Query(value = "SELECT * FROM HOA_DON WHERE TRANG_THAI = 0 ORDER BY id DESC", nativeQuery = true)
+    List<HoaDon> findHoaDonCho();
+
 }

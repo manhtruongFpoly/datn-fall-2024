@@ -1,7 +1,8 @@
 package nice.store.datn.entity;
 
-
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,32 +26,39 @@ public class SanPhamChiTiet {
     @Column(name = "ID")
     private Integer id;
 
-    @Column(name = "ID_SP")
-    private Integer idSp;
+    @ManyToOne
+    @JoinColumn(name = "ID_SP", referencedColumnName = "ID")
+    private SanPham sanPham;
 
-    @Column(name = "ID_MAU_SAC")
-    private Integer idMauSac;
+    @ManyToOne
+    @JoinColumn(name = "ID_MAU_SAC", referencedColumnName = "ID")
+    private MauSac mauSac;
 
-    @Column(name = "ID_THE_LOAI")
-    private Integer idTheLoai;
+    @ManyToOne
+    @JoinColumn(name = "ID_THE_LOAI", referencedColumnName = "ID")
+    private LoaiGiay loaiGiay;
 
-    @Column(name = "ID_KICH_CO")
-    private Integer idKichCo;
+    @ManyToOne
+    @JoinColumn(name = "ID_KICH_CO", referencedColumnName = "ID")
+    private KichCo kichCo;
 
-    @Column(name = "ID_CHAT_LIEU")
-    private Integer idChatLieu;
+    @ManyToOne
+    @JoinColumn(name = "ID_CHAT_LIEU", referencedColumnName = "ID")
+    private ChatLieu chatLieu;
 
-    @Column(name = "ID_DE_GIAY")
-    private Integer idDeGiay;
+    @ManyToOne
+    @JoinColumn(name = "ID_DE_GIAY", referencedColumnName = "ID")
+    private DeGiay deGiay;
 
-    @Column(name = "ID_THUONG_HIEU")
-    private Integer idThuongHieu;
+    @ManyToOne
+    @JoinColumn(name = "ID_THUONG_HIEU", referencedColumnName = "ID")
+    private ThuongHieu thuongHieu;
 
     @Column(name = "MA_SPCT")
     private String maSpct;
 
     @Column(name = "GIA_BAN")
-    private BigDecimal giaBan;
+    private Double giaBan;
 
     @Column(name = "SO_LUONG")
     private Integer soLuong;
@@ -65,4 +74,8 @@ public class SanPhamChiTiet {
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
+
+    @OneToMany(mappedBy = "sanPhamChiTiet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<HinhAnh> hinhAnhs;
 }

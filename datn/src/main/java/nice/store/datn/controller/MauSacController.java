@@ -1,94 +1,72 @@
 package nice.store.datn.controller;
 
 
-import jakarta.validation.Valid;
-import nice.store.datn.entity.DiaChi;
-import nice.store.datn.entity.GioHang;
-import nice.store.datn.entity.KhachHang;
 import nice.store.datn.entity.MauSac;
-import nice.store.datn.service.DiaChiService;
-import nice.store.datn.service.GioHangService;
 import nice.store.datn.service.MauSacService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
 
 @Controller
-@RequestMapping("/mau-sac")
+
 public class MauSacController {
+
     @Autowired
     private MauSacService mauSacService;
-    @GetMapping("/danh-sach")
-    public String getAllMauSac(Model model) {
-        List<MauSac> mauSacList = mauSacService.getAllMauSac();
-        model.addAttribute("mauSacList", mauSacList);
-        return "admin/mau-sac/danh-sach"; // List view for colors
+
+    @GetMapping("mau-sac")
+    public String listMauSac(Model model) {
+        model.addAttribute("listMauSac", mauSacService.getAllMauSac());
+        return "/admin/MauSac/MauSacIndex";
     }
 
-    @GetMapping("/chi-tiet-mau-sac/{id}")
-    public String getMauSacById(@PathVariable int id, Model model) {
-        Optional<MauSac> mauSac = mauSacService.getMauSacById(id);
-        if (mauSac.isPresent()) {
-            model.addAttribute("mauSac", mauSac.get());
-            return "admin/mau-sac/update";
-        } else {
-            return "redirect:/mau-sac/danh-sach";
-        }
-    }
-
-    @GetMapping("/them")
-    public String showAddMauSacForm(MauSac mauSac, Model model) {
+    // Hiển thị form thêm mới Màu Sắc
+    @GetMapping("/view-Mau-Sac")
+    public String addView(Model model) {
         model.addAttribute("mauSac", new MauSac());
-        return "admin/mau-sac/add-ms";
+        return "/admin/MauSac/MauSacAdd";
     }
 
-    @PostMapping("/them")
-    public String createMauSac(@ModelAttribute @Valid MauSac mauSac, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "admin/mau-sac/add-ms";
+    // Xử lý thêm Màu Sắc mới
+    @PostMapping("/addMau-Sac")
+    public String addMauSac(@ModelAttribute MauSac mauSac, Model model) {
+        if (mauSacService.existsByTenMauSac(mauSac.getTenMauSac())) {
+            model.addAttribute("errorMessage", "Tên Màu Sắc đã tồn tại. Vui lòng nhập tên khác.");
+            model.addAttribute("mauSac", mauSac); // Giữ lại dữ liệu đã nhập
+            return "/admin/MauSac/MauSacAdd";
         }
 
-        mauSacService.create(mauSac);
-        return "redirect:/mau-sac/danh-sach";
+        mauSacService.addMauSac(mauSac);
+        model.addAttribute("successMessage", "Màu Sắc đã được thêm thành công.");
+        return "redirect:/mau-sac"; // Chuyển hướng đến trang danh sách sau khi thêm thành công
     }
 
-    @GetMapping("/update/{id}")
-    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        Optional<MauSac> mauSac = mauSacService.getMauSacById(id);
-        if (mauSac.isPresent()) {
-            model.addAttribute("mauSac", mauSac.get());
-            return "admin/mau-sac/update";
-        } else {
-            return "redirect:/mau-sac/danh-sach";
-        }
+    // Hiển thị form cập nhật Màu Sắc
+    @GetMapping("/view-updateMauSac/{id}")
+    public String updateView(@PathVariable("id") Integer id, Model model) {
+        model.addAttribute("mauSac", mauSacService.getMauSacById(id).orElse(new MauSac()));
+        return "/admin/MauSac/MauSacUpdate";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateMauSac(@PathVariable("id") Integer id, @ModelAttribute MauSac mauSac) {
+    // Xử lý cập nhật Màu Sắc
+    @PostMapping("/updateMauSac")
+    public String updateMauSac(@RequestParam("maMauSac") String maMauSac, @ModelAttribute MauSac mauSac, Model model) {
         try {
-            MauSac updatedMauSac = mauSacService.update(id, mauSac);
-            return "redirect:/mau-sac/danh-sach";
-        } catch (RuntimeException e) {
-
-            e.printStackTrace();
-            return "redirect:/mau-sac/danh-sach";
+            mauSacService.updateMauSac(maMauSac, mauSac); // Truyền `maMauSac` vào service
+            return "redirect:/mau-sac"; // Chuyển hướng sau khi cập nhật thành công
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage()); // Hiển thị thông báo lỗi nếu không tìm thấy
+            return "/admin/MauSac/MauSacUpdate"; // Quay lại form cập nhật
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Đã xảy ra lỗi khi cập nhật Màu Sắc.");
+            return "/admin/MauSac/MauSacUpdate";
         }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteMauSac(@PathVariable Integer id) {
-        boolean isDeleted = mauSacService.deleteMauSacById(id);
-        if (isDeleted) {
-            return ResponseEntity.ok("Màu Sắc đã được xóa!");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Màu sắc không tồn tại!");
-        }
+    // Xử lý xóa Màu Sắc
+    @GetMapping("/deleteMauSac/{id}")
+    public String deleteMauSac(@PathVariable Integer id) {
+        mauSacService.deleteMauSac(id);
+        return "redirect:/mau-sac";
+
     }
 }

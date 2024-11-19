@@ -38,7 +38,4 @@ public class MauSac {
     @Column(name = "TRANG_THAI")
     private int trangThai;
 
-    @OneToMany(mappedBy = "idMauSac", cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<SanPhamChiTiet> idSPCT;
 }

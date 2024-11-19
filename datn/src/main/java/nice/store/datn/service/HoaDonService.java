@@ -40,4 +40,30 @@ public class HoaDonService {
 
 
 
+    //Hải Làm Bán Hàng
+    public HoaDon detail(Integer id) {
+        Optional<HoaDon> optional = hoaDonRepository.findById(id);
+        return optional.map(o -> o).orElse(null);
+    }
+
+    public HoaDon add(HoaDon hoaDon) {
+        return hoaDonRepository.save(hoaDon);
+    }
+
+    public HoaDon taoMaHoaDon(Integer id, HoaDon hoaDon) {
+        Optional<HoaDon> optional = hoaDonRepository.findById(id);
+        return optional.map(o -> {
+            o.setMaHd(hoaDon.getMaHd());
+            return hoaDonRepository.save(o);
+        }).orElse(null);
+    }
+
+    public HoaDon updatePGG(Integer id, HoaDon hd) {
+        Optional<HoaDon> optional = hoaDonRepository.findById(id);
+        return optional.map(o -> {
+            o.setPhieuGiamGia(hd.getPhieuGiamGia());
+            return hoaDonRepository.save(o);
+        }).orElse(null);
+    }
+
 }

@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/b0d3163487.js" crossorigin="anonymous"></script>
+
+    <title>Dashboard - Voler Admin Dashboard</title>
+    <!-- Đặt Bootstrap lên đầu tiên -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Link các thư viện CSS và JavaScript cho DataTables và jQuery -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
+    <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <style>
+        .container-custom {
+            background-color: #fff;
+            border: 4px solid #fff;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 0 auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+
+        .container-custom h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        button.taohdchobuuton {
+            font-weight: bold;
+            border: 2px solid #2d6a4f;
+            border-radius: 8px;
+        }
+
+        /*hd chờ*/
+        #hien-thi-hoa-don-cho {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        button.h-d-c {
+            font-weight: bold;
+            color: black;
+            font-size: 1.1rem;
+            padding: 12px 20px;
+            border: 2px solid #2d6a4f;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button.h-d-c:hover {
+            background-color: #2d6a4f;
+            transform: scale(1.05);
+        }
+
+        /*    button them sản phẩm*/
+
+        /* Ẩn modal mặc định */
+        /* Modal chung cho danh sách sản phẩm */
+        .modal-overlay-danh-sach-san-pham-unique {
+            display: none; /* Mặc định modal bị ẩn */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Màu nền đen mờ */
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Nội dung modal cho danh sách sản phẩm */
+        .modal-content-danh-sach-san-pham-unique {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 83%;
+            max-height: 90%;
+            overflow-y: auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transform: scale(0.8) translateX(10%); /* Dịch sang phải 10% */
+            transition: transform 0.3s ease-in-out;
+        }
+
+
+        /* Khi modal được hiển thị, thêm hiệu ứng zoom */
+        .modal-overlay-danh-sach-san-pham-unique.show {
+            display: flex;
+        }
+
+        .modal-overlay-danh-sach-san-pham-unique.show .modal-content-danh-sach-san-pham-unique {
+            transform: scale(1);
+        }
+
+        /* Đóng nút trong modal */
+        .modal-content-danh-sach-san-pham-unique button {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-content-danh-sach-san-pham-unique button:hover {
+            background-color: #d32f2f;
+        }
+
+
+        /*   khach hang */
+        /* Nút chọn khách hàng */
+        .btn-select-customer {
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-select-customer:hover {
+            background-color: #0056b3;
+        }
+
+        /* Modal chung */
+        .modal-overlay-customer {
+            display: none; /* Mặc định modal bị ẩn */
+            position: fixed;
+            top: 0;
+            left: 10%;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Màu nền đen mờ */
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Nội dung modal */
+        .modal-content-customer {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            width: 60%;
+            max-height: 80%;
+            overflow-y: auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transform: scale(0.8);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Khi modal được hiển thị, thêm hiệu ứng zoom */
+        .modal-overlay-customer.show {
+            display: flex;
+        }
+
+        .modal-overlay-customer.show .modal-content-customer {
+            transform: scale(1);
+        }
+
+        /* Đóng nút trong modal */
+        .modal-content-customer button {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-content-customer button:hover {
+            background-color: #d32f2f;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            width: 300px;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+            color: white;
+        }
+
+        .notification.thanhCong {
+            background-color: #4CAF50;
+        }
+
+        .notification.thatBai {
+            background-color: #f44336;
+        }
+
+        .notification .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: #fff;
+            transition: width 3s linear;
+        }
+
+        .table {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table thead {
+            background-color: #f8f9fa; /* Màu sáng nhẹ hơn */
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f5f9; /* Hiệu ứng hover nhạt hơn */
+        }
+
+    </style>
+
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        thead {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="app">
+    <span th:replace="~{fragments/sidebar :: sidebar}"></span>
+    <div id="main">
+        <span th:replace="~{fragments/header :: header}"></span>
+        <div class="main-content container-fluid" layout:fragment="content">
+            <!--                Tạo khung Bán hàng -->
+            <div class="container-custom text-center">
+                <div class="row">
+                    <!-- Phần tiêu đề -->
+                    <div class="col-md-12 mb-4">
+                        <h1 class="text-lg-center">Bán Hàng Tại Quầy</h1>
+                    </div>
+                    <!-- Nội dung -->
+                    <!--tạo hóa đơn chờ                    -->
+                    <div class="flex justify-end mb-4">
+                        <button id="tao-hd-cho"
+                                class="taohdchobuuton bg-primary text-white font-semibold py-2 px-4 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            Tạo hóa đơn
+                        </button>
+                    </div>
+                    <!--hiển thị hóa đơn chờ-->
+                    <div class="border-b">
+                        <div id="tabs-container" class="flex space-x-2 ml-3">
+                        </div>
+                    </div>
+
+                    <!--  hiển thị sản phẩm chọn hóa đơn  -->
+                    <hr>
+                    <br>
+
+                    <div class="p-4">
+                        <!-- Nút kích hoạt modal -->
+                        <button id="hienThiDanhSachSanPham" style="background-color: #4CAF50; color: white; padding: 10px 20px; font-size: 16px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; transition: all 0.3s ease;"
+                                onmouseover="this.style.backgroundColor='#45a049'; this.style.transform='scale(1.05)';"
+                                onmouseout="this.style.backgroundColor='#4CAF50'; this.style.transform='scale(1)';"
+                                onfocus="this.style.boxShadow='0 0 5px rgba(72, 212, 67, 0.8)';"
+                                onblur="this.style.boxShadow='none';">
+                            Thêm sản phẩm
+                        </button>
+
+
+                        <!-- Modal (cửa sổ hiện ra) dành riêng cho danh sách sản phẩm -->
+                        <div id="modalDachSachSanPham" class="modal-overlay-danh-sach-san-pham-unique"
+                             style="display: none;">
+                            <div class="modal-content-danh-sach-san-pham-unique">
+                                <h1>Danh sách sản phẩm</h1>
+
+                                <!-- Load danh sách sản phẩm -->
+                                <table id="tableDanhSachSanPham" class="table table-hover table-bordered align-middle">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col" class="text-center">STT</th>
+                                        <th scope="col" class="text-center">Ảnh</th>
+                                        <th scope="col" class="text-center">Tên Sản Phẩm</th>
+                                        <th scope="col" class="text-center">Giá Bán</th>
+                                        <th scope="col" class="text-center">Số Lượng</th>
+                                        <th scope="col" class="text-center">Kích Thước</th>
+                                        <th scope="col" class="text-center">Màu Sắc</th>
+                                        <th scope="col" class="text-center">Trạng Thái</th>
+                                        <th scope="col" class="text-center">Hành Động</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="danhSachSanPham">
+                                    <!-- Dữ liệu sẽ được thêm vào đây -->
+                                    </tbody>
+                                </table>
+
+                                <button onclick="hideModalDanhSachSanPham()">Đóng</button>
+                            </div>
+                        </div>
+
+                        <div class="border-top mt-1 mb-3"></div>
+
+                        <!-- Container hiển thị nội dung của hóa đơn khi chọn sản phẩm -->
+                        <div id="content-container"></div>
+                    </div>
+
+
+                    <!--Tiếp-->
+                    <!--                  div  Tài Khoản  -->
+                    <div class="container-account text-center mt-4">
+                        <div class="row">
+                            <!-- Phần tiêu đề -->
+                            <div class="col-md-12 mb-4">
+                                <h3 class="">Tên khách hàng: <span id="tenKhachHang">Đang tải...</span></h3>
+                            </div>
+
+                            <!-- Nút chọn khách hàng -->
+                            <div class="mb-4">
+                                <button id="chon-khach-hang" class="btn-select-customer">
+                                    Chọn khách hàng
+                                </button>
+                            </div>
+
+                            <!-- Modal cho chọn khách hàng -->
+                            <div id="modalChonKhachHang" class="modal-overlay-customer">
+                                <div class="modal-content-customer">
+                                    <h1>Danh sách khách hàng</h1>
+
+                                    <table id="tableKhachHang" class="table table-striped mt-3">
+                                        <thead class="table-primary">
+                                        <tr>
+                                            <th class="text-center">STT</th>
+                                            <th class="text-left">Tên khách hàng</th>
+                                            <th class="text-left">Email</th>
+                                            <th class="text-left">Số điện thoại</th>
+                                            <th class="text-center">Trạng thái</th>
+                                            <th class="text-center">Hành động</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="listKhachHang">
+                                        <!-- Dữ liệu sẽ được điền vào đây từ JS -->
+                                        </tbody>
+                                    </table>
+
+                                    <button onclick="hideModalKhachHang()">Đóng</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <hr>
+                    <br>
+                    <h1>Form Thanh Toán</h1>
+
+                </div>
+
+
+                <!--                Thong báo   -->
+                <div id="notification" class="notification">
+                    <span id="notification-message"></span>
+                    <div id="progress-bar" class="progress-bar"></div>
+                </div>
+
+
+                <!--cuoi trong khung-->
+            </div>
+        </div>
+        <span th:replace="~{fragments/footer :: footer}"></span>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script th:src="@{/js/feather.min.js}"></script>
+<script th:src="@{/js/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/Chart.min.js}"></script>
+<script th:src="@{/js/apexcharts.min.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+<script th:src="@{/js/ban-hang.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+<script>
+
+    var idPGG = null;
+    var maPGG = '';
+    var GiamToiDa = 0;
+    var countHD = 0;
+    var tongTienTrongHD = 0;
+    let tabsData = [];
+    var idTabHD = null;
+
+    function GetHDCho() {
+        $.ajax({
+            url: '/api/ban-hang',
+            method: 'GET',
+            success: function (response) {
+                renderTabs(response);
+                console.log("t" + response);
+            },
+            error: function (xhr, status, error) {
+                console.error('Lỗi khi lấy dữ liệu hóa đơn:', error);
+            }
+        });
+    }
+
+    //hải gen tab
+    function renderTabs() {
+        const tabsContainer = document.getElementById('tabs-container');
+        const contentContainer = document.getElementById('content-container');
+
+        // Clear old content
+        tabsContainer.innerHTML = '';
+        contentContainer.innerHTML = '';
+
+        tabsData.forEach((tab, index) => {
+            const tabButton = document.createElement('button');
+            tabButton.classList.add('tab', 'h-d-c', 'px-4', 'py-2', 'bg-gray-200', 'hover:bg-gray-300');
+
+            if (index === 0) tabButton.classList.add('tab-active');
+
+            tabButton.textContent = tab.title;
+
+            tabButton.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+
+                tabButton.classList.add('tab-active');
+                const tabContent = document.getElementById(`tab-content-${tab.id}`);
+                tabContent.classList.remove('hidden');
+
+                idTabHD = tab.id;
+                PhieuGiamGiaPhuHop(tongTienTrongHD);
+                getDuLieu(idTabHD);
+                // getPhuongThucThanhToan(idTabHD);
+
+                if (!tabsData[index].contentLoaded) {
+                    // getDuLieu(tab.id);
+                }
+            });
+
+            // Thêm tabButton vào container chứa các tab
+            tabsContainer.appendChild(tabButton);
+
+            // Tạo nội dung cho tab với nội dung hóa đơn
+            const tabContent = document.createElement('div');
+            tabContent.id = `tab-content-${tab.id}`;
+            tabContent.classList.add('tab-content', 'p-4');
+
+            // Nếu hóa đơn có nội dung, gán vào tabContent
+            tabContent.innerHTML = tab.content || 'Không có nội dung';
+
+            // Nếu không phải tab đầu tiên, ẩn nội dung
+            if (index !== 0) tabContent.classList.add('hidden');
+
+            // Thêm nội dung của tab vào container nội dung
+            contentContainer.appendChild(tabContent);
+        });
+
+        // Mở tab đầu tiên (nếu có dữ liệu)
+        if (tabsData.length > 0) {
+            document.querySelector('.tab').click();
+        }
+    }
+
+    //Tạo Hóa Đơn
+    document.getElementById('tao-hd-cho').addEventListener('click', () => {
+        taoHoaDon();
+    });
+
+    function taoHoaDon() {
+        $.ajax({
+            url: '/api/ban-hang',
+            method: 'GET',
+            success: function (response) {
+                const countHD = response.length;
+                if (countHD >= 6) {
+                    showNotification("Đã đủ 6 hóa đơn chờ, không thể tạo thêm", 'thatBai');
+                    return;
+                }
+                $.ajax({
+                    url: `/api/ban-hang/tao-hoa-don`,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({}),
+                    success: function (response) {
+                        idHoaDon(() => {
+                            const lastTabIndex = tabsData.length - 1;
+                            document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+                            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+
+                            document.querySelectorAll('.tab')[lastTabIndex].classList.add('tab-active');
+                            document.querySelectorAll('.tab-content')[lastTabIndex].classList.remove('hidden');
+                            PhieuGiamGiaPhuHop(tongTienTrongHD);
+
+                            getDuLieu(tabsData[lastTabIndex].id);
+                            loadTenKhachHang(1);
+                        });
+                        showNotification("Tạo hóa đơn thành công", "thanhCong");
+                    },
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Lỗi khi lấy dữ liệu hóa đơn:', error);
+            }
+        });
+    }
+
+    //load hd chờ
+    function idHoaDon(callback) {
+        $.ajax({
+            url: `/api/ban-hang`,
+            method: 'GET',
+            success: function (response) {
+                countHD = response.length;
+                tabsData = response.map((hd, index) => ({
+                    id: hd.id,
+                    title: `Hóa đơn ${hd.id}`,
+                    content: '',
+                    contentLoaded: false
+                }));
+
+                // Đảm bảo rằng callback được gọi sau khi renderTabs hoàn thành
+                renderTabs(function () {
+                    PhieuGiamGiaPhuHop(tongTienTrongHD);  // Cập nhật phiếu giảm giá
+                    if (callback) callback();  // Gọi callback sau khi tất cả công việc hoàn thành
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Lỗi:', error);
+            }
+        });
+    }
+
+    //TẢi web gọi load hdcho
+    window.onload = function () {
+        idHoaDon();
+    };
+
+    const formatVND = (tongtien) => {
+        if (tongtien < 0) {
+            tongtien = 0;
+        }
+        return tongtien.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ' VNĐ';
+    }
+
+    function getDuLieu(idHoaDon) {
+        const allTabContents = document.querySelectorAll('.tab-content');
+        allTabContents.forEach(tab => {
+            tab.style.display = 'none';
+        });
+
+        $.ajax({
+            url: `/api/hoa-don/${idHoaDon}`,
+            method: 'GET',
+            success: function (response) {
+                console.log('Dữ liệu API trả về:', response);
+                const hdctList = response || [];
+                const tabContent = document.getElementById(`tab-content-${idHoaDon}`);
+
+                tabContent.style.display = 'block';  // Hiển thị phần của hóa đơn hiện tại
+                if (hdctList.length === 0) {
+                    tabContent.innerHTML = `
+                <div class="content bg-white flex flex-col items-center justify-center py-12">
+                    <div class="text-center">
+                        <img src="https://www.fotofabrikas.lt/data/upload/images/page/empty_cart.png" alt="Empty Cart" class="w-1/2 mx-auto mb-6">
+                        <p class="text-gray-500 text-2xl mb-4">Không có sản phẩm trong hóa đơn này</p>
+                    </div>
+                </div>`;
+                } else {
+                    // Nếu có sản phẩm, hiển thị danh sách chi tiết
+                    tabContent.innerHTML = `
+    <table id="tableHoaDonChiTiet" class="divide-y divide-gray-200 w-full">
+        <thead class="bg-blue-500 text-white">
+            <tr>
+                <th class="px-6 py-3 text-left">STT</th>
+                <th class="px-6 py-3 text-left">Sản phẩm</th>
+                <th class="px-6 py-3 text-left">Số lượng</th>
+                <th class="px-6 py-3 text-left">Tổng tiền</th>
+                <th class="px-6 py-3 text-left">Hành Động</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            ${hdctList.map((hdct, index) => {
+                        const tenSanPham = hdct.tenSanPham || 'Không rõ tên';
+                        const mauSac = hdct.mauSac || 'Không rõ màu';
+                        const donGia = hdct.donGia || 0;
+                        const soLuong = hdct.soLuong || 0;
+                        const tongTien = donGia * soLuong;
+
+                        return `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">${index + 1}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <h2>${tenSanPham}-${mauSac}</h2>
+                          <h3 style="color: red">Giá bán :${formatVND(donGia)}</h3>
+                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap">${soLuong}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${formatVND(tongTien)}</td>
+                         <td class="px-6 py-4 whitespace-nowrap"><a href="">Xóa</a></td>
+                    </tr>
+                `;
+                    }).join('')}
+        </tbody>
+    </table>
+`;
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Lỗi khi lấy dữ liệu hóa đơn:', xhr.responseText || error);
+                const tabContent = document.getElementById(`tab-content-${idHoaDon}`);
+                tabContent.innerHTML = `<p class="text-red-500">Không thể tải dữ liệu. Vui lòng thử lại sau.</p>`;
+            }
+        });
+    }
+
+    //add pgg vào hóa đơn
+    function addPhieuGiamGia(idHD, idPGG) {
+
+        $.ajax({
+            url: `/api/hoa-don/update-phieu-giam-gia/${idHD}`,
+            method: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                "phieuGiamGia": {
+                    id: idPGG
+                }
+            }),
+            success: function (response) {
+                idPGG = null;
+            },
+            error: function (error) {
+                console.error("Error updating PhieuGiamGia", error);
+            }
+        });
+    }
+
+    //Chọn PGG Phù Hợp với giá trị lớn nhất
+    function PhieuGiamGiaPhuHop(max) {
+
+        $.ajax({
+            url: `/api/hoa-don/phieu-giam-gia-phu-hop/${max}`,
+            method: 'GET',
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Response: ", response); // Log toàn bộ response
+                if (response && response.length <= 0) {
+                    idPGG = null;
+                    maPGG = '';
+                    GiamToiDa = 0;
+                } else if (max < response[0].donToiThieu) {
+                    idPGG = null;
+                    maPGG = '';
+                    GiamToiDa = 0;
+                } else {
+                    maPGG = response[0].ma;
+                    idPGG = response[0].id;
+                    if (response[0].loaiVoucher === true) {
+                        let phanTram = max / response[0].giaTriGiam;
+                        if (response[0].giaTriMax < phanTram) {
+                            GiamToiDa = response[0]?.giaTriMax || 0;
+                        } else {
+                            GiamToiDa = phanTram;
+                        }
+                    } else {
+                        GiamToiDa = response[0]?.giaTriMax || 0;
+                    }
+                }
+                console.log("idPGG: ", idPGG);  // Log giá trị idPGG
+                console.log("maPGG: ", maPGG);  // Log giá trị maPGG
+                console.log("GiamToiDa: ", GiamToiDa);  // Log giá trị GiamToiDa
+
+                addPhieuGiamGia(idTabHD, idPGG);
+            },
+        });
+    }
+    //Load modal themsp
+    function loadDanhSachSanPham() {
+        $("#danhSachSanPham").html('<tr><td colspan="9" class="text-center">Đang tải...</td></tr>'); // Hiển thị thông báo đang tải
+        $.ajax({
+            url: '/api/ban-hang/danh-sach-san-pham-chi-tiet',  // Gọi API
+            method: 'GET',
+            success: function (result) {
+                console.log(result);
+                let list = "";
+                // Duyệt qua kết quả trả về từ API và xây dựng bảng dữ liệu
+                result.forEach((sp, index) => {
+                    let hinhAnhSrc = sp.hinhAnh ? `/desktop-images/${sp.hinhAnh}` : '/desktop-images/xs10109.jpg';
+
+                    list += `
+                    <tr class="hover:bg-gray-100">
+                        <td class="text-center">${index + 1}</td>
+
+                        <td>
+                            <div style="border: 1px solid #ccc; text-align: center; padding: 2px;">
+                                <img src="${hinhAnhSrc}" alt="Hình ảnh"
+                                    style="width: 50px; height: 40px; object-fit: cover; display: block; margin: 0 auto;" />
+                            </div>
+                        </td>
+                        <td class="font-bold">
+                            <h4>${sp.tenSanPham}</h4>
+                            <h7 style="color: #3dd5f3">${sp.thuongHieu}</h7>
+                            <h7 style="color: #3dd5f3">${sp.chatLieu}</h7>
+                        </td>
+                        <td>${sp.giaBan}</td>
+                        <td class="text-center">${sp.soLuong}</td>
+                        <td class="text-center">${sp.kichCo || 'N/A'}</td>
+                        <td class="text-center">${sp.mauSac || 'N/A'}</td>
+                        <td class="text-center">${sp.trangThai === 1 ? 'Còn hàng' : 'Hết hàng'}</td>
+                        <td class="text-center">
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" data-id="${sp.id}">
+                                Thêm
+                            </button>
+                        </td>
+                    </tr>`;
+                });
+                $("#danhSachSanPham").html(list);  // Cập nhật danh sách sản phẩm vào bảng
+            },
+            error: function () {
+                $("#danhSachSanPham").html('<tr><td colspan="9" class="text-center text-red-500">Không thể tải dữ liệu!</td></tr>');  // Thông báo lỗi khi không thể tải dữ liệu
+            }
+        });
+    }
+
+    // load Khach hang
+    function loadDanhSachKhachHang() {
+        $("#listKhachHang").html('<tr><td colspan="6" class="text-center">Đang tải...</td></tr>'); // Hiển thị thông báo đang tải
+        $.ajax({
+            url: '/api/ban-hang/danh-sach-khach-hang',  // Gọi API lấy danh sách khách hàng
+            method: 'GET',
+            success: function (result) {
+                console.log(result);
+                let list = "";
+                // Duyệt qua kết quả trả về từ API và xây dựng bảng dữ liệu
+                result.forEach((kh, index) => {
+                    list += `
+                    <tr class="hover:bg-gray-100">
+                        <td class="text-center">${index + 1}</td>
+                        <td>${kh.ten || 'N/A'}</td>
+                        <td>${kh.email || 'N/A'}</td>
+                        <td class="text-center">${kh.sdt || 'N/A'}</td>
+                        <td class="text-center">${kh.trangThai === 1 ? 'Hoạt động' : 'Không hoạt động'}</td>
+                        <td class="text-center">
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" data-id="${kh.id}">
+                                Chọn
+                            </button>
+                        </td>
+                    </tr>`;
+                });
+                $("#listKhachHang").html(list);  // Cập nhật danh sách khách hàng vào bảng
+            },
+            error: function () {
+                $("#listKhachHang").html('<tr><td colspan="6" class="text-center text-red-500">Không thể tải dữ liệu!</td></tr>');  // Thông báo lỗi khi không thể tải dữ liệu
+            }
+        });
+    }
+
+
+    function loadTenKhachHang(id) {
+        // Hiển thị "Đang tải..." trước khi gọi API
+        $("#tenKhachHang").text("Đang tải...");
+
+        $.ajax({
+            url: `/api/ban-hang/khach-hang/${id}`,
+            method: 'GET',
+            success: function (response) {
+                $("#tenKhachHang").text(response.ten);
+            },
+            error: function () {
+                $("#tenKhachHang").text("Không thể tải tên khách hàng!");
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        loadTenKhachHang(1);  // Gọi API với ID mặc định là 1
+    });
+
+
+
+
+    // Hàm để hiển thị modal
+        function showModalDanhSachSanPham() {
+            document.getElementById('modalDachSachSanPham').style.display = 'flex'; // Hiển thị modal
+            loadDanhSachSanPham();
+        }
+
+        // Hàm để ẩn modal
+        function hideModalDanhSachSanPham() {
+            document.getElementById('modalDachSachSanPham').style.display = 'none'; // Ẩn modal
+        }
+
+        // Sự kiện khi nhấn nút "Thêm sản phẩm"
+        document.getElementById('hienThiDanhSachSanPham').addEventListener('click', function () {
+            showModalDanhSachSanPham(); // Hiển thị modal
+        });
+
+        //Khach hang
+        // Hàm hiển thị modal chọn khách hàng
+        function showModalKhachHang() {
+            document.getElementById('modalChonKhachHang').classList.add('show');
+            loadDanhSachKhachHang();
+        }
+
+        // Hàm ẩn modal chọn khách hàng
+        function hideModalKhachHang() {
+            document.getElementById('modalChonKhachHang').classList.remove('show');
+        }
+
+        // Sự kiện khi nhấn nút chọn khách hàng
+        document.getElementById('chon-khach-hang').addEventListener('click', function () {
+            showModalKhachHang(); // Hiển thị modal chọn khách hàng
+
+        });
+
+        //Thanh thông báo
+        function showNotification(message, status) {
+            var notification = document.getElementById('notification');
+            var notificationMessage = document.getElementById('notification-message');
+            var progressBar = document.getElementById('progress-bar');
+
+            notification.className = 'notification'; // Reset class
+            if (status === 'thanhCong') {
+                notification.classList.add('thanhCong');
+            } else if (status === 'thatBai') {
+                notification.classList.add('thatBai');
+            }
+
+            if (message) {
+                notificationMessage.textContent = message;
+                notification.style.display = 'block';
+                progressBar.style.width = '100%';
+
+                setTimeout(function () {
+                    progressBar.style.width = '0';
+                }, 10);
+
+                setTimeout(function () {
+                    notification.style.display = 'none';
+                    progressBar.style.width = '100%';
+                }, 3010);
+            }
+        }
+
+</script>
+
+</html>

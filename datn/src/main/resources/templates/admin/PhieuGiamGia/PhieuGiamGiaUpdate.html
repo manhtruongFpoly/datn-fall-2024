@@ -6,6 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Voler Admin Dashboard</title>
+    <!-- Link tới Bootstrap 5.0 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <!-- Thêm CSS của SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.2/dist/sweetalert2.min.css">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
@@ -20,7 +25,7 @@
         <span th:replace="~{fragments/header :: header}"></span>
         <div class="main-content container-fluid" layout:fragment="content"><!--dynamic content-->
 
-<!--            from-->
+            <!--            from-->
             <div class="container mt-5">
                 <div class="row justify-content-center">
                     <div class="col-md-8">
@@ -34,7 +39,7 @@
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label for="ma" class="form-label">Mã Voucher:</label>
-                                            <input type="text" id="ma" name="ma" class="form-control form-control-sm" th:field="*{ma}" required maxlength="50" placeholder="Nhập mã voucher">
+                                            <input type="text" id="ma" name="ma" class="form-control form-control-sm" th:field="*{ma}" required maxlength="50" placeholder="Nhập mã voucher" readonly>
                                         </div>
 
                                         <div class="col-md-6">
@@ -66,17 +71,24 @@
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label for="giaTriGiam" class="form-label">Giá Trị Giảm:</label>
-                                            <input type="number" id="giaTriGiam" name="giaTriGiam" class="form-control form-control-sm" th:field="*{giaTriGiam}" required step="0.01" placeholder="Nhập giá trị giảm">
+                                            <label for="donToiThieu" class="form-label">Đơn Tối Thiểu:</label>
+                                            <input type="number" id="donToiThieu" name="donToiThieu" class="form-control form-control-sm" th:field="*{donToiThieu}" required step="0.01" placeholder="Nhập đơn tối thiểu">
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
                                         <div class="col-md-6">
+                                            <label for="giaTriGiam" class="form-label">Giá Trị Giảm:</label>
+                                            <input type="number" id="giaTriGiam" name="giaTriGiam" class="form-control form-control-sm" th:field="*{giaTriGiam}" required step="0.01" placeholder="Nhập giá trị giảm">
+                                        </div>
+
+                                        <div class="col-md-6">
                                             <label for="giaTriMax" class="form-label">Giá Trị Tối Đa:</label>
                                             <input type="number" id="giaTriMax" name="giaTriMax" class="form-control form-control-sm" th:field="*{giaTriMax}" required step="0.01" placeholder="Nhập giá trị tối đa">
                                         </div>
+                                    </div>
 
+                                    <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label for="soLuong" class="form-label">Số Lượng:</label>
                                             <input type="number" id="soLuong" name="soLuong" class="form-control form-control-sm" th:field="*{soLuong}" required min="1" placeholder="Nhập số lượng">
@@ -89,16 +101,16 @@
                                     </div>
 
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn-success btn-sm">Cập Nhật Voucher</button>
+                                        <button type="submit" class="btn btn-success btn-sm" id="updateVoucherBtn">Cập Nhật Voucher</button>
                                         <button type="button" class="btn btn-secondary btn-sm" onclick="resetForm()">Làm Mới</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
-
 
 
         </div>
@@ -113,10 +125,35 @@
 <script th:src="@{/js/apexcharts.min.js}"></script>
 <script th:src="@{/js/dashboard.js}"></script>
 <script th:src="@{/js/main.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function resetForm() {
         document.getElementById("updateVoucherForm").reset();
     }
+
+    document.getElementById('updateVoucherBtn').addEventListener('click', function (e) {
+        e.preventDefault(); // Ngừng hành động submit của form mặc định
+
+        // Hiển thị thông báo xác nhận trước khi cập nhật
+        Swal.fire({
+            title: 'Bạn có muốn cập nhật voucher này?',
+            text: "Bạn không thể hoàn tác hành động này!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Vâng, tiếp tục!',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            // Nếu người dùng chọn "Tiếp tục"
+            if (result.isConfirmed) {
+                // Submit form nếu xác nhận
+                document.getElementById('updateVoucherForm').submit();
+            } else {
+                console.log('Cập nhật voucher bị hủy.');
+            }
+        });
+    });
 </script>
 <!-- Link tới Bootstrap 5.0 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

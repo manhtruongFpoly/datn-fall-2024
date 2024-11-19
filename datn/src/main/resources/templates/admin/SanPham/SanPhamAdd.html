@@ -29,38 +29,38 @@
                 <span th:text="${successMessage}"></span>
             </div>
 
-            <form th:action="@{/san-pham/add}" th:object="${sanPhamAdd}" method="post"
+            <form th:action="@{/sanpham/tao-moi}" th:object="${sanPhamAdd}" method="post"
                   id="addSanPhamform" class="container" style="max-width: 500px;">
                 <div class="mb-3">
                     <label for="productId" class="form-label">Mã Sản Phẩm:</label>
-                    <input type="text" id="productId" name="productId" class="form-control form-control-sm"
-                           required maxlength="50" placeholder="Nhập">
+                    <input type="text" id="productId" name="maSanPham" class="form-control form-control-sm"
+                           required maxlength="50" readonly style="background-color: #f0f0f0;">
                 </div>
 
                 <div class="mb-3">
                     <label for="name" class="form-label">Tên Sản Phẩm:</label>
-                    <input type="text" id="name" name="name"
+                    <input type="text" id="name" name="tenSP"
                            class="form-control form-control-sm"
                            required maxlength="50" placeholder="Nhập tên">
                 </div>
 
                 <div class="mb-3">
                     <label for="status" class="form-label">Trạng thái:</label>
-                    <select id="status" name="status" class="form-control form-control-sm" required>
+                    <select id="status" name="trangThai" class="form-control form-control-sm" required>
                         <option value="">Chọn trạng thái</option>
                         <option value="1">Hoạt động</option>
                         <option value="0">Không hoạt động</option>
-                        <option value="2">Đang chờ xử lý</option>
+
                     </select>
                 </div>
 
                 <div>
                     <button type="submit" class="btn btn-primary btn-sm">Thêm</button>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="resetForm()">Làm Mới</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="window.location.href='/products';">Quay Lại</button>
                 </div>
             </form>
 
-
+        </div>
         </div>
         <span th:replace="~{fragments/footer :: footer}"></span>
     </div>
