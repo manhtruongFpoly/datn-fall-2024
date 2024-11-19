@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cập Nhật Màu Sắc</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
+    <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <style>
+        .card-body {
+            background-color: white;
+        }
+        .font-bold {
+            font-weight: bold;
+        }
+        .text-success {
+            color: green;
+        }
+        .text-danger {
+            color: red;
+        }
+        .form-group {
+            width: 100%;
+        }
+        .col-md-6 {
+            padding-right: 15px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <span th:replace="~{fragments/sidebar :: sidebar}"></span> <!-- Sidebar -->
+    <div id="main">
+        <span th:replace="~{fragments/header :: header}"></span> <!-- Header -->
+
+        <div class="main-content container-fluid">
+            <h1 class="text-primary mb-4" th:text="'Cập Nhật Màu Sắc - ' + ${mauSac.orElse(null).tenMauSac}"></h1>
+            <div class="card">
+                <div class="card-body">
+                    <form th:action="@{/mau-sac/update/{id}(id=${mauSac.id})}" th:object="${mauSac}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Tên Màu</label>
+                            <input type="text" class="form-control" th:field="*{tenMauSac}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mã Màu</label>
+                            <input type="text" class="form-control" th:field="*{maMauSac}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Trạng Thái</label>
+                            <select class="form-select" th:field="*{trangThai}">
+                                <option value="0" th:selected="*{trangThai == 0}">Hoạt động</option>
+                                <option value="1" th:selected="*{trangThai == 1}">Không hoạt động</option>
+
+                            </select>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Cập nhật Màu Sắc</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <span th:replace="~{fragments/footer :: footer}"></span> <!-- Footer -->
+</div>
+
+
+<script th:src="@{/js/feather.min.js}"></script>
+<script th:src="@{/js/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/Chart.min.js}"></script>
+<script th:src="@{/js/apexcharts.min.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

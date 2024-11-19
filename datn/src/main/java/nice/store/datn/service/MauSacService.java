@@ -45,44 +45,7 @@ public class MauSacService {
 
     public MauSac updateMauSac(String maMauSac, MauSac updatedMauSac) {
 
-        Optional<MauSac> existingMauSacOpt = mauSacRepository.findByMaMauSac(maMauSac);
-
-        if (existingMauSacOpt.isPresent()) {
-
-            MauSac existingMauSac = existingMauSacOpt.get();
 
 
-            existingMauSac.setTenMauSac(updatedMauSac.getTenMauSac());
-            existingMauSac.setTrangThai(updatedMauSac.getTrangThai());
-
-
-
-            existingMauSac.setNgaySua(LocalDateTime.now());
-
-            // Save the updated MauSac
-            return mauSacRepository.save(existingMauSac);
-        } else {
-            throw new EntityNotFoundException("MauSac with maMauSac " + maMauSac + " not found");
-        }
-    }
-
-
-
-    public String deleteMauSac(Integer id) {
-        if (mauSacRepository.existsById(id)) {
-            mauSacRepository.deleteById(id);
-            return "Xóa màu sắc thành công!";
-        }
-        return "Không tìm thấy màu sắc!";
-    }
-
-
-    public Optional<MauSac> getMauSacById(Integer id) {
-        return mauSacRepository.findById(id);
-    }
-
-
-    public boolean existsByTenMauSac(String tenMauSac) {
-        return mauSacRepository.existsByTenMauSac(tenMauSac);
     }
 }

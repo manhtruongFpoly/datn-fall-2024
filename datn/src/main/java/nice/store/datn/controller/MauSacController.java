@@ -1,19 +1,17 @@
 package nice.store.datn.controller;
 
-import jakarta.persistence.EntityNotFoundException;
+
 import nice.store.datn.entity.MauSac;
 import nice.store.datn.service.MauSacService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+
 
 @Controller
+
 public class MauSacController {
 
     @Autowired
     private MauSacService mauSacService;
-
 
     @GetMapping("mau-sac")
     public String listMauSac(Model model) {
@@ -69,5 +67,6 @@ public class MauSacController {
     public String deleteMauSac(@PathVariable Integer id) {
         mauSacService.deleteMauSac(id);
         return "redirect:/mau-sac";
+
     }
 }
