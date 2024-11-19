@@ -1,142 +1,157 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/b0d3163487.js" crossorigin="anonymous"></script>
+
     <title>Danh Sách Khách Hàng</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Đặt Bootstrap lên đầu tiên -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Link các thư viện CSS và JavaScript cho DataTables và jQuery -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/app.css}">
-
-    <link rel="stylesheet" th:href="@{/css/fontawesome.min.css}">
-    <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
-    <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
-    <link rel="stylesheet" th:href="@{/css/fontawesome-all.min.css}">
     <style>
-        /* Tăng chiều cao dòng một cách vừa phải */
+        .search-form {
+            background-color: white;
+        }
+
         .table td, .table th {
-            padding: 0.6rem; /* Điều chỉnh khoảng cách giữa các hàng */
+            padding: 0.6rem;
             vertical-align: middle;
         }
     </style>
 </head>
-
 <body>
-<div id="app">
+<div id="app" class="container-fluid">
     <span th:replace="~{fragments/sidebar :: sidebar}"></span>
     <div id="main">
         <span th:replace="~{fragments/header :: header}"></span>
-        <div class="main-content container-fluid">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="text-primary">Danh Sách Khách Hàng</h1>
-                <a th:href="@{/khach-hang/them}" class="btn btn-success">Thêm Khách Hàng Mới</a>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-light">
-                    <tr>
-                        <th>Mã KH</th>
-                        <th>Họ và Tên</th>
-                        <th>Giới Tính</th>
-                        <th>Ngày Sinh</th>
-                        <th>Số ĐT</th>
-                        <th>Email</th>
-                        <th>Trạng Thái</th>
-                        <th>Hành Động</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="khachHang : ${khachHangList}">
-                        <td th:text="${khachHang.maKH}"></td>
-                        <td th:text="${khachHang.ho} + ' ' + ${khachHang.tenDem} + ' ' + ${khachHang.ten}"></td>
-                        <td th:text="${khachHang.gioiTinh == 0 ? 'Nam' : 'Nữ'}"></td>
-                        <td th:text="${#dates.format(khachHang.ngaySinh, 'dd-MM-yyyy')}"></td>
-                        <td th:text="${khachHang.sdt}"></td>
-                        <td th:text="${khachHang.email}"></td>
-                        <td th:text="${khachHang.trangThai == 0 ? 'Hoạt động' : (khachHang.trangThai == 1 ? 'Không hoạt động' : 'Chờ xử lý')}"></td>
-                        <td>
-                            <a th:href="@{/khach-hang/update/{id}(id=${khachHang.id})}" class="text-warning me-2" title="Cập nhật">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="#" class="text-danger" title="Xóa" th:onclick="'showDeleteModal(' + ${khachHang.id} + ')'" >
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+        <div class="main-content container-fluid" layout:fragment="content">
+            <div class="container text-center">
+                <div class="row">
+                    <!-- Tiêu đề -->
+                    <div class="col-md-12 mb-4">
+                        <h1>Danh Sách Khách Hàng</h1>
+                    </div>
+
+                    <!-- Tìm kiếm -->
+                    <div class="col-md-12 mb-4">
+                        <form method="get" id="searchForm" class="p-3 border rounded search-form">
+                            <h2 class="text-start">Tìm Kiếm</h2>
+                            <div class="input-group mb-3">
+                                <input type="text" id="searchInput" name="keyword" class="form-control"
+                                       placeholder="Tìm kiếm mã hoặc tên khách hàng">
+                                <select id="trangThaiSelect" name="trangThai" class="form-control">
+                                    <option value="">Tất cả</option>
+                                    <option value="0">Hoạt Động</option>
+                                    <option value="1">Không Hoạt Động</option>
+                                </select>
+
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-secondary mx-2" onclick="resetForm()">Làm Mới</button>
+                            </div>
+                        </form>
+                        <hr>
+                    </div>
+
+
+
+                    <!-- Bảng danh sách -->
+                    <div class="col-md-12">
+                        <a th:href="@{/khach-hang/them}" class="btn btn-primary mb-3">+ Thêm Khách Hàng</a>
+                        <table id="customerTable" class="table table-striped table-hover">
+                            <thead class="table-primary">
+                            <tr>
+                                <th>STT</th>
+                                <th>Mã Khách Hàng</th>
+                                <th>Tên Khách Hàng</th>
+                                <th>Số Điện Thoại</th>
+                                <th>Email</th>
+                                <th>Giới Tính</th>
+                                <th>Ngày Tạo</th>
+                                <th>Trạng Thái</th>
+                                <th>Hành Động</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="khachHang, iterStat : ${khachHangList}">
+                                <td th:text="${iterStat.index + 1}"></td>
+                                <td th:text="${khachHang.maKH}"></td>
+                                <td th:text="${khachHang.ho + ' ' + khachHang.tenDem + ' ' + khachHang.ten}"></td>
+                                <td th:text="${khachHang.sdt}"></td>
+                                <td th:text="${khachHang.email}"></td>
+                                <td th:text="${khachHang.gioiTinh == 0 ? 'Nam' : 'Nữ'}"></td>
+                                <td th:text="${#dates.format(khachHang.ngaySinh, 'dd-MM-yyyy')}"></td>
+                                <td th:text="${khachHang.trangThai == 0 ? 'Hoạt động' : 'Không hoạt động'}"></td>
+                                <td>
+                                    <a th:href="@{/khach-hang/update/{id}(id=${khachHang.id})}" class="text-warning me-2">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="text-danger" th:onclick="'showDeleteModal(' + ${khachHang.id} + ')'">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
         <span th:replace="~{fragments/footer :: footer}"></span>
     </div>
 </div>
 
-<!-- Modal xác nhận xóa -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+
+<!-- Modal xóa -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Xác Nhận Xóa</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title">Xác Nhận Xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                Bạn có chắc chắn muốn xóa khách hàng này?
+                Bạn có chắc chắn muốn xóa khách hàng này không?
                 <input type="hidden" id="deleteId" value="">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 <button type="button" class="btn btn-danger" onclick="confirmDelete()">Xóa</button>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    // Mở modal với ID khách hàng
-    function showDeleteModal(id) {
-        document.getElementById('deleteId').value = id;
-        $('#deleteModal').modal('show');
-    }
+<!-- Thông báo -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Khách hàng đã được xóa thành công!
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
 
-    // Xác nhận và thực hiện xóa khách hàng
-    function confirmDelete() {
-        const customerId = document.getElementById('deleteId').value;
-        if (!customerId) {
-            alert('Không có ID khách hàng để xóa!');
-            return;
-        }
-        fetch('/khach-hang/delete/' + customerId, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert('Khách hàng đã được xóa!');
-                    $('#deleteModal').modal('hide');
-                    location.reload();
-                } else {
-                    alert('Xóa khách hàng thất bại!');
-                }
-            })
-            .catch(error => {
-                alert('Đã xảy ra lỗi khi xóa khách hàng!');
-                console.error(error);
-            });
-    }
+    <div id="errorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Xóa khách hàng thất bại. Vui lòng thử lại!
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
 
-    // Đóng modal khi click vào nút Hủy
-    document.querySelector('.btn-secondary').addEventListener('click', function() {
-        $('#deleteModal').modal('hide');
-    });
-</script>
-
-<!-- Không dùng th:src cho các URL ngoài -->
-<script th:src="@{/js/jquery.min.js}"></script>
-<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script th:src="@{/js/feather.min.js}"></script>
 <script th:src="@{/js/perfect-scrollbar.min.js}"></script>
 <script th:src="@{/js/app.js}"></script>
@@ -144,7 +159,100 @@
 <script th:src="@{/js/apexcharts.min.js}"></script>
 <script th:src="@{/js/dashboard.js}"></script>
 <script th:src="@{/js/main.js}"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    var table;
+
+    $(document).ready(function () {
+        table = $('#customerTable').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "language": {
+                "paginate": {"previous": "Trước", "next": "Sau"},
+                "lengthMenu": "Hiển thị _MENU_ bản ghi mỗi trang",
+                "zeroRecords": "Không tìm thấy kết quả phù hợp",
+                "info": "Hiển thị trang _PAGE_ trong tổng số _PAGES_",
+                "infoEmpty": "Không có dữ liệu",
+                "infoFiltered": "(lọc từ _MAX_ bản ghi)"
+            },
+            "dom": 'lrtip'
+        });
+
+        $('#searchInput').on('input', filterTable);
+        $('#trangThaiSelect').on('change', function () {
+            var selectedStatus = $(this).val(); // Lấy giá trị trạng thái
+            var statusText = "";
+
+            if (selectedStatus === "0") {
+                statusText = "Hoạt động";
+            } else if (selectedStatus === "1") {
+                statusText = "Không hoạt động";
+            }
+
+            // Lọc bảng theo trạng thái (giả sử cột Trạng Thái là cột thứ 8 - index 7)
+            if (statusText) {
+                table.column(7).search("^" + statusText + "$", true, false).draw(); // Lọc chính xác
+            } else {
+                table.column(7).search("").draw(); // Hiển thị tất cả nếu không chọn
+            }
+        });
+    });
+
+    function filterTable() {
+        var keyword = $('#searchInput').val().trim();
+        var selectedStatus = $('#trangThaiSelect').val();
+        table.search(keyword);
+
+        if (selectedStatus !== "") {
+            var statusText = selectedStatus === "0" ? "Hoạt động" : "Không hoạt động";
+            table.column(7).search(statusText, true, false);
+        } else {
+            table.column(7).search('');
+        }
+
+        table.draw();
+    }
+
+    function resetForm() {
+        $('#searchForm')[0].reset();
+        table.search('').columns().search('');
+        table.draw();
+    }
+
+    function showDeleteModal(id) {
+        $('#deleteId').val(id);
+        $('#deleteModal').modal('show');
+    }
+
+    function confirmDelete() {
+        const id = $('#deleteId').val();
+        if (id) {
+            fetch(`/khach-hang/delete/${id}`, {method: 'DELETE'})
+                .then(res => {
+                    $('#deleteModal').modal('hide');
+                    if (res.ok) {
+                        showSuccessToast();
+                        setTimeout(() => location.reload(), 2000); // Tải lại trang sau 2 giây
+                    } else {
+                        showErrorToast();
+                    }
+                })
+                .catch(() => showErrorToast());
+        }
+    }
+
+    function showSuccessToast() {
+        const toast = new bootstrap.Toast(document.getElementById('successToast'));
+        toast.show();
+    }
+
+    function showErrorToast() {
+        const toast = new bootstrap.Toast(document.getElementById('errorToast'));
+        toast.show();
+    }
+
+</script>
 </body>
 </html>
