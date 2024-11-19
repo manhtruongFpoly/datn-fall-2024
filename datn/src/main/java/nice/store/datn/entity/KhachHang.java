@@ -2,6 +2,8 @@ package nice.store.datn.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -35,13 +37,13 @@ public class KhachHang {
     private String ten;
 
     @Column(name = "GIOI_TINH")
-    private int gioiTinh;
+    private Integer gioiTinh;
 
     @Column(name = "NGAY_SINH")
     private Date ngaySinh;
 
     @Column(name = "SDT", unique = true)
-    private int sdt;
+    private Integer sdt;
 
     @Column(name = "EMAIL", length = 50, unique = true)
     private String email;
@@ -54,13 +56,18 @@ public class KhachHang {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime ngaySua;
 
-    @Column(name = "TRANG_THAI", length = 50)
+    @Column(name = "TRANG_THAI")
     private int trangThai;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ID_TK", referencedColumnName = "id", unique = true)
+    @NotNull(message = "Mật khẩu không được để trống")
+    @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
+    @Column(name = "MAT_KHAU", length = 50)
+    private String matKhau;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "ID_ROLE", referencedColumnName = "id")
     @JsonManagedReference
-    private TaiKhoan idTK;
+    private Role idRole;
 
     @OneToMany(mappedBy = "idKH", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -69,4 +76,6 @@ public class KhachHang {
     @OneToMany(mappedBy = "idKH", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<DiaChi> diaChi = new ArrayList<>();
+
+
 }

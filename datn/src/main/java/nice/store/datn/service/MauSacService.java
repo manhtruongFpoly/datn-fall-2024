@@ -1,11 +1,12 @@
 package nice.store.datn.service;
 
-import jakarta.persistence.EntityNotFoundException;
+
 import nice.store.datn.entity.MauSac;
+
 import nice.store.datn.repository.MauSacRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,36 +17,42 @@ public class MauSacService {
     @Autowired
     private MauSacRepository mauSacRepository;
 
-
-    private String generateMaMauSac() {
-        String prefix = "MS";
-        int count = (int) mauSacRepository.count() + 1;
-        return prefix + String.format("%05d", count);
-    }
-
-
-    public String addMauSac(MauSac mauSac) {
-        Optional<MauSac> existingMauSac = mauSacRepository.findByTenMauSac(mauSac.getTenMauSac());
-        if (existingMauSac.isPresent()) {
-            return "Tên màu sắc đã tồn tại!";
-        }
-
-        String generatedMa = generateMaMauSac();
-        mauSac.setMaMauSac(generatedMa);
+    public MauSac create(MauSac mauSac) {
         mauSac.setNgayTao(LocalDateTime.now());
-
-        mauSacRepository.save(mauSac);
-        return "Thêm màu sắc thành công với mã: " + generatedMa;
+        return mauSacRepository.save(mauSac);
     }
 
 
     public List<MauSac> getAllMauSac() {
-        return mauSacRepository.findAllByOrderByIdDesc();
+        return mauSacRepository.findAll();
     }
 
-    public MauSac updateMauSac(String maMauSac, MauSac updatedMauSac) {
+    public List<MauSac> findAllOrderedByDate() {
+        return mauSacRepository.findAll(Sort.by(Sort.Order.desc("ngayTao"))); // Sắp xếp theo ngày tạo giảm dần
+    }
 
 
+    public Optional<MauSac> getMauSacById(Integer id) {
+        return mauSacRepository.findById(id);
+    }
 
+    public MauSac update(Integer id, MauSac mauSac) {
+        MauSac existingMauSac = mauSacRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy màu sắc với ID: " + id));
+
+        existingMauSac.setTenMauSac(mauSac.getTenMauSac());
+        existingMauSac.setMaMauSac(mauSac.getMaMauSac());
+        existingMauSac.setTrangThai(mauSac.getTrangThai());
+
+        return mauSacRepository.save(existingMauSac);
+    }
+
+
+    public boolean deleteMauSacById(int id) {
+        if (mauSacRepository.existsById(id)) {
+            mauSacRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

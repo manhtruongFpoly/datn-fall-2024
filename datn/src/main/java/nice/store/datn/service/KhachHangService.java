@@ -3,6 +3,7 @@ package nice.store.datn.service;
 import nice.store.datn.entity.KhachHang;
 import nice.store.datn.repository.KhachHangRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,10 @@ public class KhachHangService {
     public KhachHang createKH(KhachHang kh) {
         kh.setNgayTao(LocalDateTime.now());
         return khachHangRepository.save(kh);
+    }
+
+    public List<KhachHang> findAllOrderedByDate() {
+        return khachHangRepository.findAll(Sort.by(Sort.Order.desc("ngayTao"))); // Sắp xếp theo ngày tạo giảm dần
     }
 
     public List<KhachHang> getAllKH() {
@@ -46,6 +51,7 @@ public class KhachHangService {
             khachHang.setSdt(kh.getSdt());
             khachHang.setEmail(kh.getEmail());
             khachHang.setTrangThai(kh.getTrangThai());
+            khachHang.setMatKhau(kh.getMatKhau());
 
             // Cập nhật danh sách địa chỉ (DiaChi)
             if (kh.getDiaChi() != null) {
@@ -69,5 +75,8 @@ public class KhachHangService {
         return false;
     }
 
+    public Optional<KhachHang> findByMaKhOrEmail(String maKh, String email) {
+        return khachHangRepository.findByMaKhOrEmail(maKh, email);
+    }
 
 }

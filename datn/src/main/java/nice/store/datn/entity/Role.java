@@ -1,9 +1,17 @@
 package nice.store.datn.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Table(name = "Role")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Role {
 
     @Id
@@ -16,4 +24,8 @@ public class Role {
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
+
+    @OneToMany(mappedBy = "idRole", cascade = CascadeType.ALL)
+//    @JsonBackReference
+    private List<KhachHang> idKH;
 }
