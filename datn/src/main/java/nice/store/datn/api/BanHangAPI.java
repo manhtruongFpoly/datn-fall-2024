@@ -129,7 +129,7 @@ public class BanHangAPI {
         List<KhachHangDTO> danhSachDTO = danhSach.stream()
                 .map(kh -> new KhachHangDTO(
                         kh.getId(),
-                        kh.getMaKh(),
+                        kh.getMaKH(),
                         kh.getTen(),
                         kh.getGioiTinh(),
                         kh.getEmail(),
@@ -154,7 +154,7 @@ public class BanHangAPI {
 
             KhachHangDTO khachHangDTO = new KhachHangDTO(
                     khachHang.getId(),
-                    khachHang.getMaKh(),
+                    khachHang.getMaKH(),
                     khachHang.getTen(),
                     khachHang.getGioiTinh(),
                     khachHang.getEmail(),
