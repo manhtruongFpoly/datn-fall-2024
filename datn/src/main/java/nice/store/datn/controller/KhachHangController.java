@@ -5,7 +5,6 @@ import jakarta.validation.Valid;
 import nice.store.datn.entity.DiaChi;
 import nice.store.datn.entity.KhachHang;
 import nice.store.datn.entity.Role;
-import nice.store.datn.entity.RoleEnum;
 import nice.store.datn.service.KhachHangService;
 import nice.store.datn.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
@@ -29,17 +29,12 @@ public class KhachHangController {
     private RoleService roleService;
 
 
-    @GetMapping("/khach-hang")
+    @GetMapping("/khach-hang/danh-sach")
     public String getAllKhachHang(Model model) {
         List<KhachHang> khachHangList = khService.findAllOrderedByDate();
         model.addAttribute("khachHangList", khachHangList);
         return "admin/khach-hang/danh-sach";
     }
-//    @GetMapping("/danh-sach")
-//    @ResponseBody
-//    public List<KhachHang> getAllKhachHangJson() {
-//        return khService.getAllKH();
-//    }
 
 
     @GetMapping("/khach-hang/chi-tiet-khach-hang/{id}")
@@ -99,7 +94,6 @@ public class KhachHangController {
         }
 
 
-
         // Lưu khách hàng vào cơ sở dữ liệu
         khService.createKH(khachHang);
         return "redirect:/khach-hang/danh-sach";
@@ -123,7 +117,8 @@ public class KhachHangController {
             @RequestParam("sdt") String sdt,  // Nhận sdt là String, sau đó chuyển sang Integer nếu cần
             @RequestParam("trangThai") Integer trangThai,
             @RequestParam("matKhau") String matKhau,
-            @RequestParam Map<String, String> diaChiParams) {
+            @RequestParam Map<String, String> diaChiParams,
+            RedirectAttributes redirectAttributes) {
 
         // Cập nhật các thông tin cơ bản
         khachHang.setGioiTinh(gioiTinh);
@@ -172,10 +167,19 @@ public class KhachHangController {
 
         // Gọi Service để cập nhật khách hàng
         khService.updateKH(id, khachHang);
+        try {
+            // Gọi service để cập nhật khách hàng
+            khService.updateKH(id, khachHang);
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật khách hàng thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Cập nhật khách hàng thất bại: " + e.getMessage());
+        }
 
         // Sau khi cập nhật, điều hướng đến danh sách khách hàng
         return "redirect:/khach-hang/danh-sach";
     }
+
+
 
 
     @DeleteMapping("/khach-hang/delete/{id}")

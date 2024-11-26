@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <style>
@@ -28,11 +28,21 @@
 </head>
 <body>
 <div id="app" class="container-fluid">
+
     <span th:replace="~{fragments/sidebar :: sidebar}"></span>
     <div id="main">
         <span th:replace="~{fragments/header :: header}"></span>
         <div class="main-content container-fluid" layout:fragment="content">
             <div class="container text-center">
+                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Thành công!</strong> <span th:text="${successMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Thất bại!</strong> <span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
                 <div class="row">
                     <!-- Tiêu đề -->
                     <div class="col-md-12 mb-4">
@@ -41,22 +51,26 @@
 
                     <!-- Tìm kiếm -->
                     <div class="col-md-12 mb-4">
-                        <form method="get" id="searchForm" class="p-3 border rounded search-form">
-                            <h2 class="text-start">Tìm Kiếm</h2>
-                            <div class="input-group mb-3">
+                        <form method="get" id="searchForm" class="p-3 border rounded search-form d-flex align-items-center">
+                            <!-- Tìm kiếm -->
+                            <div class="input-group me-3" style="width: 770px;">
                                 <input type="text" id="searchInput" name="keyword" class="form-control"
                                        placeholder="Tìm kiếm mã hoặc tên khách hàng">
-                                <select id="trangThaiSelect" name="trangThai" class="form-control">
+                            </div>
+
+                            <!-- Lọc trạng thái -->
+                            <div class="me-3">
+                                <select id="trangThaiSelect" name="trangThai" class="form-select">
                                     <option value="">Tất cả</option>
                                     <option value="0">Hoạt Động</option>
                                     <option value="1">Không Hoạt Động</option>
                                 </select>
+                            </div>
 
-                            </div>
-                            <div class="text-center">
-                                <button type="button" class="btn btn-secondary mx-2" onclick="resetForm()">Làm Mới</button>
-                            </div>
+                            <!-- Nút làm mới -->
+                            <button type="button" class="btn btn-outline-link mx-2" onclick="resetForm()">Làm Mới</button>
                         </form>
+
                         <hr>
                     </div>
 
@@ -64,7 +78,7 @@
 
                     <!-- Bảng danh sách -->
                     <div class="col-md-12">
-                        <a th:href="@{/khach-hang/them}" class="btn btn-primary mb-3">+ Thêm Khách Hàng</a>
+                        <a th:href="@{/khach-hang/them}"  class="btn btn-success px-4 py-2 fw-bold shadow-sm rounded"><i class="bi bi-person-plus"></i>  Thêm Khách Hàng</a>
                         <table id="customerTable" class="table table-striped table-hover">
                             <thead class="table-primary">
                             <tr>
@@ -84,16 +98,16 @@
                                 <td th:text="${iterStat.index + 1}"></td>
                                 <td th:text="${khachHang.maKH}"></td>
                                 <td th:text="${khachHang.ho + ' ' + khachHang.tenDem + ' ' + khachHang.ten}"></td>
-                                <td th:text="${khachHang.sdt}"></td>
+                                <td th:text="'0' + ${khachHang.sdt}"></td>
                                 <td th:text="${khachHang.email}"></td>
                                 <td th:text="${khachHang.gioiTinh == 0 ? 'Nam' : 'Nữ'}"></td>
                                 <td th:text="${#dates.format(khachHang.ngaySinh, 'dd-MM-yyyy')}"></td>
                                 <td th:text="${khachHang.trangThai == 0 ? 'Hoạt động' : 'Không hoạt động'}"></td>
                                 <td>
-                                    <a th:href="@{/khach-hang/update/{id}(id=${khachHang.id})}" class="text-warning me-2">
+                                    <a th:href="@{/khach-hang/update/{id}(id=${khachHang.id})}" class="btn btn-link">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="#" class="text-danger" th:onclick="'showDeleteModal(' + ${khachHang.id} + ')'">
+                                    <a href="#" class="btn btn-outline-danger btn-sm rounded" th:onclick="'showDeleteModal(' + ${khachHang.id} + ')'">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                 </td>

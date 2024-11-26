@@ -34,7 +34,7 @@ public class MauSacController {
             model.addAttribute("mauSac", mauSac.get());
             return "admin/mau-sac/update";
         } else {
-            return "redirect:/mau-sac/danh-sach";
+            return "redirect:/mau-sac";
         }
     }
 
@@ -51,17 +51,17 @@ public class MauSacController {
         }
         mauSac.setNgayTao(LocalDateTime.now());
         mauSacService.create(mauSac);
-        return "redirect:/mau-sac/danh-sach";
+        return "redirect:/mau-sac";
     }
 
-    @GetMapping("/update/{id}")
+    @GetMapping("/mau-sac/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         Optional<MauSac> mauSac = mauSacService.getMauSacById(id);
         if (mauSac.isPresent()) {
             model.addAttribute("mauSac", mauSac.get());
             return "admin/mau-sac/update";
         } else {
-            return "redirect:/mau-sac/danh-sach";
+            return "redirect:/mau-sac";
         }
     }
 
@@ -77,7 +77,7 @@ public class MauSacController {
 
         try {
             MauSac updatedMauSac = mauSacService.update(id, mauSac);
-            return "redirect:/mau-sac/danh-sach";
+            return "redirect:/mau-sac";
         } catch (RuntimeException e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "Cập nhật màu sắc thất bại. Vui lòng thử lại.");
