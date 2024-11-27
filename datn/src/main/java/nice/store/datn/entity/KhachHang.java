@@ -1,5 +1,6 @@
 package nice.store.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "KHACH_HANG")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class KhachHang {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,7 +59,7 @@ public class KhachHang {
     private LocalDateTime ngaySua;
 
     @Column(name = "TRANG_THAI")
-    private int trangThai = 0;
+    private Integer trangThai = 0;
 
     @NotNull(message = "Mật khẩu không được để trống")
     @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
@@ -66,15 +68,15 @@ public class KhachHang {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "ID_ROLE", referencedColumnName = "id")
-    @JsonManagedReference
+   // @JsonManagedReference
     private Role idRole;
 
     @OneToMany(mappedBy = "idKH", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    //@JsonManagedReference
     private List<GioHang> idGH;
 
     @OneToMany(mappedBy = "idKH", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonManagedReference
+   // @JsonManagedReference
     private List<DiaChi> diaChi = new ArrayList<>();
 
 
