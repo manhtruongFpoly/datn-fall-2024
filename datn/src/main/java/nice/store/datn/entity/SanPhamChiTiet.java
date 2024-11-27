@@ -58,7 +58,7 @@ public class SanPhamChiTiet {
     private String maSpct;
 
     @Column(name = "GIA_BAN")
-    private Double giaBan;
+    private BigDecimal giaBan;
 
     @Column(name = "SO_LUONG")
     private Integer soLuong;

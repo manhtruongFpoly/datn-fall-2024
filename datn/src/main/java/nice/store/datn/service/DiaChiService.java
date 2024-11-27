@@ -46,4 +46,9 @@ public class DiaChiService {
         diaChiRepository.deleteById(id);
     }
 
+
+    //dia chi ban hang
+    public DiaChi getDiaChiMacDinh(Integer idKh) {
+        return diaChiRepository.getDiaChiMacDinh(idKh);
+    }
 }

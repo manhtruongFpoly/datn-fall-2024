@@ -24,5 +24,9 @@ public class HoaDonChiTietService {
                 .map(HoaDonChiTietDTO::new)
                 .collect(Collectors.toList());
     }
+    public HoaDonChiTiet add(HoaDonChiTiet hoaDonChiTiet) {
+        return hoaDonChiTietRepository.save(hoaDonChiTiet);
+    }
+
 
 }

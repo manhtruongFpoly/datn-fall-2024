@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class SanPhamChiTietDTO {
     private Integer id;
     private String maSpct;
-    private Double giaBan;
+    private BigDecimal giaBan;
     private Integer soLuong;
     private String moTa;
     private Integer trangThai;

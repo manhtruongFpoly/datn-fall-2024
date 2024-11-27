@@ -1,0 +1,135 @@
+
+#thongTinShip,
+#thongTinShip2 {
+    display: none; /* Mặc định ẩn */
+}
+
+
+#thongTinShip.show {
+    display: block; /* Hiển thị khi có lớp show */
+}
+
+#thongTinShip2.show {
+    display: block; /* Hiển thị thông tin cũ khi có lớp show */
+}
+
+#toggle-button, #traSau-button {
+    background-color: #e0e0e0;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    width: 48px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.toggle-dot {
+    background-color: #ffffff;
+    border-radius: 9999px;
+    height: 16px;
+    width: 16px;
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    transform: translateY(-50%);
+    transition: transform 0.2s;
+}
+
+#toggle-button.active, #traSau-button.active {
+    background-color: #2986cc;
+}
+
+#toggle-button.active .toggle-dot, #traSau-button.active .toggle-dot {
+    transform: translateY(-50%) translateX(24px);
+}
+
+#traSau-button[disabled] {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.d-none {
+    display: none;
+}
+
+
+#toggle-button {
+    background-color: #e0e0e0;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    width: 48px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.toggle-dot {
+    background-color: #ffffff;
+    border-radius: 9999px;
+    height: 16px;
+    width: 16px;
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    transform: translateY(-50%);
+    transition: transform 0.2s;
+}
+
+#toggle-button.active {
+    background-color: #2986cc;
+}
+
+#toggle-button.active .toggle-dot {
+    transform: translateY(-50%) translateX(24px);
+}
+
+/* Đảm bảo modal có z-index cao hơn để không bị che bởi các phần tử khác */
+.modal-overlay-customer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
+    z-index: 9999; /* Modal có z-index cao nhất */
+}
+
+.modal-content-customer {
+    position: absolute; /* Vị trí của modal được xác định bằng tuyệt đối so với phần tử chứa (cha) */
+    top: 25%; /* Đặt modal cách 25% từ trên xuống của phần tử cha */
+    left: 10%; /* Đặt modal cách 10% từ bên trái của phần tử cha */
+    transform: translate(-10%, -10%); /* Dịch chuyển modal theo hướng ngang (-40%) và dọc (-50%) để căn giữa modal */
+    background: white; /* Màu nền của modal là trắng */
+    padding: 20px; /* Thêm không gian lề (padding) xung quanh nội dung modal */
+    border-radius: 10px; /* Bo tròn các góc của modal với bán kính 10px */
+    z-index: 10000; /* Đặt z-index cao để đảm bảo modal hiển thị trên các phần tử khác có z-index thấp hơn */
+}
+
+
+
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+thead {
+    background-color: #007bff;
+    color: white;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}

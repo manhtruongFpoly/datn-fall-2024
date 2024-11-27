@@ -1,11 +1,8 @@
 package nice.store.datn.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "HOA_DON_CT")
-public class    HoaDonChiTiet {
+@Builder
+
+public class HoaDonChiTiet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +23,6 @@ public class    HoaDonChiTiet {
 
     @ManyToOne
     @JoinColumn(name = "ID_HOA_DON")
-    @JsonIgnore
     private HoaDon hoaDon;
 
     @ManyToOne
@@ -40,11 +38,9 @@ public class    HoaDonChiTiet {
     @Column(name = "NGAY_TAO")
     private LocalDateTime ngayTao;
 
-    @Column(name = "TRANG_THAI")
-    private Integer trangThai;
 
-    public Integer tongTien(){
-        return this.donGia * this.soLuong;
-    }
+    @Column(name = "TRANG_THAI", nullable = false)
+    private Integer trangThai ;
+
 
 }

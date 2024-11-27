@@ -1,6 +1,8 @@
 package nice.store.datn.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,17 +34,15 @@ public class HoaDon {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_KH", referencedColumnName = "ID")
-    @JsonIgnore
+  //  @JsonIgnore
     private KhachHang khachHang; // ánh xạ với entity KhachHang
 
     @Column(name = "MA_HD")
     private String maHd;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_VOUCHER", referencedColumnName = "ID")
-    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "ID_VOUCHER")
     private PhieuGiamGia phieuGiamGia; // ánh xạ với entity PhieuGiamGia
-
 
     @Column(name = "DIA_CHI_NGUOI_NHAN")
     private String diaChiNguoiNhan;
@@ -91,6 +91,10 @@ public class HoaDon {
 
 
     public String getStringTrangThai() {
+        if (this.trangThai == null) {
+            return "";
+        }
+
         switch (this.trangThai) {
             case 0:
                 return "Chờ xác nhận";
@@ -106,7 +110,6 @@ public class HoaDon {
                 return "Đã hủy";
             case 6:
                 return "Hoàn trả";
-
             case 8:
                 return "Đơn đổi trả tạm";
             default:
@@ -114,4 +117,5 @@ public class HoaDon {
         }
         return "";
     }
+
 }

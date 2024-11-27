@@ -14,7 +14,14 @@ public interface PhieuGiamGiaRepository extends JpaRepository<PhieuGiamGia , Int
     @Query("SELECT MAX(pgg.id) FROM PhieuGiamGia pgg")
     Integer findMaxId();
 
-    @Query(value = "SELECT * FROM [dbo].[VOUCHER] WHERE GETDATE() BETWEEN NGAY_BAT_DAU AND NGAY_KET_THUC AND DON_TOI_THIEU <= :maxValue ORDER BY GIA_TRI_MAX DESC", nativeQuery = true)
+//    @Query(value = "SELECT * FROM [dbo].[VOUCHER] WHERE GETDATE() BETWEEN NGAY_BAT_DAU AND NGAY_KET_THUC AND DON_TOI_THIEU <= :maxValue ORDER BY GIA_TRI_MAX DESC", nativeQuery = true)
+//    List<PhieuGiamGia> getVoucherPhuHop(@Param("maxValue") Long maxValue);
+
+    @Query(value = "SELECT TOP 1 * FROM [dbo].[VOUCHER] " +
+            "WHERE DON_TOI_THIEU <= :maxValue " +
+            "AND TRANG_THAI = 0 " +
+            "AND GETDATE() BETWEEN NGAY_BAT_DAU AND NGAY_KET_THUC " +
+            "ORDER BY GIA_TRI_MAX DESC", nativeQuery = true)
     List<PhieuGiamGia> getVoucherPhuHop(@Param("maxValue") Long maxValue);
 
 }

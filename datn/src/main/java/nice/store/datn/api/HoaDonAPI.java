@@ -6,6 +6,7 @@ import nice.store.datn.repository.PhieuGiamGiaRepository;
 import nice.store.datn.service.HoaDonService;
 import nice.store.datn.service.PhieuGiamGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
@@ -42,4 +43,14 @@ public class HoaDonAPI {
 
         return ResponseEntity.ok(hoaDonService.updatePGG(id, hd));
     }
+    @PutMapping("/api/hoa-don/update-thong-tin-nguoi-nhan/{id}")
+    public ResponseEntity<?> updateThongTinNguoiNhan(@PathVariable("id") Integer id, @RequestBody HoaDon hoaDon) {
+        HoaDon updatedHoaDon = hoaDonService.updateThongTinNguoiNhan(id, hoaDon);
+        if (updatedHoaDon != null) {
+            return ResponseEntity.ok(updatedHoaDon);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("HoaDon not found");
+        }
+    }
+
 }

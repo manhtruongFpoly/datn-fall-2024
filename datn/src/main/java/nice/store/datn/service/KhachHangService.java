@@ -79,4 +79,10 @@ public class KhachHangService {
         return khachHangRepository.findByMaKhOrEmail(maKh, email);
     }
 
+    //bán hàng
+    public KhachHang findById(Integer id) {
+        Optional<KhachHang> optional = khachHangRepository.findById(id);
+        return optional.map(o -> o).orElse(null);
+    }
+
 }

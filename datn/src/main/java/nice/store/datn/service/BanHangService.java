@@ -1,6 +1,7 @@
 package nice.store.datn.service;
 
 import nice.store.datn.entity.HoaDon;
+import nice.store.datn.entity.HoaDonChiTiet;
 import nice.store.datn.entity.SanPhamChiTiet;
 import nice.store.datn.repository.HoaDonChiTietRepository;
 import nice.store.datn.repository.HoaDonRepository;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BanHangService {
@@ -31,4 +33,19 @@ public class BanHangService {
     public List<SanPhamChiTiet> getAllDSSanPham() {
         return sanPhamChiTietRepository.findAll();
     }
+
+    public HoaDonChiTiet saveHoaDonChiTiet(HoaDonChiTiet hoaDonChiTiet) {
+        return hoaDonChiTietRepository.save(hoaDonChiTiet);
+    }
+
+    public HoaDon updateKhachHang(Integer id, HoaDon hoaDon) {
+        Optional<HoaDon> optional = hoaDonRepository.findById(id);
+        return optional.map(o -> {
+            o.setKhachHang(hoaDon.getKhachHang());
+            o.setTenNguoiNhan(hoaDon.getTenNguoiNhan());
+            o.setSdt(hoaDon.getSdt());
+            return hoaDonRepository.save(o);
+        }).orElse(null);
+    }
+
 }

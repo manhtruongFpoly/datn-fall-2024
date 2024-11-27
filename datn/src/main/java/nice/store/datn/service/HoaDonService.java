@@ -45,6 +45,11 @@ public class HoaDonService {
         Optional<HoaDon> optional = hoaDonRepository.findById(id);
         return optional.map(o -> o).orElse(null);
     }
+    public HoaDon detail1(Integer id) {
+        Optional<HoaDon> optional = hoaDonRepository.findById(id);  // Tìm HoaDon từ ID
+        return optional.orElse(null);  // Nếu không tìm thấy, trả về null
+    }
+
 
     public HoaDon add(HoaDon hoaDon) {
         return hoaDonRepository.save(hoaDon);
@@ -62,6 +67,35 @@ public class HoaDonService {
         Optional<HoaDon> optional = hoaDonRepository.findById(id);
         return optional.map(o -> {
             o.setPhieuGiamGia(hd.getPhieuGiamGia());
+            return hoaDonRepository.save(o);
+        }).orElse(null);
+    }
+
+    public HoaDon updateTongTien(Integer id, HoaDon hd) {
+        Optional<HoaDon> optional = hoaDonRepository.findById(id);
+        return optional.map(o -> {
+            o.setTongTien(hd.getTongTien());
+            o.setTienGiam(hd.getTienGiam());
+            return hoaDonRepository.save(o);
+        }).orElse(null);
+    }
+
+    public HoaDon updateThongTinNguoiNhan(Integer id, HoaDon hd) {
+        Optional<HoaDon> optional = hoaDonRepository.findById(id);
+        return optional.map(o -> {
+            o.setTenNguoiNhan(hd.getTenNguoiNhan());
+            o.setSdt(hd.getSdt());
+            o.setDiaChiNguoiNhan(hd.getDiaChiNguoiNhan());
+            o.setPhiShip(hd.getPhiShip());
+            o.setGhiChu(hd.getGhiChu());
+            return hoaDonRepository.save(o);
+        }).orElse(null);
+    }
+
+    public HoaDon updateTrangThai(Integer id, HoaDon hoaDon) {
+        Optional<HoaDon> optional = hoaDonRepository.findById(id);
+        return optional.map(o -> {
+            o.setTrangThai(hoaDon.getTrangThai());
             return hoaDonRepository.save(o);
         }).orElse(null);
     }
