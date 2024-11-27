@@ -162,7 +162,7 @@ public class BanHangAPI {
 
         KhachHangDTO khachHangDTO = new KhachHangDTO(
                 khachHang.getId(),
-                khachHang.getMaKh(),
+                khachHang.getMaKH(),
                 khachHang.getTen(),
                 khachHang.getGioiTinh(),
                 khachHang.getEmail(),
@@ -171,17 +171,7 @@ public class BanHangAPI {
         );
         return ResponseEntity.ok(khachHangDTO);
     }
-            KhachHangDTO khachHangDTO = new KhachHangDTO(
-                    khachHang.getId(),
-                    khachHang.getMaKH(),
-                    khachHang.getTen(),
-                    khachHang.getGioiTinh(),
-                    khachHang.getEmail(),
-                    khachHang.getSdt(),
-                    khachHang.getTrangThai()
-            );
-            return ResponseEntity.ok(khachHangDTO);
-        }
+
 
     @PostMapping("/api/hoa-don-chi-tiet/danh-sach-san-pham/add")
     public ResponseEntity<?> themSanPham(@RequestBody HoaDonChiTiet hoaDonChiTiet) {

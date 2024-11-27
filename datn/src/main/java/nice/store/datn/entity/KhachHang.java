@@ -57,7 +57,7 @@ public class KhachHang {
     private LocalDateTime ngaySua;
 
     @Column(name = "TRANG_THAI")
-    private int trangThai;
+    private int trangThai = 0;
 
     @NotNull(message = "Mật khẩu không được để trống")
     @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
