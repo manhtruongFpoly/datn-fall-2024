@@ -76,6 +76,6 @@ public class SanPhamChiTiet {
     private Integer trangThai;
 
     @OneToMany(mappedBy = "sanPhamChiTiet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
+   // @JsonIgnore
     private List<HinhAnh> hinhAnhs;
 }

@@ -231,9 +231,8 @@ public class SanPhamCTController {
         List<SanPhamChiTiet> sanPhamChiTiets = sanPhamCTService.findBySanPhamId(productId);
 
         for (SanPhamChiTiet spct : sanPhamChiTiets) {
-            // Lấy hình ảnh của sản phẩm chi tiết (sẽ có thuộc tính hinhAnhs)
             List<HinhAnh> hinhAnhs = spct.getHinhAnhs();  // Truy vấn hình ảnh
-            spct.setHinhAnhs(hinhAnhs);  // Đảm bảo đã có danh sách hình ảnh (nếu cần)
+            spct.setHinhAnhs(hinhAnhs);
         }
 
         model.addAttribute("sanPham", sanPham);

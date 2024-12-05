@@ -31,7 +31,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 
-@Controller
+@RestController
 public class SanPhamChiTietAPI {
 
     @Autowired

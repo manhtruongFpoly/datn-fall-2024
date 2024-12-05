@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -33,11 +34,10 @@ public class HoaDonChiTiet {
     private Integer soLuong;
 
     @Column(name = "DON_GIA")
-    private Integer donGia;
+    private BigDecimal donGia;
 
     @Column(name = "NGAY_TAO")
     private LocalDateTime ngayTao;
-
 
     @Column(name = "TRANG_THAI", nullable = false)
     private Integer trangThai ;

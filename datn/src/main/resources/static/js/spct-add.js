@@ -216,17 +216,6 @@ function deleteRow(button) {
     $(button).closest('tr').remove();
 }
 
-// function checkFileLimit(input) {
-//     const maxFiles = 4;  // Số lượng file tối đa
-//     const files = input.files;
-//
-//     if (files.length > maxFiles) {
-//         alert(`Bạn chỉ có thể chọn tối đa ${maxFiles} ảnh.`);
-//         // Nếu chọn quá nhiều ảnh, loại bỏ các file thừa
-//         input.value = '';  // Dọn sạch input, cho phép người dùng chọn lại ảnh
-//     }
-// }
-
 
 function saveProductDetails() {
     let productDetails = [];
@@ -253,7 +242,8 @@ function saveProductDetails() {
 
         function generateMaSpct() {
             const now = new Date();
-            return `SPCT-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
+            const randomSuffix = Math.floor(Math.random() * 1000); // Thêm ba số ngẫu nhiên vào cuối mã
+            return `SPCT-${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}-${String(randomSuffix).padStart(3, '0')}`;
         }
 
         const productDetail = {

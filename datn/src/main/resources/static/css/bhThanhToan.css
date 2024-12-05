@@ -25,31 +25,12 @@
     transition: background-color 0.2s;
 }
 
-.toggle-dot {
-    background-color: #ffffff;
-    border-radius: 9999px;
-    height: 16px;
-    width: 16px;
-    position: absolute;
-    top: 50%;
-    left: 4px;
-    transform: translateY(-50%);
-    transition: transform 0.2s;
-}
+
 
 #toggle-button.active, #traSau-button.active {
     background-color: #2986cc;
 }
 
-#toggle-button.active .toggle-dot, #traSau-button.active .toggle-dot {
-    transform: translateY(-50%) translateX(24px);
-}
-
-#traSau-button[disabled] {
-    background-color: #e0e0e0;
-    cursor: not-allowed;
-    opacity: 0.6;
-}
 
 .d-none {
     display: none;

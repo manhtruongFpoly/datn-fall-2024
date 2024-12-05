@@ -41,7 +41,8 @@ public class BanHangAPI {
     @Autowired
     KhachHangService khachHangService;
 
-    @Autowired PhuongThucThanhToanService phuongThucThanhToanService;
+    @Autowired
+    PhuongThucThanhToanService phuongThucThanhToanService;
 
     @GetMapping("/api/ban-hang")
     public List<HoaDon> hienThiHoaDonApi() {
@@ -199,37 +200,32 @@ public class BanHangAPI {
         HoaDon hd = hoaDonService.detail(idHD);
 
         if (hd.getPhieuGiamGia() != null && hd.getPhieuGiamGia().getId() != null) {
+            // Trường hợp có phiếu giảm giá
             BigDecimal giamToiDa = hd.getPhieuGiamGia().getGiaTriMax();
             System.out.println("Giảm giá tối đa: " + giamToiDa);
-
             tongTienSauKhiGiam = tongTienMoi.subtract(giamToiDa.min(tongTienMoi));
+            hd.setTienGiam(giamToiDa.min(tongTienMoi));
+            hd.setTongTien(tongTienSauKhiGiam);
 
-            hd.setTienGiam(tongTienSauKhiGiam);
-            hd.setTongTien(tongTienMoi);
         } else {
+            hd.setTienGiam(BigDecimal.ZERO);
             hd.setTongTien(tongTienMoi);
-            hd.setTienGiam(tongTienMoi);
         }
+
         hoaDonService.updateTongTien(idHD, hd);
         hoaDonChiTiet.setHoaDon(hoaDonChiTiet.getHoaDon());
         hoaDonChiTiet.setSanPhamChiTiet(hoaDonChiTiet.getSanPhamChiTiet());
 
         if (giaBanSanPhamMoi != null) {
-            hoaDonChiTiet.setDonGia(giaBanSanPhamMoi.intValue());
+            hoaDonChiTiet.setDonGia(BigDecimal.valueOf(giaBanSanPhamMoi.intValue()));
         } else {
             return ResponseEntity.badRequest().body("Giá bán không hợp lệ.");
         }
         hoaDonChiTiet.setNgayTao(LocalDateTime.now());
 
-        System.out.println("Tổng tiền hiện tại: " + tongTienHienTai);
-        System.out.println("Giá bán sản phẩm mới: " + giaBanSanPhamMoi);
-        System.out.println("Số lượng sản phẩm mới: " + soLuongSanPhamMoi);
-        System.out.println("Tổng tiền mới: " + tongTienMoi);
-        System.out.println("Tổng tiền sau khi giảm: " + tongTienSauKhiGiam);
-
-
         return ResponseEntity.ok(banHangService.saveHoaDonChiTiet(hoaDonChiTiet));
     }
+
 
     @PutMapping("/api/hoa-don/update-tong-tien/{id}")
     public ResponseEntity<?> updateTongTien(@PathVariable("id") Integer id, @RequestBody HoaDon hoaDon) {
@@ -281,7 +277,7 @@ public class BanHangAPI {
 
 
     @PostMapping("/api/ban-hang/them-phuong-thuc-thanh-toan/{id}")
-    public ResponseEntity<?> themPhuongThucThanhToan (@PathVariable("id") Integer id ,@RequestBody PhuongThucThanhToan phuongThucThanhToan){
+    public ResponseEntity<?> themPhuongThucThanhToan(@PathVariable("id") Integer id, @RequestBody PhuongThucThanhToan phuongThucThanhToan) {
         phuongThucThanhToan.setTenThanhToan(phuongThucThanhToan.getTenThanhToan());
         HoaDon hd = new HoaDon();
         hd.setId(id);
@@ -294,7 +290,7 @@ public class BanHangAPI {
 
 
     @GetMapping("/api/ban-hang/phuong-thuc-thanh-toan/{id}")
-    public ResponseEntity<List<PhuongThucThanhToan>> phuongThucThanhToan (@PathVariable("id") Integer id){
+    public ResponseEntity<List<PhuongThucThanhToan>> phuongThucThanhToan(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(phuongThucThanhToanService.detail(id));
     }
 

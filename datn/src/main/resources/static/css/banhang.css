@@ -36,15 +36,35 @@ button.h-d-c {
     color: black;
     font-size: 1.1rem;
     padding: 12px 20px;
-    border: 2px solid #2d6a4f;
+    border: 2px solid #b9d3fc;
     border-radius: 8px;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 button.h-d-c:hover {
-    background-color: #2d6a4f;
+    background-color: #b9d3fc;
     transform: scale(1.05);
 }
+
+.tab {
+    background-color: #f0f0f0; /* Màu nền mặc định */
+    color: #000; /* Màu chữ mặc định */
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab:hover {
+    background-color: #d1e7dd; /* Màu nền khi hover */
+    color: #000; /* Màu chữ khi hover */
+}
+
+.tab-active {
+    background-color: #b9d3fc; /* Màu nền cho nút đã chọn */
+    color: white; /* Màu chữ khi nút được chọn */
+    border-color: #2d6a4f; /* Đường viền nổi bật */
+}
+
+
 
 /*    button them sản phẩm*/
 

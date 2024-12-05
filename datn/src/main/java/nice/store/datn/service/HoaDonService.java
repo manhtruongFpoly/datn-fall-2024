@@ -4,7 +4,9 @@ import nice.store.datn.entity.HoaDon;
 import nice.store.datn.repository.HoaDonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -99,5 +101,16 @@ public class HoaDonService {
             return hoaDonRepository.save(o);
         }).orElse(null);
     }
+
+    @Transactional
+    public void updateHoaDonChiTiet(Integer idChiTietSanPham, Integer idHoaDon, Integer soLuong, BigDecimal gia, Integer trangThai) {
+        hoaDonRepository.updateByIdChiTietSanPhamAndIdHoaDon(soLuong, gia, trangThai, idChiTietSanPham, idHoaDon);
+
+        System.out.println("Cập nhật dữ liệu thành công.");
+    }
+
+
+
+
 
 }

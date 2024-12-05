@@ -50,6 +50,7 @@ public class SanPhamCTService {
     public SanPhamChiTiet findById(Integer spctId) {
         return sanPhamCTRepository.findById(spctId).orElse(null);  // Trả về null nếu không tìm thấy
     }
+
     public SanPhamChiTiet getSanPhamCTById(Integer id) {
         return sanPhamCTRepository.findById(id).orElse(null);
     }
@@ -151,11 +152,50 @@ public class SanPhamCTService {
         );
     }
 
-
-    //hải
+    //hai luu k ok
     public List<SanPhamChiTiet> saveToDatabase(List<SanPhamChiTiet> sanPhamChiTiets) {
-        // Lưu danh sách sản phẩm chi tiết vào database và trả về danh sách đã lưu (bao gồm ID)
-        return sanPhamCTRepository.saveAll(sanPhamChiTiets);
+        List<SanPhamChiTiet> savedSanPhamChiTiets = new ArrayList<>();
+
+        for (SanPhamChiTiet sanPhamChiTiet : sanPhamChiTiets) {
+            // Kiểm tra xem sản phẩm chi tiết đã tồn tại hay không
+            Optional<SanPhamChiTiet> existingSanPhamChiTiet = sanPhamCTRepository
+                    .findByMauSacIdAndTheLoaiIdAndKichCoIdAndChatLieuIdAndDeGiayIdAndThuongHieuIdAndSanPhamId(
+                            sanPhamChiTiet.getMauSac().getId(),
+                            sanPhamChiTiet.getLoaiGiay().getId(),
+                            sanPhamChiTiet.getKichCo().getId(),
+                            sanPhamChiTiet.getChatLieu().getId(),
+                            sanPhamChiTiet.getDeGiay().getId(),
+                            sanPhamChiTiet.getThuongHieu().getId(),
+                            sanPhamChiTiet.getSanPham().getId()
+                    );
+
+            if (existingSanPhamChiTiet.isPresent()) {
+                // Sản phẩm chi tiết đã tồn tại, cập nhật số lượng
+                SanPhamChiTiet existing = existingSanPhamChiTiet.get();
+                existing.setSoLuong(existing.getSoLuong() + sanPhamChiTiet.getSoLuong()); // Cập nhật số lượng
+
+                // Cập nhật danh sách hình ảnh (nếu có thay đổi)
+                if (sanPhamChiTiet.getHinhAnhs() != null && !sanPhamChiTiet.getHinhAnhs().isEmpty()) {
+                    for (HinhAnh hinhAnh : sanPhamChiTiet.getHinhAnhs()) {
+                        hinhAnh.setSanPhamChiTiet(existing); // Liên kết với sản phẩm chi tiết hiện tại
+                    }
+                    existing.setHinhAnhs(sanPhamChiTiet.getHinhAnhs()); // Cập nhật danh sách hình ảnh
+                }
+
+                savedSanPhamChiTiets.add(sanPhamCTRepository.save(existing)); // Lưu lại sản phẩm chi tiết đã cập nhật
+            } else {
+                // Sản phẩm chi tiết chưa tồn tại, lưu mới
+                if (sanPhamChiTiet.getHinhAnhs() != null && !sanPhamChiTiet.getHinhAnhs().isEmpty()) {
+                    for (HinhAnh hinhAnh : sanPhamChiTiet.getHinhAnhs()) {
+                        hinhAnh.setSanPhamChiTiet(sanPhamChiTiet); // Liên kết với sản phẩm chi tiết mới
+                    }
+                }
+
+                savedSanPhamChiTiets.add(sanPhamCTRepository.save(sanPhamChiTiet)); // Lưu sản phẩm chi tiết mới
+            }
+        }
+
+        return savedSanPhamChiTiets;  // Trả về danh sách các sản phẩm chi tiết đã lưu (bao gồm ID)
     }
 
     public List<SanPhamChiTiet> findBySanPhamId(Integer productId) {
