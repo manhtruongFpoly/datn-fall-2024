@@ -77,6 +77,7 @@
                     <!-- Nội dung -->
                     <!--tạo hóa đơn chờ                    -->
                     <div class="d-flex justify-content-end mb-4">
+                        <input type="text" id="maHD" readonly/>
                         <button id="tao-hd-cho"
                                 class="taohdchobuuton btn btn-primary font-weight-bold px-4 py-2 rounded shadow"
                                 style="background: #1e90ff ">
@@ -508,6 +509,7 @@
     var tongTienTrongHD = 0;
     let tabsData = [];
     var idTabHD = null;
+    var maHD = null
 
     //hai
     function renderTabs() {
@@ -690,10 +692,10 @@
                         const donGia = item.donGia != null ? item.donGia : 0;
                         const soLuong = item.soLuong || 0;
                         tongTienTrongHD += donGia * soLuong; // Cộng dồn tổng tiền
-
                         // Push sản phẩm vào mảng idSP
                         idSP.push({
-                            id: item.idSPCT,  // Id sản phẩm (hoặc id chi tiết sản phẩm)
+                            maHD: item.maHD,
+                            id: item.idSPCT,  //  id chi tiết sản phẩm
                             tenSanPham: item.tenSanPham,
                             donGia: donGia,
                             soLuong: soLuong,
@@ -702,6 +704,8 @@
                     });
 
 
+                        const maHDs = hdctList.length > 0 ? hdctList[0].maHD : '';
+                        $('#maHD').val(maHDs);
                     $('#tienKhachDuaAll').text(formatVND(tienDaThanhToan));
                     $('#tenPGGGen').val(maPGG);
                     $('#tienHang').text(formatVND(tongTienTrongHD));
@@ -763,7 +767,6 @@
             }
         });
     }
-
 
 
     //add pgg vào hóa đơn //hai
@@ -978,7 +981,6 @@
             });
         }
     });
-
 
 
     //hai
@@ -1268,7 +1270,7 @@
                 trangThai: 1
             }),
             success: function (response) {
-                getDuLieu(idTabHD); // Log bên trong `getDuLieu` nếu cần
+                getDuLieu(idTabHD);
             },
             error: function (xhr, status, error) {
                 // Log thông tin lỗi
@@ -1277,6 +1279,24 @@
                 console.error("Mô tả lỗi:", error);
                 console.error("Phản hồi từ server:", xhr.responseText);
             }
+        });
+    }
+
+
+    function addPhuongThucThanhToanChuyenKhoan(idHoaDon, tienDaThanhToan) {
+        $.ajax({
+            url: `/api/ban-hang/them-phuong-thuc-thanh-toan/${idHoaDon}`,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                tienDaThanhToan: tienDaThanhToan,
+                tenThanhToan: "Chuyển Khoản",
+                loaiThanhToan: true,
+                trangThai: 1
+            }),
+            success: function (response) {
+                getDuLieu(idTabHD);
+            },
         });
     }
 
@@ -1350,15 +1370,12 @@
 
         function toggleThongTinShip() {
             $('#toggle-button').on('click', function () {
-                $(this).toggleClass('active');  // Thêm hoặc bỏ class 'active' khi click
+                $(this).toggleClass('active');
 
-                // Kiểm tra trạng thái của toggle
                 if ($(this).hasClass('active')) {
-                    // Khi bật toggle: Hiển thị phần thông tin ship
                     $('#thongTinShip').addClass('show');  // Hiển thị phần thông tin ship
                     $('#thongTinShip2').removeClass('show');  // Ẩn thông tin ship cũ
                 } else {
-                    // Khi tắt toggle: Ẩn phần thông tin ship
                     $('#thongTinShip').removeClass('show');  // Ẩn phần thông tin ship
                     $('#thongTinShip2').addClass('show');  // Hiển thị thông tin ship cũ
                 }
@@ -1368,22 +1385,50 @@
         toggleThongTinShip();
 
 
-        // Gọi hàm click tiền mặt tạo phương thức thanh toán
         $('#btnTienMat').click(function () {
             var tienDaThanhToan = $('#inputSoTien').val();
             if (tienDaThanhToan && !isNaN(tienDaThanhToan)) {
-                // Gọi hàm tạo phương thức thanh toán với tiền mặt
                 addPhuongThucThanhToanTienMat(idTabHD, tienDaThanhToan);
                 getDuLieu(idTabHD);
             } else {
                 alert("Vui lòng nhập số tiền hợp lệ.");
             }
         });
-        //
-        // $('#xacNhanThanhToan').click(function () {
-        //     getDuLieu(idTabHD);
-        //     hiddenModalThanhToan();
-        // });
+
+        $('#btnChuyenKhoan').click(function () {
+            const maHD = $('#maHD').val();
+            if (!maHD || maHD.trim() === '') {
+                alert("Mã hóa đơn chưa được nhập hoặc không hợp lệ.");
+                return;
+            }
+            const tienDaThanhToan = $('#inputSoTien').val(); // Lấy giá trị từ input số tiền
+            if (tienDaThanhToan && !isNaN(tienDaThanhToan)) {
+                chuyenKhoan(tienDaThanhToan, maHD);
+            } else {
+                alert("Vui lòng nhập số tiền hợp lệ.");
+            }
+        });
+
+
+        function chuyenKhoan(tienDaThanhToan, maHD) {
+            $.ajax({
+                url: `/api/payment/create_payment?tienDaThanhToan=${tienDaThanhToan}&maHD=${maHD}&chuyenTrang=0`,
+                method: 'GET',
+                success: function (response) {
+                    if (response.status === 'Ok' && response.url) {
+                        addPhuongThucThanhToanChuyenKhoan(idTabHD,tienDaThanhToan)
+                        window.location.href = response.url;
+                    } else {
+                        alert(response.message || "Không thể tạo thanh toán. Vui lòng thử lại.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Lỗi khi tạo thanh toán:', error);
+                    alert('Không thể thực hiện thanh toán. Vui lòng thử lại.');
+                }
+            });
+        }
+
 
         $('#xacNhanThanhToan').click(function () {
             getDuLieu(idTabHD); // Lấy dữ liệu (bao gồm idPGG)

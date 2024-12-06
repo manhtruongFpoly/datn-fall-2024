@@ -17,6 +17,7 @@ public class HoaDonChiTietDTO {
     private String tenSanPham;
     private String mauSac;
     private Integer idSPCT;
+    private String maHD;
     public HoaDonChiTietDTO(HoaDonChiTiet hoaDonChiTiet) {
         this.id = hoaDonChiTiet.getId();
         this.soLuong = hoaDonChiTiet.getSoLuong();
@@ -24,6 +25,7 @@ public class HoaDonChiTietDTO {
         this.tenSanPham = hoaDonChiTiet.getSanPhamChiTiet().getSanPham().getTenSP();
         this.mauSac = hoaDonChiTiet.getSanPhamChiTiet().getMauSac().getTenMauSac();
         this.idSPCT = hoaDonChiTiet.getSanPhamChiTiet().getId();
+        this.maHD = hoaDonChiTiet.getHoaDon().getMaHd();
     }
 
 

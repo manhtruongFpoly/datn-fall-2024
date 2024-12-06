@@ -49,7 +49,6 @@ public class BanHangAPI {
         return banHangService.getHoaDonCho();
     }
 
-    //Get ra dữ liệu sản phẩm có trong Hóa đơn chi tiết
     @GetMapping("/api/hoa-don/{hoaDonId}")
     public List<HoaDonChiTietDTO> getHoaDonChiTiet(@PathVariable Integer hoaDonId) {
 
