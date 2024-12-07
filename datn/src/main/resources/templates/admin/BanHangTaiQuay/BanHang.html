@@ -77,7 +77,7 @@
                     <!-- Nội dung -->
                     <!--tạo hóa đơn chờ                    -->
                     <div class="d-flex justify-content-end mb-4">
-                        <input type="text" id="maHD" readonly/>
+                        <input type="text" id="maHD" hidden readonly/>
                         <button id="tao-hd-cho"
                                 class="taohdchobuuton btn btn-primary font-weight-bold px-4 py-2 rounded shadow"
                                 style="background: #1e90ff ">
@@ -1109,7 +1109,7 @@
                 method: 'GET',
                 success: function (response) {
                     if (response && Object.keys(response).length > 0) {
-                        updateThongTinNguoiNhan(response.idKH.ten, response.idKH.sdt, response.moTaChiTiet, 0, null, idTabHD);
+                        updateThongTinNguoiNhan(null,null,null, 0, null, idTabHD);
                         getDuLieu(idTabHD);
                     } else {
                         console.log('Response trống');
@@ -1401,7 +1401,7 @@
                 alert("Mã hóa đơn chưa được nhập hoặc không hợp lệ.");
                 return;
             }
-            const tienDaThanhToan = $('#inputSoTien').val(); // Lấy giá trị từ input số tiền
+            const tienDaThanhToan = $('#inputSoTien').val();
             if (tienDaThanhToan && !isNaN(tienDaThanhToan)) {
                 chuyenKhoan(tienDaThanhToan, maHD);
             } else {
@@ -1418,6 +1418,10 @@
                     if (response.status === 'Ok' && response.url) {
                         addPhuongThucThanhToanChuyenKhoan(idTabHD,tienDaThanhToan)
                         window.location.href = response.url;
+                        getDuLieu(idTabHD);
+                        PhieuGiamGiaPhuHop(tongTienTrongHD);
+                        updateTrangThaiHoaDon(3, idTabHD);
+                        sessionStorage.setItem('paymentSuccess', 'true');
                     } else {
                         alert(response.message || "Không thể tạo thanh toán. Vui lòng thử lại.");
                     }
@@ -1429,6 +1433,10 @@
             });
         }
 
+        if (sessionStorage.getItem('paymentSuccess') === 'true') {
+            alert("Thanh toán thành công!");
+            sessionStorage.removeItem('paymentSuccess');
+        }
 
         $('#xacNhanThanhToan').click(function () {
             getDuLieu(idTabHD); // Lấy dữ liệu (bao gồm idPGG)
