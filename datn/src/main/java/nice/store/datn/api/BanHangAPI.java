@@ -44,6 +44,9 @@ public class BanHangAPI {
     @Autowired
     PhuongThucThanhToanService phuongThucThanhToanService;
 
+    @Autowired
+    SanPhamCTService sanPhamCTService;
+
     @GetMapping("/api/ban-hang")
     public List<HoaDon> hienThiHoaDonApi() {
         return banHangService.getHoaDonCho();
@@ -305,5 +308,7 @@ public class BanHangAPI {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("HoaDon not found");
         }
     }
+
+
 
 }

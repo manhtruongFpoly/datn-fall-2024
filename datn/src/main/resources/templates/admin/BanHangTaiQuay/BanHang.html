@@ -829,13 +829,17 @@
         });
     }
 
-    //hai
+    let danhSachSanPham = [];
+
     function loadDanhSachSanPham() {
         $("#danhSachSanPham").html('<tr><td colspan="9" class="text-center">Đang tải...</td></tr>'); // Hiển thị thông báo đang tải
         $.ajax({
             url: '/api/ban-hang/danh-sach-san-pham-chi-tiet',  // Gọi API
             method: 'GET',
             success: function (result) {
+                // Lưu danh sách sản phẩm vào biến toàn cục
+                danhSachSanPham = result;
+
                 let list = "";
                 result.forEach((sp, index) => {
                     let hinhAnhSrc = sp.hinhAnh ? `/desktop-images/${sp.hinhAnh}` : '/desktop-images/xs10109.jpg';
@@ -899,6 +903,12 @@
         });
     }
 
+    function laySoLuongSanPham(id) {
+        const sanPham = danhSachSanPham.find(sp => sp.id === id);
+        return sanPham ? sanPham.soLuong : 0;
+    }
+
+
     //hai
     $("#danhSachSanPham").on('click', '.themSanPham', function () {
         $("#soLuongInput").val(1);
@@ -907,80 +917,83 @@
         //đã lấy ra id sp
         giaBan = $(this).data('gia-ban');
         console.log(itemId + " idspct")
+
     });
     //hai addsp
     $('#soLuongThayDoi').click(function () {
         const soLuongMoi = parseInt($("#soLuongInput").val(), 10);
-        let checkTrung = false;
-        let soLuongHienTai = 0;
-
-        // Ensure idSP is an array
-        if (Array.isArray(idSP)) {
-            for (let i = 0; i < idSP.length; i++) {
-                if (idSP[i].id === itemId) {
-                    checkTrung = true;
-                    soLuongHienTai = idSP[i].soLuong;
-                    break;
-                }
-            }
+        if (isNaN(soLuongMoi) || soLuongMoi <= 0) {
+            alert("Số lượng phải là số nguyên dương lớn hơn 0!");
+            return;
         }
 
+        const sanPhamTrung = idSP.find(sp => sp.id === itemId);
+        const checkTrung = !!sanPhamTrung;
+        const soLuongHienTai = sanPhamTrung ? sanPhamTrung.soLuong : 0;
         const soLuongCuoiCung = checkTrung ? soLuongHienTai + soLuongMoi : soLuongMoi;
-        const capNhatSoLuongNeuTrung = {
-            donGia: giaBan,
-            soLuong: soLuongCuoiCung,
-            trangThai: 1,
-            hoaDon: {id: idTabHD},
-            sanPhamChiTiet: {id: itemId, giaBan: giaBan}
-        };
 
-        const requestData = {
-            donGia: giaBan,
-            soLuong: soLuongMoi,
-            trangThai: 1,
-            hoaDon: {id: idTabHD},
-            sanPhamChiTiet: {id: itemId, giaBan: giaBan}
-        };
-
-        if (!checkTrung) {
-            $.ajax({
-                url: `/api/hoa-don-chi-tiet/danh-sach-san-pham/add`,
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(requestData),
-                success: function () {
-                    showNotification("Thêm sản phẩm thành công", "thanhCong");
-                    hideModalSoLuong();
-                    hideModalDanhSachSanPham();
-
-                    setTimeout(() => {
-                        getDuLieu(idTabHD);  // Cập nhật dữ liệu hóa đơn
-                    }, 500);
-                    PhieuGiamGiaPhuHop(tongTienTrongHD);
-                }
-            });
-        } else {
-            $.ajax({
-                url: `/api/hoa-don-chi-tiet/update-so-luong-sp`,
-                method: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify(capNhatSoLuongNeuTrung),
-                success: function () {
-                    showNotification("Cập nhật số lượng thành công", "thanhCong");
-                    hideModalSoLuong(); // Hide modal after success
-                    hideModalDanhSachSanPham();
-
-                    getDuLieu(idTabHD);  // Cập nhật dữ liệu hóa đơn
-                    PhieuGiamGiaPhuHop(tongTienTrongHD);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.error('Lỗi khi gọi API', textStatus, errorThrown);
-                    alert(`Lỗi khi gửi yêu cầu: ${jqXHR.responseText || "Unknown error"}`);
-                    hideModalSoLuong();
-                }
-            });
+        const soLuongTon = laySoLuongSanPham(itemId);
+        if (soLuongMoi > soLuongTon) {
+            alert(`Số lượng không đủ! Chỉ còn ${soLuongTon} sản phẩm trong kho.`);
+            return;
         }
+        $.ajax({
+            url: `/api/san-pham-chi-tiet/cap-nhat-so-luong?id=${itemId}&soLuongGiam=${soLuongMoi}`,
+            method: 'PUT',
+            success: function () {
+                console.log("Cập nhật số lượng tồn kho thành công!");
+
+                // Tiếp tục thêm sản phẩm vào hóa đơn sau khi cập nhật thành công
+                const data = {
+                    donGia: giaBan,
+                    soLuong: soLuongCuoiCung,
+                    trangThai: 1,
+                    hoaDon: { id: idTabHD },
+                    sanPhamChiTiet: { id: itemId, giaBan: giaBan }
+                };
+
+                const url = checkTrung
+                    ? `/api/hoa-don-chi-tiet/update-so-luong-sp`
+                    : `/api/hoa-don-chi-tiet/danh-sach-san-pham/add`;
+                const method = checkTrung ? 'PUT' : 'POST';
+                const successMessage = checkTrung ? "Cập nhật số lượng thành công" : "Thêm sản phẩm thành công";
+
+                goiApiAddUP(url, method, data, successMessage);
+
+                soLuongTonFE = soLuongTon - soLuongMoi;
+
+                const row = $(`button[data-id='${itemId}']`).closest('tr');
+                row.find('td:eq(4)').text(soLuongTonFE);
+                console.log(soLuongTonFE);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error('Lỗi khi cập nhật số lượng tồn kho:', textStatus, errorThrown);
+                alert(`Không thể cập nhật số lượng tồn kho: ${jqXHR.responseText || "Unknown error"}`);
+            }
+        });
     });
+
+    // Hàm goiApiAddUP
+    function goiApiAddUP(url, method, data, successMessage) {
+        $.ajax({
+            url: url,
+            method: method,
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function () {
+                showNotification(successMessage, "thanhCong");
+                hideModalSoLuong();
+                hideModalDanhSachSanPham();
+                getDuLieu(idTabHD);
+                PhieuGiamGiaPhuHop(tongTienTrongHD);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error('Lỗi khi gọi API:', textStatus, errorThrown);
+                alert(`Lỗi khi gửi yêu cầu: ${jqXHR.responseText || "Unknown error"}`);
+                hideModalSoLuong();  // Ẩn modal nếu có lỗi
+            }
+        });
+    }
 
 
     //hai
@@ -1404,9 +1417,11 @@
             const tienDaThanhToan = $('#inputSoTien').val();
             if (tienDaThanhToan && !isNaN(tienDaThanhToan)) {
                 chuyenKhoan(tienDaThanhToan, maHD);
+
             } else {
                 alert("Vui lòng nhập số tiền hợp lệ.");
             }
+
         });
 
 

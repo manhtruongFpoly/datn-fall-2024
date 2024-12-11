@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -104,4 +105,21 @@ public class SanPhamChiTietAPI {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @PutMapping("/api/san-pham-chi-tiet/cap-nhat-so-luong")
+    public ResponseEntity<String> capNhatSoLuongSanPham(@RequestParam Integer id, @RequestParam Integer soLuongGiam) {
+        Optional<SanPhamChiTiet> optionalSPCT = sanPhamCTService.getSanPhamChiTietById(id);
+        if (optionalSPCT.isPresent()) {
+            SanPhamChiTiet sanPhamChiTiet = optionalSPCT.get();
+            if (sanPhamChiTiet.getSoLuong() < soLuongGiam) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Số lượng sản phẩm không đủ để trừ.");
+            }
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuongGiam);
+            sanPhamCTService.save(sanPhamChiTiet);
+            return ResponseEntity.ok("Cập nhật số lượng thành công.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy sản phẩm chi tiết.");
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package nice.store.datn.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import nice.store.datn.entity.*;
 import nice.store.datn.repository.*;
 import nice.store.datn.response.SanPhamCTResponse;
@@ -207,7 +208,9 @@ public class SanPhamCTService {
         return sanPhamChiTietRepository.save(spct);
     }
 
-
+    public Optional<SanPhamChiTiet> getSanPhamChiTietById(Integer id) {
+        return sanPhamChiTietRepository.findById(id);
+    }
 }
 
 
