@@ -12,4 +12,6 @@ import java.util.List;
 public interface HoaDonChiTietRepository extends JpaRepository<HoaDonChiTiet, Integer> {
     @Query(value = "SELECT * FROM [dbo].[HOA_DON_CT] WHERE [ID_HOA_DON] = :idHoaDon ORDER BY [ID] DESC", nativeQuery = true)
     List<HoaDonChiTiet> TimTongTienTheoIDHD(@Param("idHoaDon") Integer idHoaDon);
+
+    List<HoaDonChiTiet> findByHoaDonId(Integer hoaDonId);
 }

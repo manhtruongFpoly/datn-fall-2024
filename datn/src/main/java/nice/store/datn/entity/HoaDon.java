@@ -1,6 +1,7 @@
 package nice.store.datn.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -21,6 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "HOA_DON")
+//@JsonIgnoreProperties({"hoaDonChiTietList"})
 public class HoaDon {
 
     @Id
@@ -34,7 +36,6 @@ public class HoaDon {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_KH", referencedColumnName = "ID")
-  //  @JsonIgnore
     private KhachHang khachHang; // ánh xạ với entity KhachHang
 
     @Column(name = "MA_HD")

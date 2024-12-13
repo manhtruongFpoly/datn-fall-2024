@@ -704,8 +704,8 @@
                     });
 
 
-                        const maHDs = hdctList.length > 0 ? hdctList[0].maHD : '';
-                        $('#maHD').val(maHDs);
+                    const maHDs = hdctList.length > 0 ? hdctList[0].maHD : '';
+                    $('#maHD').val(maHDs);
                     $('#tienKhachDuaAll').text(formatVND(tienDaThanhToan));
                     $('#tenPGGGen').val(maPGG);
                     $('#tienHang').text(formatVND(tongTienTrongHD));
@@ -948,8 +948,8 @@
                     donGia: giaBan,
                     soLuong: soLuongCuoiCung,
                     trangThai: 1,
-                    hoaDon: { id: idTabHD },
-                    sanPhamChiTiet: { id: itemId, giaBan: giaBan }
+                    hoaDon: {id: idTabHD},
+                    sanPhamChiTiet: {id: itemId, giaBan: giaBan}
                 };
 
                 const url = checkTrung
@@ -1122,7 +1122,7 @@
                 method: 'GET',
                 success: function (response) {
                     if (response && Object.keys(response).length > 0) {
-                        updateThongTinNguoiNhan(null,null,null, 0, null, idTabHD);
+                        updateThongTinNguoiNhan(null, null, null, 0, null, idTabHD);
                         getDuLieu(idTabHD);
                     } else {
                         console.log('Response trống');
@@ -1431,7 +1431,7 @@
                 method: 'GET',
                 success: function (response) {
                     if (response.status === 'Ok' && response.url) {
-                        addPhuongThucThanhToanChuyenKhoan(idTabHD,tienDaThanhToan)
+                        addPhuongThucThanhToanChuyenKhoan(idTabHD, tienDaThanhToan)
                         window.location.href = response.url;
                         getDuLieu(idTabHD);
                         PhieuGiamGiaPhuHop(tongTienTrongHD);
@@ -1493,30 +1493,110 @@
         }
 
 // Xử lý thanh toán
+//         $('#thanhToanTong').click(function () {
+//             showConfirm(function () {
+//                 // Kiểm tra nếu idTabHD null hoặc không hợp lệ
+//                 if (!idTabHD) {
+//                     showNotification("Vui lòng chọn hóa đơn trước khi thanh toán", "thatBai");
+//                     return;
+//                 }
+//
+//                 // Kiểm tra điều kiện thanh toán
+//                 if (checkThanhToan === 0) {
+//                     if (tongTienTrongHD - GiamToiDa === 0) {
+//                         showNotification("Thanh toán thất bại", "thatBai");
+//                     } else if (tienDaThanhToan < tongTienTrongHD - GiamToiDa) {
+//                         showNotification("Thanh toán thất bại", "thatBai");
+//                     } else {
+//                         // updateTongTien(tongTienTrongHD, idTabHD);
+//                         updateTrangThaiHoaDon(3, idTabHD); // Cập nhật trạng thái hóa đơn
+//                         renderTabs(); // Cập nhật giao diện
+//                         showNotification("Thanh toán thành công", "thanhCong");
+//                         window.location.href = 'http://localhost:8080/admin/ban-hang-tai-quay'; // Chuyển hướng sau khi thanh toán thành công
+//                     }
+//                 }
+//             });
+//         });
+
+
         $('#thanhToanTong').click(function () {
-            showConfirm(function () {
-                // Kiểm tra nếu idTabHD null hoặc không hợp lệ
+            showConfirm1("Bạn có chắc chắn muốn thanh toán không?", function () {
                 if (!idTabHD) {
                     showNotification("Vui lòng chọn hóa đơn trước khi thanh toán", "thatBai");
                     return;
                 }
 
-                // Kiểm tra điều kiện thanh toán
                 if (checkThanhToan === 0) {
                     if (tongTienTrongHD - GiamToiDa === 0) {
                         showNotification("Thanh toán thất bại", "thatBai");
                     } else if (tienDaThanhToan < tongTienTrongHD - GiamToiDa) {
                         showNotification("Thanh toán thất bại", "thatBai");
                     } else {
-                        // updateTongTien(tongTienTrongHD, idTabHD);
-                        updateTrangThaiHoaDon(3, idTabHD); // Cập nhật trạng thái hóa đơn
-                        renderTabs(); // Cập nhật giao diện
+                        updateTrangThaiHoaDon(3, idTabHD);
+                        renderTabs();
                         showNotification("Thanh toán thành công", "thanhCong");
-                        window.location.href = 'http://localhost:8080/admin/ban-hang-tai-quay'; // Chuyển hướng sau khi thanh toán thành công
+
+                        setTimeout(() => {
+                            showConfirm1("Bạn có muốn xuất hóa đơn không?", function () {
+                                exportInvoiceToPDF(idTabHD, function () {
+                                    window.location.href = 'http://localhost:8080/admin/ban-hang-tai-quay';
+                                });
+                            }, function () {
+                                Swal.fire(
+                                    'Hoàn tất!',
+                                    'Bạn đã chọn không xuất hóa đơn.',
+                                    'success'
+
+                                ).then(() => { console.log(idTabHD + "hoa don ${idTabHD}")
+                                    window.location.href = 'http://localhost:8080/admin/ban-hang-tai-quay';
+                                });
+                            });
+                        }, 500); // Thời gian chờ
                     }
                 }
             });
         });
+
+
+        function showConfirm1(message, onConfirm, onCancel) {
+            Swal.fire({
+                title: 'Bạn có chắc chắn?',
+                text: message,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Vâng, tiếp tục!',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (typeof onConfirm === 'function') {
+                        onConfirm(); // Gọi callback khi người dùng chọn "Có"
+                    }
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    if (typeof onCancel === 'function') {
+                        onCancel(); // Gọi callback khi người dùng chọn "Không"
+                    }
+                }
+            });
+        }
+
+        function exportInvoiceToPDF(idTabHD, callback) {
+            $.ajax({
+                url: `/admin/invoice/export-pdf/${idTabHD}`, // URL endpoint xử lý xuất PDF
+                method: 'GET',
+                success: function () {
+                    showNotification("Xuất hóa đơn thành công", "thanhCong");
+                    if (typeof callback === 'function') {
+                        callback(); // Gọi callback nếu việc xuất hóa đơn thành công
+                    }
+                },
+                error: function () {
+                    showNotification("Xuất hóa đơn thất bại", "thatBai");
+                }
+            });
+        }
+
 
         $('#loadPGG').click(function () {
             getDuLieu(idTabHD);
