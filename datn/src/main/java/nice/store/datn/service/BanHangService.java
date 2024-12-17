@@ -1,11 +1,10 @@
 package nice.store.datn.service;
 
-import nice.store.datn.entity.HoaDon;
-import nice.store.datn.entity.HoaDonChiTiet;
-import nice.store.datn.entity.SanPhamChiTiet;
+import nice.store.datn.entity.*;
 import nice.store.datn.repository.HoaDonChiTietRepository;
 import nice.store.datn.repository.HoaDonRepository;
 import nice.store.datn.repository.SanPhamChiTietRepository;
+import nice.store.datn.response.DiaChiDTOs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,5 +46,27 @@ public class BanHangService {
             return hoaDonRepository.save(o);
         }).orElse(null);
     }
+
+
+    public DiaChiDTOs mapToDTO(DiaChi diaChi) {
+        DiaChiDTOs dto = new DiaChiDTOs();
+        dto.setId(diaChi.getId());
+        dto.setDiaChiCuThe(diaChi.getDiaChiCuThe());
+        dto.setPhuongXa(diaChi.getPhuongXa());
+        dto.setQuanHuyen(diaChi.getQuanHuyen());
+        dto.setTinhThanh(diaChi.getTinhThanh());
+
+        if (diaChi.getIdKH() != null) {
+            KhachHang khachHang = diaChi.getIdKH();
+            dto.setIdKhachHang(khachHang.getId());
+            dto.setTen(khachHang.getTen());
+            dto.setGioiTinh(khachHang.getGioiTinh());
+            dto.setSdt(String.valueOf(khachHang.getSdt()));
+            dto.setEmail(khachHang.getEmail());
+        }
+
+        return dto;
+    }
+
 
 }

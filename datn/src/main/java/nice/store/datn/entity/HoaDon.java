@@ -95,7 +95,7 @@ public class HoaDon {
         if (this.trangThai == null) {
             return "";
         }
-
+// 0 : chờ xác nhận 3 hoàn thành mặc định k được thay đổi 2 case này
         switch (this.trangThai) {
             case 0:
                 return "Chờ xác nhận";

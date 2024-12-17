@@ -135,9 +135,9 @@ public class XuatHoaDonService {
             document.add(new Paragraph("Số Điện Thoại: " + hoaDonDTO.getSdt())
                     .setFont(vietnameseFont)
                     .setFontSize(12));
-            document.add(new Paragraph("Địa chỉ: " + hoaDonDTO.getDiaChiNguoiNhan())
-                    .setFont(vietnameseFont)
-                    .setFontSize(12));
+//            document.add(new Paragraph("Địa chỉ: " + hoaDonDTO.getDiaChiNguoiNhan())
+//                    .setFont(vietnameseFont)
+//                    .setFontSize(12));
             document.add(new Paragraph(".....................................................................................................................................................................")
                     .setFont(vietnameseFont)
                     .setFontSize(12)

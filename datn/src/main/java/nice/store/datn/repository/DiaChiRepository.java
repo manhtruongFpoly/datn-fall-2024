@@ -9,8 +9,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DiaChiRepository extends JpaRepository<DiaChi, Integer> {
-    @Query(value = "SELECT * FROM DIA_CHI WHERE ID_KH = :idKhachHang ", nativeQuery = true)
+    @Query(value = "SELECT TOP 1 * FROM DIA_CHI WHERE ID_KH = :idKhachHang AND TRANG_THAI = 0", nativeQuery = true)
     DiaChi getDiaChiMacDinh(@Param("idKhachHang") Integer idKhachHang);
+
 
 
 }

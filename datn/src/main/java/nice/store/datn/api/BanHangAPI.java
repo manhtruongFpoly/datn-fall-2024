@@ -2,6 +2,7 @@ package nice.store.datn.api;
 
 import nice.store.datn.entity.*;
 import nice.store.datn.repository.KhachHangRepository;
+import nice.store.datn.response.DiaChiDTOs;
 import nice.store.datn.response.HoaDonChiTietDTO;
 import nice.store.datn.response.KhachHangDTO;
 import nice.store.datn.response.SanPhamChiTietDTO;
@@ -158,7 +159,7 @@ public class BanHangAPI {
         Optional<KhachHang> khachHangOpt = khachHangRepository.findById(id);
 
         if (khachHangOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();  // Trả về Not Found nếu không tìm thấy khách hàng
+            return ResponseEntity.notFound().build();
         }
 
         KhachHang khachHang = khachHangOpt.get();
@@ -250,6 +251,17 @@ public class BanHangAPI {
         return diaChiService.getDiaChiMacDinh(id);
     }
 
+    @GetMapping("/api/ban-hang/dia-chi-mac-dinh-khach-hang-dto/{id}")
+    public ResponseEntity<DiaChiDTOs> getDiaChiMacDinh(@PathVariable("id") Integer id) {
+        DiaChi diaChi = diaChiService.getDiaChiMacDinh(id);
+        if (diaChi == null) {
+            return ResponseEntity.ok(new DiaChiDTOs());
+        }
+        DiaChiDTOs diaChiDTOs = banHangService.mapToDTO(diaChi);
+        return ResponseEntity.ok(diaChiDTOs);
+    }
+
+
     @PutMapping("/api/ban-hang/update-khach-hang/{id}")
     public ResponseEntity<?> updateTrangThaiThanhToan(@PathVariable("id") Integer id, @RequestBody HoaDon hoaDon) {
         // Kiểm tra null cho đối tượng khachHang trong hoaDon
@@ -298,8 +310,6 @@ public class BanHangAPI {
 
     @PutMapping("/api/ban-hang/update-trang-thai/{id}")
     public ResponseEntity<?> updateTrangThai(@PathVariable("id") Integer id, @RequestBody HoaDon hoaDon) {
-//        LocalDateTime now = LocalDateTime.now();
-//        hoaDon.setGhiChu(String.valueOf(now));
         hoaDon.setTrangThai(hoaDon.getTrangThai());
         HoaDon updatedHoaDon = hoaDonService.updateTrangThai(id, hoaDon);
         if (updatedHoaDon != null) {
