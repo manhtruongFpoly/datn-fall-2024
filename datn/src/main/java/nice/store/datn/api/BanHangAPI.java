@@ -131,6 +131,16 @@ public class BanHangAPI {
         return ResponseEntity.ok(danhSachDTO);
     }
 
+    @GetMapping("/api/san-pham-chi-tiet/{id}")
+    public ResponseEntity<SanPhamChiTietDTO> getSanPhamChiTiet(@PathVariable Integer id) {
+        SanPhamChiTietDTO sanPhamChiTiet = banHangService.getSanPhamChiTietById(id);
+        if (sanPhamChiTiet != null) {
+            return ResponseEntity.ok(sanPhamChiTiet);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/api/ban-hang/danh-sach-khach-hang")
     public ResponseEntity<List<KhachHangDTO>> danhSachKhachHang() {
         // Lấy danh sách khách hàng từ service (giả sử bạn có hàm này trong Service)
@@ -308,6 +318,20 @@ public class BanHangAPI {
         return ResponseEntity.ok(phuongThucThanhToanService.detail(id));
     }
 
+    @PostMapping("/api/ban-hang/xoa-phuong-thuc-thanh-toan/{id}")
+    public ResponseEntity<PhuongThucThanhToan> xoaPTTT(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(phuongThucThanhToanService.deleteById(id));
+    }
+
+    @PostMapping("/api/ban-hang/delete-hdct/{id}")
+    public ResponseEntity<HoaDonChiTietDTO> XoaSanPhamHDCT(@PathVariable("id") Integer id) {
+        HoaDonChiTiet deletedItem = hoaDonChiTietService.deleteById(id);
+        if (deletedItem == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(new HoaDonChiTietDTO(deletedItem));
+    }
+
     @PutMapping("/api/ban-hang/update-trang-thai/{id}")
     public ResponseEntity<?> updateTrangThai(@PathVariable("id") Integer id, @RequestBody HoaDon hoaDon) {
         hoaDon.setTrangThai(hoaDon.getTrangThai());
@@ -316,6 +340,31 @@ public class BanHangAPI {
             return ResponseEntity.ok(updatedHoaDon);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("HoaDon not found");
+        }
+    }
+
+
+    @PutMapping("/api/san-pham-chi-tiet/cong-so-luong")
+    public ResponseEntity<String> congSoLuongSanPham(@RequestParam Integer idHDCT) {
+        // Lấy thông tin từ HoaDonChiTietDTO
+        Optional<HoaDonChiTietDTO> optionalHDCTDTO = hoaDonChiTietService.findDTOById(idHDCT);
+        if (optionalHDCTDTO.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy chi tiết hóa đơn.");
+        }
+
+        HoaDonChiTietDTO hoaDonChiTietDTO = optionalHDCTDTO.get();
+        Integer soLuongCong = hoaDonChiTietDTO.getSoLuong();
+        Integer idSPCT = hoaDonChiTietDTO.getIdSPCT();
+
+        // Lấy sản phẩm chi tiết và cộng lại số lượng
+        Optional<SanPhamChiTiet> optionalSPCT = sanPhamCTService.getSanPhamChiTietById(idSPCT);
+        if (optionalSPCT.isPresent()) {
+            SanPhamChiTiet sanPhamChiTiet = optionalSPCT.get();
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + soLuongCong);
+            sanPhamCTService.save(sanPhamChiTiet);
+            return ResponseEntity.ok("Cộng số lượng sản phẩm thành công.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy sản phẩm chi tiết.");
         }
     }
 

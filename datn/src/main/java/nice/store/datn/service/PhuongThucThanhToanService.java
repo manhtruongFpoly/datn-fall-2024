@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PhuongThucThanhToanService {
@@ -20,4 +21,11 @@ public class PhuongThucThanhToanService {
         return  phuongThucThanhToanRepository.findByIdHoaDon(id);
     }
 
+    public PhuongThucThanhToan deleteById(Integer id) {
+        Optional<PhuongThucThanhToan> optional = phuongThucThanhToanRepository.findById(id);
+        return optional.map(o -> {
+            phuongThucThanhToanRepository.delete(o);
+            return o;
+        }).orElse(null);
+    }
 }

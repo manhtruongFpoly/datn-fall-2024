@@ -84,32 +84,28 @@ public class HoaDon {
     @Column(name = "PHI_SHIP")
     private Integer phiShip;
 
-//    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<HoaDonChiTiet> hoaDonChiTietList;
-//    @ManyToOne
-//    @JoinColumn(name = "ID_KH", referencedColumnName = "ID")
-//    private KhachHang khachHang;
-
 
     public String getStringTrangThai() {
         if (this.trangThai == null) {
             return "";
         }
-// 0 : chờ xác nhận 3 hoàn thành mặc định k được thay đổi 2 case này
+// 0 : Hóa Đơn chờ 4 hoàn thành 1: chờ xác nhận mặc định k được thay đổi 2 case này
         switch (this.trangThai) {
             case 0:
-                return "Chờ xác nhận";
+                return "Hóa Đơn Chờ";
             case 1:
-                return "Chờ giao";
+                return "Chờ xác nhận";
             case 2:
-                return "Đang giao";
+                return "Chờ giao";
             case 3:
-                return "Hoàn thành";
+                return "Đang giao";
             case 4:
-                return "Chờ thanh toán";
+                return "Hoàn thành";
             case 5:
-                return "Đã hủy";
+                return "Chờ thanh toán";
             case 6:
+                return "Đã hủy";
+            case 7:
                 return "Hoàn trả";
             case 8:
                 return "Đơn đổi trả tạm";

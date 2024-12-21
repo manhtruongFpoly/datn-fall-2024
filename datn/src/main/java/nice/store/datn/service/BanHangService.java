@@ -5,6 +5,7 @@ import nice.store.datn.repository.HoaDonChiTietRepository;
 import nice.store.datn.repository.HoaDonRepository;
 import nice.store.datn.repository.SanPhamChiTietRepository;
 import nice.store.datn.response.DiaChiDTOs;
+import nice.store.datn.response.SanPhamChiTietDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,6 +68,18 @@ public class BanHangService {
 
         return dto;
     }
-
+    public SanPhamChiTietDTO getSanPhamChiTietById(Integer id) {
+        Optional<SanPhamChiTiet> sanPhamChiTietOptional = sanPhamChiTietRepository.findById(id);
+        if (sanPhamChiTietOptional.isPresent()) {
+            return convertToDTO(sanPhamChiTietOptional.get());
+        }
+        return null;
+    }
+    private SanPhamChiTietDTO convertToDTO(SanPhamChiTiet sanPhamChiTiet) {
+        SanPhamChiTietDTO dto = new SanPhamChiTietDTO();
+        dto.setId(sanPhamChiTiet.getId());
+        dto.setSoLuong(sanPhamChiTiet.getSoLuong());
+        return dto;
+    }
 
 }
