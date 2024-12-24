@@ -112,7 +112,88 @@
                              style="display: none;">
                             <div class="modal-content-danh-sach-san-pham-unique">
                                 <h1>Danh sách sản phẩm</h1>
+<!--                                boLoc spct-->
+                                <div class="col-md-12 mb-4">
+                                    <form method="get" id="searchForm" class="p-3 border rounded search-form">
+                                        <h2 class="text-start">Lọc Tìm Kiếm </h2>
+                                        <div class="input-group mb-3">
+                                            <input type="text" id="searchInput" name="keyword" class="form-control"
+                                                   placeholder="Tìm Kiếm Mã Mã Và Tên Sản Phẩm">
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-3">
+                                                <label for="kichCo">Kích Cỡ:</label>
+                                                <select id="kichCo" name="kichCo" class="form-control">
+                                                    <option value="">Tất cả</option>
+                                                    <th:block th:each="kichCo : ${listKichCo}">
+                                                        <option th:value="${kichCo.size}" th:text="${kichCo.size}"></option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
 
+
+                                            <div class="col-md-3">
+                                                <label for="mauSac">Màu Sắc:</label>
+                                                <select id="mauSac" name="mauSac" class="form-control">
+                                                    <option value="">Tất cả</option>
+                                                    <!-- Duyệt qua danh sách màu sắc và hiển thị -->
+                                                    <th:block th:each="mauSac : ${listMauSac}">
+                                                        <option th:value="${mauSac.tenMauSac}" th:text="${mauSac.tenMauSac}"></option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
+
+
+                                            <div class="col-md-3">
+                                                <label for="chatLieu">Chất Liệu:</label>
+                                                <select id="chatLieu" name="chatLieu" class="form-control">
+                                                    <option value="">Tất cả</option>
+                                                    <!-- Duyệt qua danh sách chất liệu và hiển thị -->
+                                                    <th:block th:each="chatLieu : ${listChatLieu}">
+                                                        <option th:value="${chatLieu.tenChatLieu}" th:text="${chatLieu.tenChatLieu}"></option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
+
+
+                                            <div class="col-md-3">
+                                                <label for="loaiGiay">Loại Giày:</label>
+                                                <select id="loaiGiay" name="loaiGiay" class="form-control">
+                                                    <option value="">Tất cả</option>
+                                                    <!-- Duyệt qua danh sách loại giày và hiển thị -->
+                                                    <th:block th:each="loaiGiay : ${listLoaiGiay}">
+                                                        <option th:value="${loaiGiay.tenLoaiGiay}" th:text="${loaiGiay.tenLoaiGiay}"></option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
+
+
+                                            <div class="col-md-3">
+                                                <label for="minPrice">Giá Từ:</label>
+                                                <input type="number" id="minPrice" name="minPrice" class="form-control" placeholder="Giá từ"
+                                                       min="0" step="1000">
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <label for="maxPrice">Giá Đến:</label>
+                                                <input type="number" id="maxPrice" name="maxPrice" class="form-control"
+                                                       placeholder="Giá đến"
+                                                       min="0" step="1000">
+                                            </div>
+
+
+                                        </div>
+
+                                        <!--                    button -->
+                                        <div class="text-center">
+                                            <button type="button" class="btn btn-primary mx-2" onclick="filterTable()"
+                                                    style="display: none;">Tìm kiếm
+                                            </button>
+                                            <button type="button" class="btn btn-secondary mx-2" onclick="resetForm()">Làm Mới</button>
+                                        </div>
+                                    </form>
+                                    <hr>
+                                </div>
                                 <!-- Load danh sách sản phẩm -->
                                 <table id="tableDanhSachSanPham" class="table table-striped mt-3">
                                     <thead class="table-primary">
@@ -974,12 +1055,61 @@
                     },
                     "dom": 'lrtip'
                 });
+
             },
             error: function () {
                 $("#danhSachSanPham").html('<tr><td colspan="9" class="text-center text-red-500">Không thể tải dữ liệu!</td></tr>');  // Thông báo lỗi khi không thể tải dữ liệu
             }
         });
     }
+
+
+
+    // // Hàm lọc sản phẩm
+    // function filterData(data) {
+    //     var keyword = $('#searchInput').val().toLowerCase();
+    //     var kichCo = $('#kichCo').val();
+    //     var mauSac = $('#mauSac').val();
+    //     var chatLieu = $('#chatLieu').val();
+    //     var loaiGiay = $('#loaiGiay').val();
+    //     var minPrice = $('#minPrice').val();
+    //     var maxPrice = $('#maxPrice').val();
+    //
+    //     // Kiểm tra các giá trị đã chọn
+    //     console.log('Kích cỡ:', kichCo);
+    //     console.log('Màu sắc:', mauSac);
+    //     console.log('Chất liệu:', chatLieu);
+    //     console.log('Loại giày:', loaiGiay);
+    //     console.log('Giá từ:', minPrice);
+    //     console.log('Giá đến:', maxPrice);
+    //
+    //     // Lọc danh sách sản phẩm dựa trên các điều kiện
+    //     data = data.filter(function(sp) {
+    //         var matchesKeyword = keyword ? (sp.tenSanPham.toLowerCase().includes(keyword) || sp.thuongHieu.toLowerCase().includes(keyword)) : true;
+    //         var matchesKichCo = kichCo ? (sp.kichCo && sp.kichCo.toString().trim() === kichCo) : true;
+    //         var matchesMauSac = mauSac ? (sp.mauSac && sp.mauSac.toLowerCase() === mauSac.toLowerCase()) : true;
+    //         var matchesChatLieu = chatLieu ? (sp.chatLieu && sp.chatLieu.toLowerCase() === chatLieu.toLowerCase()) : true;
+    //         var matchesLoaiGiay = loaiGiay ? (sp.loaiGiay && sp.loaiGiay.toLowerCase() === loaiGiay.toLowerCase()) : true;
+    //
+    //         var matchesPrice = true;
+    //         if (minPrice || maxPrice) {
+    //             var price = parseFloat(sp.giaBan);
+    //             if (minPrice && price < parseFloat(minPrice)) {
+    //                 matchesPrice = false;
+    //             }
+    //             if (maxPrice && price > parseFloat(maxPrice)) {
+    //                 matchesPrice = false;
+    //             }
+    //         }
+    //
+    //         return matchesKeyword && matchesKichCo && matchesMauSac && matchesChatLieu && matchesLoaiGiay && matchesPrice;
+    //     });
+    //
+    //     return data;
+    // }
+
+
+
 
     function laySoLuongSanPham(id) {
         const sanPham = danhSachSanPham.find(sp => sp.id === id);
@@ -1193,11 +1323,12 @@
     }
 
 
+
     //lấy thông tin khách hàng add vào hóa đơn chờ  //hai
     function getDiaChiKhachHang(idKhachHang) {
         if (idKhachHang != 1) {
             $.ajax({
-                url: `/api/ban-hang/dia-chi-mac-dinh-khach-hang/${idKhachHang}`,
+                url: `/api/ban-hang/dia-chi-mac-dinh-khach-hang-dto/${idKhachHang}`,
                 method: 'GET',
                 success: function (response) {
                     if (response && Object.keys(response).length > 0) {
@@ -1206,6 +1337,18 @@
                         console.log("Phường/Xã:", response.phuongXa);
                         console.log("Quận/Huyện:", response.quanHuyen);
                         console.log("Tỉnh/Thành:", response.tinhThanh);
+
+
+                        $('#edit-ten').val(response.ten);
+                        $('#edit-sdtNguoiNhan').val(response.sdt);
+                        $('#edit-diachi').val(response.diaChiCuThe);
+                        $('#noteThongTin').val("");
+
+
+                        $('#edit-tinhthanh').val(response.tinhThanh).trigger('change');
+                        $('#edit-quanhuyen').val(response.quanHuyen).trigger('change');
+                        $('#edit-phuongxa').val(response.phuongXa);
+
 
                         updateThongTinNguoiNhan(response.ten, response.sdt, response.diaChiCuThe, response.phuongXa, response.quanHuyen, response.tinhThanh, 0, null, idTabHD);
                         getDuLieu(idTabHD);
@@ -1502,6 +1645,7 @@
         });
     }
 
+
 </script>
 
 <script>
@@ -1640,7 +1784,7 @@
                     } else if (tienDaThanhToan < tongTienTrongHD - GiamToiDa) {
                         showNotification("Thanh toán thất bại", "thatBai");
                     } else {
-                        updateTrangThaiHoaDon(4, idTabHD);
+                        updateTrangThaiHoaDon(5, idTabHD);
                         showNotification("Thanh toán thành công", "thanhCong");
 
                         setTimeout(() => {

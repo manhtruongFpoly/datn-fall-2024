@@ -89,26 +89,26 @@ public class HoaDon {
         if (this.trangThai == null) {
             return "";
         }
-// 0 : Hóa Đơn chờ 4 hoàn thành 1: chờ xác nhận mặc định k được thay đổi 2 case này
+// 0 : Hóa Đơn chờ 5 hoàn thành 1: chờ xác nhận mặc định k được thay đổi 2 case này
         switch (this.trangThai) {
             case 0:
                 return "Hóa Đơn Chờ";
             case 1:
                 return "Chờ xác nhận";
             case 2:
-                return "Chờ giao";
+                return "Đã xác nhận";
             case 3:
-                return "Đang giao";
+                return "Chờ vận chuyển";
             case 4:
-                return "Hoàn thành";
+                return "Vận chuyển";
             case 5:
-                return "Chờ thanh toán";
+                return "Hoàn thành";
             case 6:
-                return "Đã hủy";
+                return "Thanh toán";
             case 7:
-                return "Hoàn trả";
+                return "Đã hủy";
             case 8:
-                return "Đơn đổi trả tạm";
+                return "Không xác định";
             default:
                 break;
         }
