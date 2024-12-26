@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "HOA_DON")
-//@JsonIgnoreProperties({"hoaDonChiTietList"})
+
 public class HoaDon {
 
     @Id
@@ -89,7 +89,7 @@ public class HoaDon {
         if (this.trangThai == null) {
             return "";
         }
-// 0 : Hóa Đơn chờ 5 hoàn thành 1: chờ xác nhận mặc định k được thay đổi 2 case này
+// 0 : Hóa Đơn chờ 4 hoàn thành 1: chờ xác nhận mặc định k được thay đổi 2 case này
         switch (this.trangThai) {
             case 0:
                 return "Hóa Đơn Chờ";
@@ -102,9 +102,9 @@ public class HoaDon {
             case 4:
                 return "Vận chuyển";
             case 5:
-                return "Hoàn thành";
-            case 6:
                 return "Thanh toán";
+            case 6:
+                return "Hoàn thành";
             case 7:
                 return "Đã hủy";
             case 8:

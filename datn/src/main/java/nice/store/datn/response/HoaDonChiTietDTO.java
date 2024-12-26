@@ -15,6 +15,7 @@ public class HoaDonChiTietDTO {
     private Integer soLuong;
     private BigDecimal donGia;
     private String tenSanPham;
+    private String kichCo;
     private String mauSac;
     private Integer idSPCT;
     private String maHD;
@@ -23,6 +24,7 @@ public class HoaDonChiTietDTO {
         this.soLuong = hoaDonChiTiet.getSoLuong();
         this.donGia = hoaDonChiTiet.getDonGia();
         this.tenSanPham = hoaDonChiTiet.getSanPhamChiTiet().getSanPham().getTenSP();
+        this.kichCo = hoaDonChiTiet.getSanPhamChiTiet().getKichCo().getSize();
         this.mauSac = hoaDonChiTiet.getSanPhamChiTiet().getMauSac().getTenMauSac();
         this.idSPCT = hoaDonChiTiet.getSanPhamChiTiet().getId();
         this.maHD = hoaDonChiTiet.getHoaDon().getMaHd();

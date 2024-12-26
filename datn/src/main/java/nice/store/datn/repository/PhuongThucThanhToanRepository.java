@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PhuongThucThanhToanRepository extends JpaRepository<PhuongThucThanhToan , Integer> {
 
@@ -18,5 +19,7 @@ public interface PhuongThucThanhToanRepository extends JpaRepository<PhuongThucT
     @Query(value = "SELECT p FROM PhuongThucThanhToan p WHERE p.idHoaDon.id = :idHoaDon")
     List<PhuongThucThanhToan> findByIdHoaDon1(@Param("idHoaDon") Integer idHoaDon);
 
+    @Query(value = "SELECT * FROM PHUONG_THUC_THANH_TOAN WHERE ID_HOA_DON = :idHoaDon", nativeQuery = true)
+    Optional<PhuongThucThanhToan> findByIdHoaDon2(@Param("idHoaDon") Integer idHoaDon);
 
 }

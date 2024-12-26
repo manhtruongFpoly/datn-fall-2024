@@ -1,5 +1,6 @@
 package nice.store.datn.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -68,7 +69,7 @@ public class KhachHang {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "ID_ROLE", referencedColumnName = "id")
-   // @JsonManagedReference
+    @JsonIgnore
     private Role idRole;
 
     @OneToMany(mappedBy = "idKH", cascade = CascadeType.ALL, orphanRemoval = true)

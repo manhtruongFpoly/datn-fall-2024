@@ -55,11 +55,10 @@ public class BanHangAPI {
 
     @GetMapping("/api/hoa-don/{hoaDonId}")
     public List<HoaDonChiTietDTO> getHoaDonChiTiet(@PathVariable Integer hoaDonId) {
-
         return hoaDonChiTietService.getHoaDonChiTietByHoaDonId(hoaDonId);
     }
 
-
+    //lỗi vòng lặp
     @GetMapping("/api/ban-hang/{id}")
     public ResponseEntity<Map<String, Object>> detail(@PathVariable("id") Integer id) {
         HoaDon hd = hoaDonService.detail(id);
