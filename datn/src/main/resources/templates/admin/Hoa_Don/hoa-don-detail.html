@@ -839,10 +839,13 @@
 
         if (noteText.length < 10) {
             $('#noteError').removeClass('hidden');
+            console.log("Ghi chú quá ngắn.");
+            alert("Tối thiểu 10 kí tự")
             return;
         } else {
             $('#noteError').addClass('hidden');
         }
+
 
         // Lấy trạng thái hiện tại của hóa đơn từ API
         $.ajax({
@@ -859,11 +862,11 @@
                 currentTrangThai++;  // Chuyển trạng thái (tăng lên 1)
 
                 // Kiểm tra và thực hiện các hành động khác dựa trên trạng thái
-                if (currentTrangThai === 2 && confirm("Bạn có muốn in hóa đơn không?")) {
-                    setTimeout(() => {
-                        console.log('Bắt đầu in');
-                        window.print();
-                    }, 100);
+                if (currentTrangThai === 2 ) {
+                    // setTimeout(() => {
+                    //     console.log('Bắt đầu in');
+                    //     window.print();
+                    // }, 100);
                 }
 
                 // Cập nhật lịch sử trạng thái và các hành động
