@@ -1065,48 +1065,6 @@
 
 
 
-    // // Hàm lọc sản phẩm
-    // function filterData(data) {
-    //     var keyword = $('#searchInput').val().toLowerCase();
-    //     var kichCo = $('#kichCo').val();
-    //     var mauSac = $('#mauSac').val();
-    //     var chatLieu = $('#chatLieu').val();
-    //     var loaiGiay = $('#loaiGiay').val();
-    //     var minPrice = $('#minPrice').val();
-    //     var maxPrice = $('#maxPrice').val();
-    //
-    //     // Kiểm tra các giá trị đã chọn
-    //     console.log('Kích cỡ:', kichCo);
-    //     console.log('Màu sắc:', mauSac);
-    //     console.log('Chất liệu:', chatLieu);
-    //     console.log('Loại giày:', loaiGiay);
-    //     console.log('Giá từ:', minPrice);
-    //     console.log('Giá đến:', maxPrice);
-    //
-    //     // Lọc danh sách sản phẩm dựa trên các điều kiện
-    //     data = data.filter(function(sp) {
-    //         var matchesKeyword = keyword ? (sp.tenSanPham.toLowerCase().includes(keyword) || sp.thuongHieu.toLowerCase().includes(keyword)) : true;
-    //         var matchesKichCo = kichCo ? (sp.kichCo && sp.kichCo.toString().trim() === kichCo) : true;
-    //         var matchesMauSac = mauSac ? (sp.mauSac && sp.mauSac.toLowerCase() === mauSac.toLowerCase()) : true;
-    //         var matchesChatLieu = chatLieu ? (sp.chatLieu && sp.chatLieu.toLowerCase() === chatLieu.toLowerCase()) : true;
-    //         var matchesLoaiGiay = loaiGiay ? (sp.loaiGiay && sp.loaiGiay.toLowerCase() === loaiGiay.toLowerCase()) : true;
-    //
-    //         var matchesPrice = true;
-    //         if (minPrice || maxPrice) {
-    //             var price = parseFloat(sp.giaBan);
-    //             if (minPrice && price < parseFloat(minPrice)) {
-    //                 matchesPrice = false;
-    //             }
-    //             if (maxPrice && price > parseFloat(maxPrice)) {
-    //                 matchesPrice = false;
-    //             }
-    //         }
-    //
-    //         return matchesKeyword && matchesKichCo && matchesMauSac && matchesChatLieu && matchesLoaiGiay && matchesPrice;
-    //     });
-    //
-    //     return data;
-    // }
 
 
 

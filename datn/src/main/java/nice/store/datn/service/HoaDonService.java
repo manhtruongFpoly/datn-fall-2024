@@ -10,6 +10,7 @@ import nice.store.datn.response.HoaDonChiTietDTO;
 import nice.store.datn.response.PhuongThucThanhToanDTO;
 import nice.store.datn.response.XuatHoaDonDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,8 +38,10 @@ public class HoaDonService {
 
 
     public List<HoaDon> getAllHoaDon() {
-        return hoaDonRepository.findAll();
+        // Sắp xếp theo trường "ngayTao" giảm dần (DESC)
+        return hoaDonRepository.findAll(Sort.by(Sort.Order.desc("id")));
     }
+
 
     public Optional<HoaDon> getHoaDonById(Integer id) {
         return hoaDonRepository.findById(id);

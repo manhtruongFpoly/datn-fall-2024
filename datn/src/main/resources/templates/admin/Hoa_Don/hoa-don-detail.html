@@ -53,6 +53,13 @@
         }
 
 
+        h4 {
+            display: inline-block; /* Đảm bảo các phần tử nằm trên một dòng */
+            margin-right: 1cm; /* Khoảng cách 5cm giữa các nhóm */
+            color: inherit; /* Giữ nguyên màu chữ */
+        }
+
+
     </style>
 </head>
 <body>
@@ -92,6 +99,8 @@
                     </div>
                 </div>
             </div>
+
+
             <!-- Lịch sử thanh toán-->
             <div class="card shadow mb-4">
                 <div class="card-header bg-white">
@@ -440,9 +449,10 @@
                     </div>
                 </div>
             </div>
-<!--            modal lich su -->
+            <!--            modal lich su -->
 
-            <div id="modalLichSu" class="modal fade" tabindex="-1" aria-labelledby="modalLichSuLabel" aria-hidden="true">
+            <div id="modalLichSu" class="modal fade" tabindex="-1" aria-labelledby="modalLichSuLabel"
+                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <!-- Header của Modal -->
@@ -516,7 +526,6 @@
         getLichSuHoaDon(idHD);
     });
 
-
     function getLichSuHoaDon(id) {
         // Gọi API để lấy lịch sử của hóa đơn theo id
         $.get(`/api/lich-su-hoa-don1/${id}`, function (data) {
@@ -529,14 +538,21 @@
                 // Lặp qua dữ liệu và tạo các dòng trong bảng
                 data.forEach(function (item, index) {
                     //stepsHistory = [];
-                    stepsHistory.push({ trangThai: item.trangThai, ngayTao: item.ngayTao });
+                    stepsHistory.push({trangThai: item.trangThai, ngayTao: item.ngayTao});
 
                     rows += `
                     <tr>
                         <td>${index + 1}</td>
                         <td>${getTrangThaiLichSu(item.trangThai)}</td>
-                        <td>${new Date(item.ngayTao).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
-                        <td>${ 'Admin'}</td>
+                        <td>${new Date(item.ngayTao).toLocaleString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    })}</td>
+                        <td>${'Admin'}</td>
                         <td>${item.ghiChu || 'Không có ghi chú'}</td>
                     </tr>
                 `;
@@ -576,7 +592,7 @@
         }
     }
 
-    $('#hienThiLichSu').on('click', function() {
+    $('#hienThiLichSu').on('click', function () {
         getLichSuHoaDon(idHD);
         $('#modalLichSu').modal('show');
     });
@@ -624,11 +640,6 @@
                 return response.json();
             })
             .then(data => {
-                // const trangThaiIndex = data.trangThai;
-                //
-                // const steppersDiv = document.querySelector('#steppers');
-                // steppersDiv.innerHTML = `<span class="badge bg-primary">${trangThaiSteps(trangThaiIndex)}</span>`;
-                // Cập nhật thông tin vào HTML
                 document.querySelector('#maHoaDon span').textContent = data.maHd || 'Không xác định';
                 document.querySelector('#thongTinHoaDon .badge').textContent = data.stringTrangThai || 'Không xác định';
                 document.querySelector('#thongTinHoaDon .badge').className = `badge bg-info`;
@@ -642,6 +653,7 @@
             })
 
     }
+
 
     function getHoaDonChiTiet(idHoaDon) {
         const url = `/api/san-pham-ct-co-trong-hoa-don/${idHoaDon}`;
@@ -665,7 +677,8 @@
                 data.forEach((item, index) => {
                     idSP.push({
                         id: item.idSPCT,
-                        soLuong: item.soLuong
+                        soLuong: item.soLuong,
+                        donGia: item.donGia // Lưu giá trị donGia
                     });
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -695,33 +708,39 @@
                 `;
                     tbody.appendChild(row);
                 });
+
+                // Tính tổng tiền từ mảng idSP
+                const totalAmount = idSP.reduce((sum, item) => sum + (item.donGia * item.soLuong), 0);
+
                 document.querySelector('#tongTienChiTiet').innerHTML = `
-            <div class="d-flex justify-between mb-3">
-                <span class="text-lg">Tổng tiền hàng:</span>
-                <span class="text-lg text-primary">${data.reduce((sum, item) => sum + (item.donGia * item.soLuong), 0)} VNĐ</span>
-            </div>
-            <div class="d-flex justify-between mb-3">
-                <span class="text-lg">Phí vận chuyển:</span>
-                <span class="text-lg text-muted">0 VNĐ</span>
-            </div>
-            <div class="d-flex justify-between mb-3">
-                <span class="text-lg">Voucher:</span>
-                <span class="text-lg text-muted">1.000 VNĐ</span>
-            </div>
-            <hr class="my-2">
-            <div class="d-flex justify-between">
-                <span class="text-xl text-orange-700">Tổng tiền thanh toán:</span>
-                <span class="text-xl text-orange-700">${data.reduce((sum, item) => sum + (item.donGia * item.soLuong), 0) - 1000} VNĐ</span>
-            </div>
-        `;
+                <div class="d-flex justify-between mb-3">
+                    <span class="text-lg">Tổng tiền hàng:</span>
+                    <span class="tongTienHang text-lg text-primary">${totalAmount} VNĐ</span>
+                </div>
+                <div class="d-flex justify-between mb-3">
+                    <span class="text-lg">Phí vận chuyển:</span>
+                    <span class="text-lg text-muted">0 VNĐ</span>
+                </div>
+                <div class="d-flex justify-between mb-3">
+                    <span class="text-lg">Voucher:</span>
+                    <span class="phieuGiamGia text-lg text-muted">${data[0].giaTriMax} VNĐ</span>
+                </div>
+                <hr class="my-2">
+                <div class="d-flex justify-between">
+                    <span class="text-xl text-orange-700">Tổng tiền thanh toán:</span>
+                    <span class="tongThanhToan text-xl text-orange-700">${totalAmount - data[0].giaTriMax} VNĐ</span>
+                </div>
+            `;
 
                 // In ra mảng idSP để kiểm tra
                 console.log(idSP);
+                console.log(data[0].giaTriMax);
             })
             .catch(error => {
                 console.error('Đã xảy ra lỗi:', error);
             });
     }
+
 
     function addHistoryLog(trangThai, idHD) {
         const ghiChu = $('#noteText').val().trim();
@@ -760,14 +779,13 @@
     const totalSteps = 6;
     let stepsHistory = [];
     const icons = [
-        '<i class="fa-solid fa-square"></i>',
-        '<i class="fa-solid fa-square"></i>',
-        '<i class="fa-solid fa-check-square"></i>',
-        '<i class="fa-solid fa-cogs"></i>',
-        '<i class="fa-solid fa-cogs"></i>',
-        '<i class="fa-solid fa-plus-circle"></i>',
-        '<i class="fa-solid fa-minus-circle"></i>',
-        '<i class="fa-solid fa-times-circle"></i>'
+        '<i class="fa-solid fa-pen-to-square fa-lg" style="color: #63E6BE;"></i>',
+        '<i class="fa-solid fa-circle-check fa-lg" style="color: #63E6BE;"></i>',
+        '<i class="fa-solid fa-store fa-lg" style="color: #63E6BE;"></i>',
+        '<i class="fa-solid fa-truck fa-lg" style="color: #63E6BE;"></i>',
+        '<i class="fa-solid fa-hand-holding-dollar fa-lg" style="color: #63E6BE;"></i>',
+        '<i class="fa-regular fa-circle-check fa-lg" style="color: #63E6BE;"></i>',
+        '<i class="fa-solid fa-circle-xmark fa-lg" style="color: #fe3e48;"></i>',
     ];
 
     // Hàm lấy icon theo chỉ số
@@ -775,32 +793,14 @@
         console.log('Index:', index);  // Kiểm tra giá trị của index
         return icons[index - 1] || '';  // Lấy icon theo index
     }
-    function createStep(trangThai, ngayTao, stepNum) {
-        const iconBgColor = stepNum === 7 ? 'bg-red-600' : 'bg-green-600';
 
-        const stepDiv = $(`
-        <div class="flex items-center ml-8 step" data-step="${stepNum}">
-            <div class="h-8 w-8 ${iconBgColor} text-white rounded-full flex items-center justify-center">
-                ${getIcon(stepNum)}
-            </div>
-            <div class="ml-4">
-                <h2 class="text-lg font-semibold">${getTrangThaiLichSu(trangThai)}</h2>
-                <p class="text-gray-600">
-                    ${ngayTao != null ? new Date(ngayTao).toLocaleString('vi-VN', {
-            day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'
-        }) : ''}
-                </p>
-            </div>
-        </div>
-    `);
-
-        return stepDiv;
-    }
 
     function updateButtonsState() {
         $('#steppers').empty();
         stepsHistory.forEach((step, index) => {
             $('#steppers').append(createStep(step.trangThai, step.ngayTao, step.trangThai));
+            console.log(stepsHistory)
+
         });
         $('#prevBtn').prop('disabled', currentStep === 1);
         const noteText = $('#noteText').val();
@@ -851,7 +851,7 @@
         $.ajax({
             url: `/api/hoa-don/detail/${idHD}`,
             method: 'GET',
-            success: function(data) {
+            success: function (data) {
                 let currentTrangThai = data.trangThai;
 
                 if (currentTrangThai >= 6) {
@@ -859,20 +859,33 @@
                     return;
                 }
 
-                currentTrangThai++;  // Chuyển trạng thái (tăng lên 1)
+                currentTrangThai++;
 
                 // Kiểm tra và thực hiện các hành động khác dựa trên trạng thái
-                if (currentTrangThai === 2 ) {
+                if (currentTrangThai === 2) {
                     // setTimeout(() => {
                     //     console.log('Bắt đầu in');
                     //     window.print();
                     // }, 100);
                 }
 
+                const buttonList = document.querySelectorAll("#hienThiDanhSachSanPham, #thayDoiThongTinHoaDon");
+
+                if (buttonList.length > 0) {
+                    buttonList.forEach(button => {
+                        if (currentTrangThai === 0 || currentTrangThai === 1) {
+                            button.style.display = 'inline-block'; // Hiển thị nút
+                        } else {
+                            button.style.display = 'none'; // Ẩn nút
+                        }
+                    });
+                } else {
+                    console.error("Không tìm thấy nút nào trong danh sách.");
+                }
                 // Cập nhật lịch sử trạng thái và các hành động
-                stepsHistory.push({ trangThai: currentTrangThai, ngayTao: new Date().toISOString() });
+                stepsHistory.push({trangThai: currentTrangThai, ngayTao: new Date().toISOString()});
                 updateTrangThai(currentTrangThai);
-                addHistoryLog(currentTrangThai,idHD);
+                addHistoryLog(currentTrangThai, idHD);
                 showNotification(trangThaiSteps(currentTrangThai), "thanhCong");
                 updateButtonsState();
                 hideNoteModal();
@@ -880,13 +893,12 @@
                 getThongTinHoaDon(idHD);
 
 
-                // Gửi trạng thái mới qua API để cập nhật trên server
                 $.ajax({
                     url: `/api/hoa-don/update-trang-thai/${idHD}`,
                     method: 'PUT',
                     contentType: 'application/json',
-                    data: JSON.stringify({ trangThai: currentTrangThai }),
-                    success: function(response) {
+                    data: JSON.stringify({trangThai: currentTrangThai}),
+                    success: function (response) {
                         console.log("Cập nhật trạng thái thành công");
                     },
                 });
@@ -1062,17 +1074,102 @@
             success: function () {
                 showNotification(successMessage, "thanhCong");
                 hideModalSoLuong();
+                getThongTinHoaDon(idHD);
                 getHoaDonChiTiet(idHD);
+                setTimeout(function () {
+                    const totalAmount = idSP.reduce((sum, item) => sum + (item.donGia * item.soLuong), 0);
+                    const giaTriMax = document.querySelector('.phieuGiamGia').textContent.replace(' VNĐ', '');
+                    console.log("Tổng tiền sau khi thêm sản phẩm: " + totalAmount + giaTriMax);
+                    updateTongTienHD(idHD, totalAmount - giaTriMax, giaTriMax);
+                    PhieuGiamGiaPhuHopHD(totalAmount); // Cập nhật voucher
+                }, 1000);
+
                 closeModal();
-                //hideModalDanhSachSanPham();
-                // getDuLieu(idTabHD);
-                //PhieuGiamGiaPhuHop(tongTienTrongHD);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error('Lỗi khi gọi API:', textStatus, errorThrown);
                 alert(`Lỗi khi gửi yêu cầu: ${jqXHR.responseText || "Unknown error"}`);
                 hideModalSoLuong();  // Ẩn modal nếu có lỗi
             }
+        });
+    }
+
+    function updateTongTienHD(idHoaDon, tongTienHD, tienGiam) {
+
+        $.ajax({
+            url: `/api/hoa-don/update-tong-tien/${idHoaDon}`,
+            method: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                tongTien: tongTienHD,
+                tienGiam: tienGiam,
+            }),
+            success: function (response) {
+            },
+            error: function (xhr, status, error) {
+                // Nếu có lỗi, log lỗi và hiển thị thông báo
+                showNotification("Cập nhật tổng tiền thất bại", "thatBai");
+            }
+        });
+    }
+
+    //add pgg vào hóa đơn //hai
+    function addPhieuGiamGiaHD(idHD, idPGG) {
+        $.ajax({
+            url: `/api/hoa-don/update-phieu-giam-gia/${idHD}`,
+            method: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                "phieuGiamGia": {
+                    id: idPGG
+                }
+            }),
+            success: function (response) {
+            },
+            error: function (error) {
+                console.error("Error updating PhieuGiamGia", error);
+            }
+        });
+    }
+
+    // Chọn PGG Phù Hợp với giá trị lớn nhất //hai
+    function PhieuGiamGiaPhuHopHD(max) {
+
+        $.ajax({
+            url: `/api/hoa-don/phieu-giam-gia-phu-hop/${max}`,
+            method: 'GET',
+            contentType: 'application/json',
+            success: function (response) {
+                if (response && response.length <= 0) {
+                    idPGG = null;
+                    maPGG = '';
+                    GiamToiDa = 0;
+                } else if (max < response[0].donToiThieu) {
+                    idPGG = null;
+                    maPGG = '';
+                    GiamToiDa = 0;
+                } else {
+                    maPGG = response[0].ma;
+                    idPGG = response[0].id;
+                    // if (response[0].loaiVoucher === true) {
+                    //     let phanTram = max / response[0].giaTriGiam;
+                    //     if (response[0].giaTriMax < phanTram) {
+                    //         GiamToiDa = response[0]?.giaTriMax || 0;
+                    //     } else {
+                    //         GiamToiDa = phanTram;
+                    //     }
+                    // } else {
+                    //     GiamToiDa = response[0]?.giaTriMax || 0;
+                    // }
+
+
+                    GiamToiDa = response[0]?.giaTriMax || 0;
+                }
+                if (idPGG) {
+                    addPhieuGiamGiaHD(idHD, idPGG);
+                } else {
+                }
+            },
         });
     }
 
@@ -1139,6 +1236,28 @@
         } else {
         }
     }
+
+
+    function createStep(trangThai, ngayTao, stepNum) {
+        const iconBgColor = stepNum === 7 ? 'bg-red-600' : 'bg-green-600';
+
+        const stepDiv = $(`
+        <div class="flex items-center ml-8 step" data-step="${stepNum}" style='gap: 5cm;'>
+            <!-- Icon và chữ trong cùng một nhóm -->
+        <div class="flex items-center gap-2">
+        <div>
+        <h4 style='margin-right: 1cm;' class="text-lg font-bold gap-5">
+        ${getIcon(stepNum)}  ${getTrangThaiLichSu(trangThai)}
+        </h4>
+        <p class="text-gray-600">${ngayTao != null ? new Date(ngayTao).toLocaleString('vi-VN', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'}) : ''}
+        </p>
+        </div>
+        </div>
+        </div>
+        `);
+
+        return stepDiv;
+        }
 
 </script>
 
