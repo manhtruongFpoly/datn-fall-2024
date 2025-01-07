@@ -40,13 +40,13 @@ public class XuatHoaDon {
     }
 
     @GetMapping("/admin/invoice/export-pdf/{idTabHD}")
-public ResponseEntity<Resource> exportInvoiceToPDF(@PathVariable Integer idTabHD) {
+    public ResponseEntity<Resource> exportInvoiceToPDF(@PathVariable Integer idTabHD) {
     try {
         HoaDon hoaDon = hoaDonService.findHoaDonById(idTabHD);
 
         XuatHoaDonDTO dto = hoaDonService.toXuatHoaDonDTO(hoaDon);
 
-        String filePath = "C:\\Users\\LAPTOP24H\\Desktop\\fix\\datn-fall-2024\\HoaDonPDF\\invoice_" + dto.getMaHd() + ".pdf";
+        String filePath = "C:\\Users\\LAPTOP24H\\Desktop\\HoaDonPDF\\datn-fall-2024\\HoaDonPDF\\invoice_" + dto.getMaHd() + ".pdf";
 
         xuatHoaDonService.exportInvoiceToPDF(dto, filePath);
 

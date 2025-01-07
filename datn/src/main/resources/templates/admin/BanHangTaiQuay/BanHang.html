@@ -1741,24 +1741,19 @@
                         showNotification("Thanh toán thất bại", "thatBai");
                     } else if (tienDaThanhToan < tongTienTrongHD - GiamToiDa) {
                         showNotification("Thanh toán thất bại", "thatBai");
-                    } else {
+                    } else  {
                         updateTrangThaiHoaDon(6, idTabHD);
+                        addHistoryLogBH(6,idTabHD);
                         showNotification("Thanh toán thành công", "thanhCong");
 
                         setTimeout(() => {
-                            showConfirm1("Bạn có muốn xuất hóa đơn không?", function () {
-                                exportInvoiceToPDF(idTabHD, function () {
-                                    window.location.href = 'http://localhost:8080/admin/ban-hang-tai-quay';
-                                });
-                            }, function () {
-                                Swal.fire(
-                                    'Hoàn tất!',
-                                    'Bạn đã chọn không xuất hóa đơn.',
-                                    'success'
-                                ).then(() => {
-                                    console.log(idTabHD + "hoa don ${idTabHD}")
-                                    window.location.href = 'http://localhost:8080/admin/ban-hang-tai-quay';
-                                });
+                            // Bỏ phần xuất hóa đơn ở đây
+                            Swal.fire(
+                                'Hoàn tất!',
+                                'Bạn đã thanh toán thành công.',
+                                'success'
+                            ).then(() => {
+                                window.location.href = 'http://localhost:8080/admin/ban-hang-tai-quay';
                             });
                         }, 500); // Thời gian chờ
                     }
@@ -1766,6 +1761,7 @@
                     getFormData();
                     updateThongTinNguoiNhanCoTrangThai(ten, sdtNguoiNhan, fullAddress, getAddressName(tinhthanh), quanhuyen, phuongxa, noteThongTin, phiVanChuyen, idTabHD, 1);
                     // renderTabs();
+                    addHistoryLogBH(1,idTabHD);
                     console.log(updateThongTinNguoiNhanCoTrangThai)
                     showNotification("Đặt hàng thành công", "thanhCong");
                     window.location.href = 'http://localhost:8080/admin/ban-hang-tai-quay';
@@ -1773,6 +1769,20 @@
             });
         });
 
+        function addHistoryLogBH(trangThai, idHD) {
+            const ghiChu = "";
+            $.ajax({
+                url: `/api/hoa-don/lich-su-hoa-don/add/${idHD}`,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ghiChu: ghiChu, trangThai: trangThai, idHoaDon: idHD}),
+                success: function (response) {
+                },
+                error: function (xhr, status, error) {
+                    console.error('Lỗi khi thêm lịch sử:', error);
+                }
+            });
+        }
 
         function showConfirm1(message, onConfirm, onCancel) {
             Swal.fire({
@@ -1831,9 +1841,25 @@
         function getFormData() {
             ten = $('#edit-ten').val().trim();
             sdtNguoiNhan = $('#edit-sdtNguoiNhan').val().trim();
-            tinhthanh = $('#edit-tinhthanh').val().trim();
-            quanhuyen = $('#edit-quanhuyen').val().trim();
-            phuongxa = $('#edit-phuongxa').val().trim();
+
+            tinhthanh = $('#edit-tinhthanh').val();
+            console.log("Tỉnh Thành value:", tinhthanh); // Kiểm tra giá trị
+            if (tinhthanh) {
+                tinhthanh = tinhthanh.trim();
+            }
+
+            quanhuyen = $('#edit-quanhuyen').val();
+            console.log("Quận Huyện value:", quanhuyen); // Kiểm tra giá trị
+            if (quanhuyen) {
+                quanhuyen = quanhuyen.trim();
+            }
+
+            phuongxa = $('#edit-phuongxa').val();
+            console.log("Phường Xã value:", phuongxa); // Kiểm tra giá trị
+            if (phuongxa) {
+                phuongxa = phuongxa.trim();
+            }
+
             diachi = $('#edit-diachi').val().trim();
             phiVanChuyen = $('#phiVanChuyen').val().trim();
             noteThongTin = $('#noteThongTin').val().trim();
@@ -1863,27 +1889,57 @@
             }
 
             console.log("Full Address:", fullAddress);
-
-
         }
 
+
+
         //lay api load ra danh sach các tỉnh từ api
+        // function getAddressName(id, type) {
+        //     if (!citiesData.length) return id;
+        //
+        //     let address = '';
+        //
+        //     switch (type) {
+        //         case 'tinhthanh':
+        //             let city = citiesData.find(city => city.Id === id);
+        //             address = city ? city.Name : id;
+        //             break;
+        //         case 'quanhuyen':
+        //             let district = citiesData.flatMap(city => city.Districts).find(district => district.Id === id);
+        //             address = district ? district.Name : id;
+        //             break;
+        //         case 'phuongxa':
+        //             let ward = citiesData.flatMap(city => city.Districts.flatMap(district => district.Wards)).find(ward => ward.Id === id);
+        //             address = ward ? ward.Name : id;
+        //             break;
+        //     }
+        //
+        //     return address;
+        // }
         function getAddressName(id, type) {
-            if (!citiesData.length) return id;
+            if (!citiesData || citiesData.length === 0) return id;  // Nếu không có dữ liệu thì trả lại id
 
             let address = '';
 
             switch (type) {
                 case 'tinhthanh':
-                    let city = citiesData.find(city => city.Id === id);
-                    address = city ? city.Name : id;
+                    // Tìm tỉnh thành dựa trên ID
+                    let city = citiesData.find(city => city.Id === parseInt(id));
+                    address = city ? city.Name : id;  // Nếu tìm thấy, trả về tên, nếu không trả lại ID
                     break;
                 case 'quanhuyen':
-                    let district = citiesData.flatMap(city => city.Districts).find(district => district.Id === id);
+                    // Tìm quận huyện dựa trên ID
+                    let district = citiesData
+                        .flatMap(city => city.Districts)
+                        .find(district => district.Id === parseInt(id));
                     address = district ? district.Name : id;
                     break;
                 case 'phuongxa':
-                    let ward = citiesData.flatMap(city => city.Districts.flatMap(district => district.Wards)).find(ward => ward.Id === id);
+                    // Tìm phường xã dựa trên ID
+                    let ward = citiesData
+                        .flatMap(city => city.Districts)
+                        .flatMap(district => district.Wards)
+                        .find(ward => ward.Id === parseInt(id));
                     address = ward ? ward.Name : id;
                     break;
             }

@@ -127,17 +127,18 @@ public class XuatHoaDonService {
                     .setBold()
                     .setFontSize(16)
                     .setTextAlignment(TextAlignment.CENTER));
-
-            document.add(new Paragraph("Tên Người Nhận: " + hoaDonDTO.getTenNguoiNhan())
+            document.add(new Paragraph("Tên Người Nhận: " + (hoaDonDTO.getTenNguoiNhan() != null && !hoaDonDTO.getTenNguoiNhan().isEmpty() ? hoaDonDTO.getTenNguoiNhan() : "Khách Lẻ"))
                     .setFont(vietnameseFont)
                     .setFontSize(12));
 
-            document.add(new Paragraph("Số Điện Thoại: " + hoaDonDTO.getSdt())
+            document.add(new Paragraph("Số Điện Thoại: " + (hoaDonDTO.getSdt() != null && !hoaDonDTO.getSdt().isEmpty() ? hoaDonDTO.getSdt() : "Chưa Cung Cấp"))
                     .setFont(vietnameseFont)
                     .setFontSize(12));
-//            document.add(new Paragraph("Địa chỉ: " + hoaDonDTO.getDiaChiNguoiNhan())
-//                    .setFont(vietnameseFont)
-//                    .setFontSize(12));
+
+            document.add(new Paragraph("Địa chỉ: " + (hoaDonDTO.getDiaChiNguoiNhan() != null && !hoaDonDTO.getDiaChiNguoiNhan().isEmpty() ? hoaDonDTO.getDiaChiNguoiNhan() : "Chưa Cung Cấp"))
+                    .setFont(vietnameseFont)
+                    .setFontSize(12));
+
             document.add(new Paragraph(".....................................................................................................................................................................")
                     .setFont(vietnameseFont)
                     .setFontSize(12)
