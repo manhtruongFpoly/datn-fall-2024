@@ -74,7 +74,7 @@
             <!--TRang thai hóa đơn-->
             <div class="card shadow mb-4">
                 <div class="card-header bg-white">
-                    <h1 class="font-weight-bold text-primary">Trạng thái hóa đơn</h1>
+                    <h2 class="font-weight-bold">Trạng thái hóa đơn</h2>
                 </div>
                 <div class="card-body">
                     <div class="mb-4">
@@ -105,7 +105,7 @@
             <!-- Lịch sử thanh toán-->
             <div class="card shadow mb-4">
                 <div class="card-header bg-white">
-                    <h1 class="font-weight-bold text-primary">Lịch sử thanh toán</h1>
+                    <h3 class="font-weight-bold">Lịch sử thanh toán</h3>
                 </div>
                 <div class="card-body">
                     <div class="mb-4">
@@ -131,67 +131,77 @@
             </div>
             <!--Thog tin hóa đơn-->
             <div class="card shadow mb-4">
-                <div class="bg-white mt-2 ">
+                <div class="bg-white mt-2">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="card-header bg-white" id="maHoaDon">
-                            <h1 class="h6 font-weight-bold">Thông tin đơn hàng: <span
-                                    class="font-weight-normal">HD028</span></h1>
+                            <!-- Thêm style để làm đậm mã đơn hàng và giảm khoảng cách -->
+                            <h2 class="h3 font-weight-bold" style="font-weight: 700; margin-bottom: 0;">Thông tin đơn
+                                hàng: <span class="font-weight-normal" id="maHoaDonText"
+                                            style="font-weight: 700;">HD028</span></h2>
                         </div>
                         <div>
                             <button id="thayDoiThongTinHoaDon" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#modalThongTinHoaDon">Thay đổi
                             </button>
-
                         </div>
                     </div>
 
                     <div id="thongTinHoaDon">
                         <div class="d-flex my-2">
                             <div class="flex-grow-1 border-top"></div>
-                            <div class="flex-grow-1 border-top"></div>
                         </div>
-                        <div class="row">
+                        <div class="row" style="margin-left: 20px;">
                             <div class="col-12 col-md-6 mb-3 px-3">
-                                <h6 class="font-weight-bold">Trạng thái: <span class="badge bg-info">Chờ xác nhận</span>
+                                <h6 class="font-weight-bold">Trạng thái: <span class="badge bg-info" id="trangThai">Chờ xác nhận</span>
                                 </h6>
                             </div>
                             <div class="col-12 col-md-6 mb-3 px-3">
-                                <h6 class="font-weight-bold">Tên khách hàng: <span class="font-weight-normal">Nguyễn Bá Đăng</span>
+                                <h6 class="font-weight-bold">Tên khách hàng: <span class="font-weight-normal"
+                                                                                   id="tenKhachHang">Nguyễn Bá Đăng</span>
                                 </h6>
                             </div>
                             <div class="col-12 col-md-6 mb-3 px-3">
-                                <h6 class="font-weight-bold">Loại: <span class="font-weight-normal">Tại quầy</span></h6>
-                            </div>
-                            <div class="col-12 col-md-6 mb-3 px-3">
-                                <h6 class="font-weight-bold">Số điện thoại: <span
-                                        class="font-weight-normal">0987654321</span></h6>
-                            </div>
-                            <div class="col-12 col-md-6 mb-3 px-3">
-                                <h6 class="font-weight-bold">Địa chỉ: <span class="font-weight-normal">Số 11, Phường Quang Trung, Thành phố Hà Giang, Tỉnh Hà Giang</span>
+                                <h6 class="font-weight-bold">Loại: <span class="font-weight-normal" id="loaiHoaDon">Tại quầy</span>
                                 </h6>
                             </div>
                             <div class="col-12 col-md-6 mb-3 px-3">
-                                <h6 class="font-weight-bold">Thời gian dự kiến nhận: <span class="font-weight-normal">Chưa cập nhật</span>
-                                </h6>
+                                <h6 class="font-weight-bold">Số điện thoại: <span class="font-weight-normal"
+                                                                                  id="soDienThoai">0</span></h6>
                             </div>
-                            <div class="col-12 col-md-6 mb-3 px-3">
-                                <h6 class="font-weight-bold">Ghi chú: <span class="font-weight-normal">Không có</span>
-                                </h6>
-                            </div>
-                        </div>
 
+                            <!-- Column 2 starts here -->
+                            <div class="col-12 col-md-6 mb-3 px-3">
+                                <h6 class="font-weight-bold">Địa chỉ: <span class="font-weight-normal"
+                                                                            id="diaChiNguoiNhan">Số 11, Phường Phúc Xá, Quận Ba Đình, Thành phố Hà Nội</span>
+                                </h6>
+                            </div>
+                            <div class="col-12 col-md-6 mb-3 px-3">
+                                <h6 class="font-weight-bold">Thời gian dự kiến nhận: <span class="font-weight-normal"
+                                                                                           id="thoiGianNhan">Chưa cập nhật</span>
+                                </h6>
+                            </div>
+                            <div class="col-12 col-md-6 mb-3 px-3">
+                                <h6 class="font-weight-bold">Ghi chú: <span class="font-weight-normal"
+                                                                            id="ghiChu">1</span></h6>
+                            </div>
+                            <div class="col-12 col-md-6 mb-3 px-3">
+                                <h6 class="font-weight-bold">Phiếu giảm giá: <span class="font-weight-normal"
+                                                                                   id="phieuGiamGia">Chưa có</span></h6>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <!--Thog tin sản phẩm-->
             <div id="hoaDonChiTietWrapper" class="card shadow mb-4">
                 <div id="hoaDonChiTiet" class="card-body">
                     <div class="d-flex justify-between mb-4">
                         <div>
-                            <h1 class="text-xl font-bold">Thông tin sản phẩm đã mua</h1>
+                            <h2 class="text-xl font-bold">Thông Tin Sản Phẩm - </h2>
                         </div>
                         <div>
-                            <div class="d-flex justify-content-end">
+                            <div style="display: flex; justify-content: flex-end;">
                                 <button id="hienThiDanhSachSanPham"
                                         style="background-color: #1e90ff; color: white; padding: 10px 20px; font-size: 16px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; transition: all 0.3s ease;"
                                         onmouseover="this.style.backgroundColor='#1e90ff'; this.style.transform='scale(1.05)';"
@@ -551,7 +561,9 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-secondary" id="huyThongTinHoaDon" type="button">Hủy</button>
+                            <button class="btn btn-secondary" onclick="closeModal1()" id="huyThongTinHoaDon"
+                                    type="button">Hủy
+                            </button>
 
                             <button class="btn btn-success" id="luuThongTinHoaDon" type="button">Lưu</button>
 
@@ -588,7 +600,7 @@
     var idHD = urlPath.split('/').pop();  // Lấy phần tử cuối cùng của URL
     $(document).ready(function () {
         // Lấy phần cuối cùng của URL (ID)
-
+        getThongTinKhachHang();
         // Gọi hàm getDuLieuThanhToan
         getDuLieuThanhToan(idHD);
         //Goi ham tt hoa don
@@ -599,47 +611,6 @@
         getLichSuHoaDon(idHD);
     });
 
-    // function getLichSuHoaDon(id) {
-    //     // Gọi API để lấy lịch sử của hóa đơn theo id
-    //     $.get(`/api/lich-su-hoa-don1/${id}`, function (data) {
-    //         console.log(data); // Kiểm tra dữ liệu trả về từ API
-    //
-    //         stepsHistory = [];
-    //         // Kiểm tra nếu có dữ liệu trả về từ API
-    //         if (data && data.length > 0) {
-    //             var rows = '';
-    //             // Lặp qua dữ liệu và tạo các dòng trong bảng
-    //             data.forEach(function (item, index) {
-    //                 //stepsHistory = [];
-    //                 stepsHistory.push({trangThai: item.trangThai, ngayTao: item.ngayTao});
-    //
-    //                 rows += `
-    //                 <tr>
-    //                     <td>${index + 1}</td>
-    //                     <td>${getTrangThaiLichSu(item.trangThai)}</td>
-    //                     <td>${new Date(item.ngayTao).toLocaleString('vi-VN', {
-    //                     day: '2-digit',
-    //                     month: '2-digit',
-    //                     year: 'numeric',
-    //                     hour: '2-digit',
-    //                     minute: '2-digit',
-    //                     second: '2-digit'
-    //                 })}</td>
-    //                     <td>${'Admin'}</td>
-    //                     <td>${item.ghiChu || 'Không có ghi chú'}</td>
-    //                 </tr>
-    //             `;
-    //             });
-    //             $('#listLichSu').html(rows);
-    //
-    //             updateButtonsState();
-    //         } else {
-    //             $('#listLichSu').html('<tr><td colspan="5" class="text-center">Không có dữ liệu lịch sử.</td></tr>');
-    //         }
-    //     }).fail(function () {
-    //         $('#listLichSu').html('<tr><td colspan="5" class="text-center">Lỗi khi tải dữ liệu.</td></tr>');
-    //     });
-    // }
 
     function getLichSuHoaDon(id) {
         $.get(`/api/lich-su-hoa-don1/${id}`, function (data) {
@@ -761,20 +732,44 @@
                 return response.json();
             })
             .then(data => {
+                // Kiểm tra dữ liệu trả về
+                if (!data) {
+                    console.error('Dữ liệu không hợp lệ:', data);
+                    return;
+                }
+
+                console.log(data); // Kiểm tra xem dữ liệu trả về
+
+                // Cập nhật các trường trong giao diện
                 document.querySelector('#maHoaDon span').textContent = data.maHd || 'Không xác định';
-                document.querySelector('#thongTinHoaDon .badge').textContent = data.stringTrangThai || 'Không xác định';
+                document.querySelector('#thongTinHoaDon .badge').textContent = data.stringTrangThai || 'Chưa xác định';
                 document.querySelector('#thongTinHoaDon .badge').className = `badge bg-info`;
-                document.querySelector('#thongTinHoaDon .font-weight-normal:nth-child(1)').textContent = data.tenNguoiNhan || 'Khách Lẻ';
-                document.querySelector('#thongTinHoaDon .font-weight-normal:nth-child(2)').textContent = data.loaiHoaDon || 'Chưa cập nhật';
-                document.querySelector('#thongTinHoaDon .font-weight-normal:nth-child(3)').textContent = data.sdt || 'Chưa có';
-                document.querySelector('#thongTinHoaDon .font-weight-normal:nth-child(4)').textContent = data.diaChiNguoiNhan || 'Chưa cập nhật';
-                document.querySelector('#thongTinHoaDon .font-weight-normal:nth-child(5)').textContent = 'Chưa cập nhật';
-                document.querySelector('#thongTinHoaDon .font-weight-normal:nth-child(6)').textContent = data.ghiChu || 'Không có';
 
-                var myModal = new bootstrap.Modal(document.getElementById('modalThongTinHoaDon'));
-                myModal.show();
+                // Tên khách hàng
+                document.querySelector('#tenKhachHang').textContent = data.tenNguoiNhan || 'Khách Lẻ';
+
+                // Loại hóa đơn
+                document.querySelector('#loaiHoaDon').textContent = data.loaiHoaDon || 'Chưa cập nhật';
+
+                // Số điện thoại
+                document.querySelector('#soDienThoai').textContent = data.sdt || 'Chưa có';
+
+                // Địa chỉ người nhận
+                document.querySelector('#diaChiNguoiNhan').textContent = data.diaChiNguoiNhan || 'Chưa cập nhật';
+
+                // Thời gian dự kiến nhận
+                document.querySelector('#thoiGianNhan').textContent = data.thoiGianNhan || 'Chưa cập nhật';
+
+                // Ghi chú
+                document.querySelector('#ghiChu').textContent = data.ghiChu || 'Không có';
+
+                // Phiếu giảm giá
+                const phieuGiamGia = data.phieuGiamGia ? `${data.phieuGiamGia.ma} (${data.phieuGiamGia.ten})` : 'Không có';
+                document.querySelector('#phieuGiamGia').textContent = phieuGiamGia;
             })
-
+            .catch(error => {
+                console.error('Lỗi khi lấy dữ liệu:', error);
+            });
     }
 
 
@@ -1369,6 +1364,15 @@
         modal.style.display = 'none'; // Ẩn modal khi nhấn đóng
     }
 
+    function closeModal1() {
+        const modal = document.getElementById('modalThongTinHoaDon');
+        modal.style.display = 'none'; // Ẩn modal khi nhấn đóng
+        $('.modal-backdrop').remove();  // Xóa lớp backdrop (nếu có)
+
+        // Khôi phục lại overflow của body để trang có thể cuộn
+        $('body').css('overflow', 'auto');
+    }
+
     function closeNoteModal() {
         // Đóng modal sử dụng phương thức modal('hide') của Bootstrap
         $('#noteModal').modal('hide');
@@ -1387,6 +1391,192 @@
         } else {
         }
     }
+
+
+    $('#luuThongTinHoaDon').click(function () {
+        // Lấy giá trị từ các trường input trong modal
+        var nguoiNhan = $('#edit-ten').val();
+        var sdtNguoiNhan = $('#edit-sdtNguoiNhan').val();
+        var phiVanChuyen = $('#phiVanChuyen').val();
+        var ghiChu = $('#noteThongTin').val();
+
+        var selectedCity = $('#edit-tinhthanh').find('option:selected').text();
+        var selectedDistrict = $('#edit-quanhuyen').find('option:selected').text();
+        var selectedWard = $('#edit-phuongxa').find('option:selected').text();
+        var specificAddress = $('#edit-diachi').val();
+        var diaChiDayDu = specificAddress + ', ' + selectedWard + ', ' + selectedDistrict + ', ' + selectedCity;
+
+        updateThongTinNguoiNhan(nguoiNhan, sdtNguoiNhan, diaChiDayDu, phiVanChuyen, ghiChu, selectedWard, selectedDistrict, selectedCity, idHD);
+        setTimeout(function () {
+            getThongTinHoaDon(idHD);
+        }, 500);
+        closeModal1();
+        getThongTinHoaDon(idHD);
+    });
+
+    function updateThongTinNguoiNhan(ten, sdt, diaChiNguoiNhan, tienShip, ghiChu, phuongXa, quanHuyen, tinhThanh) {
+        $.ajax({
+            url: `/api/hoa-don/update-thong-tin-nguoi-nhan/${idHD}`,
+            method: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                tenNguoiNhan: ten,
+                sdt: sdt,
+                diaChiNguoiNhan: diaChiNguoiNhan,
+                phuongXa: phuongXa,
+                quanHuyen: quanHuyen,
+                thanhPho: tinhThanh,
+                ghiChu: ghiChu,
+                phiShip: tienShip
+            }),
+            success: function (response) {
+                console.log("Cập nhật thành công", response);
+            },
+            error: function (error) {
+                console.error("Lỗi khi cập nhật thông tin:", error);
+            }
+        });
+    }
+
+    var citiesData = [];
+    var $editDiaChi = $('#edit-diachi');
+    var $editTinhThanh = $('#edit-tinhthanh');
+    var $editQuanHuyen = $('#edit-quanhuyen');
+    var $editPhuongXa = $('#edit-phuongxa');
+
+    function getThongTinKhachHang() {
+        $.ajax({
+            url: 'https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json',
+            dataType: 'json',
+            success: function (data) {
+                citiesData = data;
+                $editTinhThanh.empty().append('<option value="" selected>Chọn tỉnh thành</option>');
+                $.each(data, function (index, city) {
+                    $editTinhThanh.append('<option value="' + city.Id + '">' + city.Name + '</option>');
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Lỗi khi tải dữ liệu:', error);
+            }
+        });
+
+        $editTinhThanh.on('change', function () {
+            var cityId = $(this).val();
+            if (cityId) {
+                $editQuanHuyen.empty().append('<option value="" selected>Chọn quận huyện</option>');
+                var selectedCity = citiesData.find(city => city.Id === cityId);
+                if (selectedCity) {
+                    $.each(selectedCity.Districts, function (index, district) {
+                        $editQuanHuyen.append('<option value="' + district.Id + '">' + district.Name + '</option>');
+                    });
+                }
+            } else {
+                $editQuanHuyen.empty().append('<option value="" selected>Chọn quận huyện</option>');
+                $editPhuongXa.empty().append('<option value="" selected>Chọn phường xã</option>');
+            }
+        });
+
+        $editQuanHuyen.on('change', function () {
+            var districtId = $(this).val();
+            if (districtId) {
+                // Clear and populate phường/xã dropdown
+                $editPhuongXa.empty().append('<option value="" selected>Chọn phường xã</option>');
+                var selectedDistrict = citiesData.flatMap(city => city.Districts).find(district => district.Id === districtId);
+                if (selectedDistrict) {
+                    $.each(selectedDistrict.Wards, function (index, ward) {
+                        $editPhuongXa.append('<option value="' + ward.Id + '">' + ward.Name + '</option>');
+                    });
+                }
+            } else {
+                $editPhuongXa.empty().append('<option value="" selected>Chọn phường xã</option>');
+            }
+        });
+    }
+
+    function getAddressName(id, type) {
+        if (!citiesData || citiesData.length === 0) return id;  // Nếu không có dữ liệu thì trả lại id
+
+        let address = '';
+
+        switch (type) {
+            case 'tinhthanh':
+                // Tìm tỉnh thành dựa trên ID
+                let city = citiesData.find(city => city.Id === parseInt(id));
+                address = city ? city.Name : id;  // Nếu tìm thấy, trả về tên, nếu không trả lại ID
+                break;
+            case 'quanhuyen':
+                // Tìm quận huyện dựa trên ID
+                let district = citiesData
+                    .flatMap(city => city.Districts)
+                    .find(district => district.Id === parseInt(id));
+                address = district ? district.Name : id;
+                break;
+            case 'phuongxa':
+                // Tìm phường xã dựa trên ID
+                let ward = citiesData
+                    .flatMap(city => city.Districts)
+                    .flatMap(district => district.Wards)
+                    .find(ward => ward.Id === parseInt(id));
+                address = ward ? ward.Name : id;
+                break;
+        }
+
+        return address;
+    }
+
+    function getFormData() {
+        ten = $('#edit-ten').val().trim();
+        sdtNguoiNhan = $('#edit-sdtNguoiNhan').val().trim();
+
+        tinhthanh = $('#edit-tinhthanh').val();
+        console.log("Tỉnh Thành value:", tinhthanh); // Kiểm tra giá trị
+        if (tinhthanh) {
+            tinhthanh = tinhthanh.trim();
+        }
+
+        quanhuyen = $('#edit-quanhuyen').val();
+        console.log("Quận Huyện value:", quanhuyen); // Kiểm tra giá trị
+        if (quanhuyen) {
+            quanhuyen = quanhuyen.trim();
+        }
+
+        phuongxa = $('#edit-phuongxa').val();
+        console.log("Phường Xã value:", phuongxa); // Kiểm tra giá trị
+        if (phuongxa) {
+            phuongxa = phuongxa.trim();
+        }
+
+        diachi = $('#edit-diachi').val().trim();
+        phiVanChuyen = $('#phiVanChuyen').val().trim();
+        noteThongTin = $('#noteThongTin').val().trim();
+
+        console.log("Tên:", ten);
+        console.log("SĐT Người Nhận:", sdtNguoiNhan);
+        console.log("Tỉnh Thành:", tinhthanh);
+        console.log("Quận Huyện:", quanhuyen);
+        console.log("Phường Xã:", phuongxa);
+        console.log("Địa Chỉ:", diachi);
+        console.log("Phí Vận Chuyển:", phiVanChuyen);
+        console.log("Ghi Chú:", noteThongTin);
+
+        fullAddress = '';
+        if (diachi) fullAddress += diachi;
+        if (phuongxa) {
+            if (fullAddress) fullAddress += ', ';
+            fullAddress += getAddressName(phuongxa, 'phuongxa');
+        }
+        if (quanhuyen) {
+            if (fullAddress) fullAddress += ', ';
+            fullAddress += getAddressName(quanhuyen, 'quanhuyen');
+        }
+        if (tinhthanh) {
+            if (fullAddress) fullAddress += ', ';
+            fullAddress += getAddressName(tinhthanh, 'tinhthanh');
+        }
+
+        console.log("Full Address:", fullAddress);
+    }
+
 
     function createStep(trangThai, ngayTao, stepNum) {
         const iconBgColor = stepNum === 7 ? 'bg-red-600' : 'bg-green-600';
@@ -1415,7 +1605,6 @@
 
         return stepDiv;
     }
-
 </script>
 
 </html>

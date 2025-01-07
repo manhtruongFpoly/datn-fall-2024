@@ -100,6 +100,8 @@ public class HoaDonService {
     public HoaDon updateThongTinNguoiNhan(Integer id, HoaDon hd) {
         Optional<HoaDon> optional = hoaDonRepository.findById(id);
         return optional.map(o -> {
+            o.setTenNguoiNhan(hd.getTenNguoiNhan());
+            o.setSdt(hd.getSdt());
             o.setDiaChiNguoiNhan(hd.getDiaChiNguoiNhan());
             o.setThanhPho(hd.getThanhPho());
             o.setQuanHuyen(hd.getQuanHuyen());
