@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -65,4 +66,30 @@ public class PhieuGiamGia {
 
     @Column(name = "TRANG_THAI")
     private Integer trangThai;
+
+
+    public String getFormattedDonToiThieu() {
+        if (donToiThieu == null) {
+            return "0 VND";  // Trả về giá trị mặc định khi donToiThieu là null
+        }
+        DecimalFormat df = new DecimalFormat("#,###");
+        return df.format(donToiThieu) + " VND";
+    }
+
+    public String getFormattedGiaTriGiam() {
+        if (giaTriGiam == null) {
+            return "0 VND";  // Trả về giá trị mặc định khi giaTriGiam là null
+        }
+        DecimalFormat df = new DecimalFormat("#,###");
+        return df.format(giaTriGiam) + " VND";
+    }
+
+    public String getFormattedGiaTriMax() {
+        if (giaTriMax == null) {
+            return "0 VND";  // Trả về giá trị mặc định khi giaTriMax là null
+        }
+        DecimalFormat df = new DecimalFormat("#,###");
+        return df.format(giaTriMax) + " VND";
+    }
+
 }

@@ -13,6 +13,39 @@
     <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
     <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <style>
+        .bg-warning-light {
+            background-color: #f0f803; /* Màu vàng nhạt */
+            border-radius: 5px; /* Bo tròn góc */
+        }
+        .bg-green-dark {
+            background-color: #0ae0a3; /* Màu xanh lá cây đậm */
+            border-radius: 5px; /* Bo tròn góc */
+        }
+        .bg-yellow {
+            background-color: #efc255; /* Màu vàng */
+            border-radius: 5px; /* Bo tròn góc */
+        }
+        .bg-orange {
+            background-color: #f69546; /* Màu cam */
+            border-radius: 5px; /* Bo tròn góc */
+        }
+        .bg-green-light {
+            background-color: #63f598; /* Màu xanh lá cây nhạt */
+            border-radius: 5px; /* Bo tròn góc */
+        }
+        .bg-blue {
+            background-color: #5691f3; /* Màu xanh nước biển */
+            border-radius: 5px; /* Bo tròn góc */
+        }
+        .bg-red-light {
+            background-color: #c44e4e; /* Màu đỏ nhạt */
+            border-radius: 5px; /* Bo tròn góc */
+        }
+
+
+
+    </style>
 </head>
 <body>
 <div id="app"><!-- Main content -->
@@ -106,9 +139,24 @@
                                     <td th:text="${hoaDon.loaiHoaDon}"></td>
                                     <td th:text="${hoaDon.khachHang.ten}"></td>
                                     <td th:text="${hoaDon.sdt}"></td>
-                                    <td th:text="${hoaDon.tongTien} + ' VND'"></td>
+                                    <td th:text="${hoaDon.getFormattedTongTien} + ' VND'"></td>
 
-                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td>
+                                        <div th:text="${hoaDon.getStringTrangThai()}"
+                                             th:class="${hoaDon.trangThai == 0 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 1 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 2 ? 'bg-green-dark text-white' :
+                                                hoaDon.trangThai == 3 ? 'bg-yellow text-white' :
+                                                hoaDon.trangThai == 4 ? 'bg-orange text-white' :
+                                                hoaDon.trangThai == 5 ? 'bg-green-light text-white' :
+                                                hoaDon.trangThai == 6 ? 'bg-blue text-white' :
+                                                hoaDon.trangThai == 7 ? 'bg-red-light text-white' :
+                                                hoaDon.trangThai == 8 ? 'bg-red-light text-white' : ''}">
+                                        </div>
+                                    </td>
+
+
+
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
                                             <a th:href="@{'/hoa-don/detail1/' + ${hoaDon.id}}"
@@ -154,8 +202,20 @@
                                     <td th:text="${hoaDon.loaiHoaDon}"></td>
                                     <td th:text="${hoaDon.khachHang.ten}"></td>
                                     <td th:text="${hoaDon.sdt}"></td>
-                                    <td th:text="${hoaDon.tongTien} + ' VND'"></td>
-                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td th:text="${hoaDon.getFormattedTongTien} + ' VND'"></td>
+                                    <td>
+                                        <div th:text="${hoaDon.getStringTrangThai()}"
+                                             th:class="${hoaDon.trangThai == 0 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 1 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 2 ? 'bg-green-dark text-white' :
+                                                hoaDon.trangThai == 3 ? 'bg-yellow text-white' :
+                                                hoaDon.trangThai == 4 ? 'bg-orange text-white' :
+                                                hoaDon.trangThai == 5 ? 'bg-green-light text-white' :
+                                                hoaDon.trangThai == 6 ? 'bg-blue text-white' :
+                                                hoaDon.trangThai == 7 ? 'bg-red-light text-white' :
+                                                hoaDon.trangThai == 8 ? 'bg-red-light text-white' : ''}">
+                                        </div>
+                                    </td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
                                             <a th:href="@{'/hoa-don/detail1/' + ${hoaDon.id}}"
@@ -200,8 +260,20 @@
                                     <td th:text="${hoaDon.loaiHoaDon}"></td>
                                     <td th:text="${hoaDon.khachHang.ten}"></td>
                                     <td th:text="${hoaDon.sdt}"></td>
-                                    <td th:text="${hoaDon.tongTien} + ' VND'"></td>
-                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td th:text="${hoaDon.getFormattedTongTien} + ' VND'"></td>
+                                    <td>
+                                        <div th:text="${hoaDon.getStringTrangThai()}"
+                                             th:class="${hoaDon.trangThai == 0 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 1 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 2 ? 'bg-green-dark text-white' :
+                                                hoaDon.trangThai == 3 ? 'bg-yellow text-white' :
+                                                hoaDon.trangThai == 4 ? 'bg-orange text-white' :
+                                                hoaDon.trangThai == 5 ? 'bg-green-light text-white' :
+                                                hoaDon.trangThai == 6 ? 'bg-blue text-white' :
+                                                hoaDon.trangThai == 7 ? 'bg-red-light text-white' :
+                                                hoaDon.trangThai == 8 ? 'bg-red-light text-white' : ''}">
+                                        </div>
+                                    </td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
                                             <a th:href="@{'/hoa-don/detail1/' + ${hoaDon.id}}"
@@ -246,8 +318,20 @@
                                     <td th:text="${hoaDon.loaiHoaDon}"></td>
                                     <td th:text="${hoaDon.khachHang.ten}"></td>
                                     <td th:text="${hoaDon.sdt}"></td>
-                                    <td th:text="${hoaDon.tongTien} + ' VND'"></td>
-                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td th:text="${hoaDon.getFormattedTongTien} + ' VND'"></td>
+                                    <td>
+                                        <div th:text="${hoaDon.getStringTrangThai()}"
+                                             th:class="${hoaDon.trangThai == 0 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 1 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 2 ? 'bg-green-dark text-white' :
+                                                hoaDon.trangThai == 3 ? 'bg-yellow text-white' :
+                                                hoaDon.trangThai == 4 ? 'bg-orange text-white' :
+                                                hoaDon.trangThai == 5 ? 'bg-green-light text-white' :
+                                                hoaDon.trangThai == 6 ? 'bg-blue text-white' :
+                                                hoaDon.trangThai == 7 ? 'bg-red-light text-white' :
+                                                hoaDon.trangThai == 8 ? 'bg-red-light text-white' : ''}">
+                                        </div>
+                                    </td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
                                             <a th:href="@{'/hoa-don/detail1/' + ${hoaDon.id}}"
@@ -292,7 +376,19 @@
                                     <td th:text="${hoaDon.khachHang.ten}"></td>
                                     <td th:text="${hoaDon.sdt}"></td>
                                     <td th:text="${hoaDon.tongTien} + ' VND'"></td>
-                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td>
+                                        <div th:text="${hoaDon.getStringTrangThai()}"
+                                             th:class="${hoaDon.trangThai == 0 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 1 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 2 ? 'bg-green-dark text-white' :
+                                                hoaDon.trangThai == 3 ? 'bg-yellow text-white' :
+                                                hoaDon.trangThai == 4 ? 'bg-orange text-white' :
+                                                hoaDon.trangThai == 5 ? 'bg-green-light text-white' :
+                                                hoaDon.trangThai == 6 ? 'bg-blue text-white' :
+                                                hoaDon.trangThai == 7 ? 'bg-red-light text-white' :
+                                                hoaDon.trangThai == 8 ? 'bg-red-light text-white' : ''}">
+                                        </div>
+                                    </td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
                                             <a th:href="@{'/hoa-don/detail1/' + ${hoaDon.id}}"
@@ -336,8 +432,20 @@
                                     <td th:text="${hoaDon.loaiHoaDon}"></td>
                                     <td th:text="${hoaDon.khachHang.ten}"></td>
                                     <td th:text="${hoaDon.sdt}"></td>
-                                    <td th:text="${hoaDon.tongTien} + ' VND'"></td>
-                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td th:text="${hoaDon.getFormattedTongTien} + ' VND'"></td>
+                                    <td>
+                                        <div th:text="${hoaDon.getStringTrangThai()}"
+                                             th:class="${hoaDon.trangThai == 0 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 1 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 2 ? 'bg-green-dark text-white' :
+                                                hoaDon.trangThai == 3 ? 'bg-yellow text-white' :
+                                                hoaDon.trangThai == 4 ? 'bg-orange text-white' :
+                                                hoaDon.trangThai == 5 ? 'bg-green-light text-white' :
+                                                hoaDon.trangThai == 6 ? 'bg-blue text-white' :
+                                                hoaDon.trangThai == 7 ? 'bg-red-light text-white' :
+                                                hoaDon.trangThai == 8 ? 'bg-red-light text-white' : ''}">
+                                        </div>
+                                    </td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
                                             <a th:href="@{'/hoa-don/detail1/' + ${hoaDon.id}}"
@@ -382,8 +490,20 @@
                                     <td th:text="${hoaDon.khachHang.ten}"></td>
                                     <td th:text="${hoaDon.sdt}"></td>
                                     <!-- Hiển thị tổng tiền mà không làm tròn -->
-                                    <td th:text="${hoaDon.tongTien} + ' VND'"></td>
-                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td th:text="${hoaDon.getFormattedTongTien} + ' VND'"></td>
+                                    <td>
+                                        <div th:text="${hoaDon.getStringTrangThai()}"
+                                             th:class="${hoaDon.trangThai == 0 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 1 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 2 ? 'bg-green-dark text-white' :
+                                                hoaDon.trangThai == 3 ? 'bg-yellow text-white' :
+                                                hoaDon.trangThai == 4 ? 'bg-orange text-white' :
+                                                hoaDon.trangThai == 5 ? 'bg-green-light text-white' :
+                                                hoaDon.trangThai == 6 ? 'bg-blue text-white' :
+                                                hoaDon.trangThai == 7 ? 'bg-red-light text-white' :
+                                                hoaDon.trangThai == 8 ? 'bg-red-light text-white' : ''}">
+                                        </div>
+                                    </td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
                                             <a th:href="@{'/hoa-don/detail1/' + ${hoaDon.id}}"
@@ -427,8 +547,20 @@
                                     <td th:text="${hoaDon.loaiHoaDon}"></td>
                                     <td th:text="${hoaDon.khachHang.ten}"></td>
                                     <td th:text="${hoaDon.sdt}"></td>
-                                    <td th:text="${hoaDon.tongTien} + ' VND'"></td>
-                                    <td th:text="${hoaDon.getStringTrangThai()}"></td>
+                                    <td th:text="${hoaDon.getFormattedTongTien} + ' VND'"></td>
+                                    <td>
+                                        <div th:text="${hoaDon.getStringTrangThai()}"
+                                             th:class="${hoaDon.trangThai == 0 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 1 ? 'bg-warning-light text-dark' :
+                                                hoaDon.trangThai == 2 ? 'bg-green-dark text-white' :
+                                                hoaDon.trangThai == 3 ? 'bg-yellow text-white' :
+                                                hoaDon.trangThai == 4 ? 'bg-orange text-white' :
+                                                hoaDon.trangThai == 5 ? 'bg-green-light text-white' :
+                                                hoaDon.trangThai == 6 ? 'bg-blue text-white' :
+                                                hoaDon.trangThai == 7 ? 'bg-red-light text-white' :
+                                                hoaDon.trangThai == 8 ? 'bg-red-light text-white' : ''}">
+                                        </div>
+                                    </td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
                                             <a th:href="@{'/hoa-don/detail1/' + ${hoaDon.id}}"

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 
@@ -21,11 +22,46 @@ public class PhieuGiamGiaController {
     @Autowired
     PhieuGiamGiaService phieuGiamGiaService;
 
+//    @GetMapping("/phieu-giam-gia")
+//    public String hienThi(Model model) {
+//        LocalDate now = LocalDate.now();
+//        if (now.isBefore(pgg.getNgayBatDau())) {
+//            pgg.setTrangThai(2); // Chưa diễn ra
+//        } else if (now.isAfter(pgg.getNgayKetThuc())) {
+//            pgg.setTrangThai(1); // Ngừng hoạt động
+//        } else {
+//            pgg.setTrangThai(0); // Hoạt động
+//        }
+//
+//        model.addAttribute("listPgg", phieuGiamGiaService.findAll());
+//        return "/admin/PhieuGiamGia/PhieuGiamGia";
+//    }
+
     @GetMapping("/phieu-giam-gia")
     public String hienThi(Model model) {
-        model.addAttribute("listPgg", phieuGiamGiaService.findAll());
+        List<PhieuGiamGia> danhSach = phieuGiamGiaService.findAll();
+
+        LocalDate now = LocalDate.now();
+
+        danhSach.forEach(pgg -> {
+            if (pgg.getNgayBatDau() != null && pgg.getNgayKetThuc() != null) {
+                if (now.isBefore(pgg.getNgayBatDau())) {
+                    pgg.setTrangThai(2); // Chưa diễn ra
+                } else if (now.isAfter(pgg.getNgayKetThuc())) {
+                    pgg.setTrangThai(1); // Ngừng hoạt động
+                } else {
+                    pgg.setTrangThai(0); // Hoạt động
+                }
+            } else {
+                pgg.setTrangThai(1);
+            }
+        });
+
+        model.addAttribute("listPgg", danhSach);
+
         return "/admin/PhieuGiamGia/PhieuGiamGia";
     }
+
 
     @GetMapping("/addPgg")
     public String PhieuGiamGiaAdd(Model model) {

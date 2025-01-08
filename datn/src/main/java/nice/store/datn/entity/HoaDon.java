@@ -12,6 +12,7 @@ import lombok.Setter;
 import nice.store.datn.entity.KhachHang;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -59,6 +60,15 @@ public class HoaDon {
 
     @Column(name = "TONG_TIEN")
     private BigDecimal tongTien;
+
+    public String getFormattedTongTien() {
+        if (tongTien == null) {
+            return "0 VND";  // Trả về giá trị mặc định khi tongTien là null
+        }
+        DecimalFormat df = new DecimalFormat("#,###");
+        return df.format(tongTien) + " VND";
+    }
+
 
     @Column(name = "NGAY_TAO")
     private LocalDateTime ngayTao;
