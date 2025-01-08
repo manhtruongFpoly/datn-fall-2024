@@ -219,9 +219,9 @@
                             <thead class="bg-primary text-white">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">STT</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Ảnh sản
-                                    phẩm
-                                </th>
+<!--                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Ảnh sản-->
+<!--                                    phẩm-->
+<!--                                </th>-->
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Thông tin
                                     sản phẩm
                                 </th>
@@ -231,8 +231,8 @@
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Tổng tiền
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Hành động
-                                </th>
+<!--                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Hành động-->
+<!--                                </th>-->
                             </tr>
                             </thead>
                             <tbody id="tbodyHoaDonChiTiet">
@@ -614,13 +614,17 @@
 
     function getLichSuHoaDon(id) {
         $.get(`/api/lich-su-hoa-don1/${id}`, function (data) {
-            console.log(data);
+            console.log("Data nhận được:", data);
+
             stepsHistory = [];
             let currentTrangThai1 = null;
+
             if (data && data.length > 0) {
-                var rows = '';
+                let rows = '';
+
                 data.forEach(function (item, index) {
-                    stepsHistory.push({trangThai: item.trangThai, ngayTao: item.ngayTao});
+                    stepsHistory.push({ trangThai: item.trangThai, ngayTao: item.ngayTao });
+
                     if (index === 0) {
                         currentTrangThai1 = item.trangThai;
                     }
@@ -636,30 +640,39 @@
                         minute: '2-digit',
                         second: '2-digit'
                     })}</td>
-                        <td>${'Admin'}</td>
+                        <td>Admin</td>
                         <td>${item.ghiChu || 'Không có ghi chú'}</td>
                     </tr>
                 `;
                 });
                 $('#listLichSu').html(rows);
-                updateButtonsState();
             } else {
                 $('#listLichSu').html('<tr><td colspan="5" class="text-center">Không có dữ liệu lịch sử.</td></tr>');
             }
-            const buttonList = document.querySelectorAll("#hienThiDanhSachSanPham, #thayDoiThongTinHoaDon");
-            if (buttonList.length > 0) {
-                buttonList.forEach(button => {
-                    if (currentTrangThai1 === 0 || currentTrangThai1 === 1) {
-                        button.style.display = 'inline-block'; // Hiển thị nút
-                    } else {
-                        button.style.display = 'none'; // Ẩn nút
-                    }
+
+            // Kiểm tra trạng thái để hiển thị hoặc ẩn các nút
+            const buttonList1 = document.querySelectorAll("#hienThiDanhSachSanPham, #thayDoiThongTinHoaDon");
+
+            if (currentTrangThai1 == 0 || currentTrangThai1 == 1) {
+                buttonList1.forEach(button => {
+                    console.log("Hiển thị nút");
+                    button.style.display = 'inline-block';
                 });
             } else {
-                console.error("Không tìm thấy nút nào trong danh sách.");
+                buttonList1.forEach(button => {
+                    console.log("Ẩn nút");
+                    button.style.display = 'none';
+                });
             }
-        })
+
+            updateButtonsState();
+        }).fail(function (error) {
+            console.error("Lỗi khi gọi API:", error);
+            // Xử lý trường hợp lỗi (nếu cần)
+            $('#listLichSu').html('<tr><td colspan="5" class="text-center">Không thể tải dữ liệu lịch sử.</td></tr>');
+        });
     }
+
 
     const getTrangThaiLichSu = (tt) => {
         tt = Number(tt); // Chuyển tt sang kiểu số
@@ -732,15 +745,11 @@
                 return response.json();
             })
             .then(data => {
-                // Kiểm tra dữ liệu trả về
                 if (!data) {
                     console.error('Dữ liệu không hợp lệ:', data);
                     return;
                 }
-
-                console.log(data); // Kiểm tra xem dữ liệu trả về
-
-                // Cập nhật các trường trong giao diện
+                console.log(data);
                 document.querySelector('#maHoaDon span').textContent = data.maHd || 'Không xác định';
                 document.querySelector('#thongTinHoaDon .badge').textContent = data.stringTrangThai || 'Chưa xác định';
                 document.querySelector('#thongTinHoaDon .badge').className = `badge bg-info`;
@@ -801,9 +810,7 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                     <td class="px-6 py-4">${index + 1}</td>
-                    <td class="px-6 py-4">
-                        <img src="${item.imageUrl || ''}" alt="Image" class="w-16 h-auto">
-                    </td>
+
                     <td class="px-6 py-4 font-weight-bold">
                         <h1>${item.tenSanPham}</h1>
                         <h2 class="text-danger">${item.donGia} VNĐ</h2>
@@ -814,15 +821,11 @@
                     </td>
                     <td>
                         <div class="d-flex align-items-center">
-                            <input type="number" class="form-control w-25" value="${item.soLuong}" min="1" data-id="${item.id}" id="soLuong-${item.id}">
+                            <input type="number" class="form-control w-25" value="${item.soLuong}" min="1" data-id="${item.id}" id="soLuong-${item.id}" readonly>
                         </div>
                     </td>
                     <td class="px-6 py-4">${item.soLuong * item.donGia} VNĐ</td>
-                    <td class="px-6 py-4">
-                        <button class="deleteSP" data-id="${item.id}" id="xoaSP-${item.id}">
-                            <i class="fas fa-trash" style="color: #B94A00;"></i>
-                        </button>
-                    </td>
+
                 `;
                     tbody.appendChild(row);
                 });
@@ -849,8 +852,6 @@
                     <span class="tongThanhToan text-xl text-orange-700">${totalAmount - data[0].giaTriMax} VNĐ</span>
                 </div>
             `;
-
-                // In ra mảng idSP để kiểm tra
                 console.log(idSP);
                 console.log(data[0].giaTriMax);
             })
@@ -1604,6 +1605,7 @@
         `);
 
         return stepDiv;
+
     }
 </script>
 

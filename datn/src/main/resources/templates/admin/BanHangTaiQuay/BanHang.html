@@ -1640,7 +1640,9 @@
             var tienDaThanhToan = $('#inputSoTien').val();
             if (tienDaThanhToan && !isNaN(tienDaThanhToan)) {
                 addPhuongThucThanhToanTienMat(idTabHD, tienDaThanhToan);
-                getDuLieu(idTabHD);
+                setTimeout(() => {
+                    getDuLieu(idTabHD)
+                }, 500);
             } else {
                 alert("Vui lòng nhập số tiền hợp lệ.");
             }
