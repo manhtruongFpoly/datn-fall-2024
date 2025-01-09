@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Voler Admin Dashboard</title>
+
+    <!-- Thêm CSS của Bootstrap và các thư viện khác -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
+    <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <!-- Tải jQuery -->
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Tải DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+
+    <!-- Tải DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+</head>
+
+
+
+<body>
+
+<div id="app"><!--Main content-->
+    <span th:replace="~{fragments/sidebar :: sidebar}"></span>
+    <div id="main"><!--Content id-->
+        <span th:replace="~{fragments/header :: header}"></span>
+        <div class="main-content container-fluid" layout:fragment="content"><!--dynamic content-->
+               <div class="text-center">
+                   <h1>Thong Ke</h1>
+
+
+                   <div class="container my-4">
+                       <!-- Stats Cards -->
+                       <div class="card mb-4">
+                           <div class="card-body">
+                               <div class="row text-center">
+                                   <div class="col-md-4">
+                                       <div class="bg-light p-4 rounded">
+                                           <h5 class="fw-bold text-muted">Doanh số hôm nay</h5>
+                                           <p class="h4">
+                                               <span id="thongKeDonHangHomNay" class="me-2">0</span>/
+                                               <span id="thongKeDoanhThuHomNay">0</span>
+                                           </p>
+                                       </div>
+                                   </div>
+                                   <div class="col-md-4">
+                                       <div class="bg-light p-4 rounded">
+                                           <h5 class="fw-bold text-muted">Doanh số tháng này</h5>
+                                           <p class="h4">
+                                               <span id="thongKeDonHangThangNay" class="me-2">0</span>/
+                                               <span id="thongKeDoanhThuThangNay">0</span>
+                                           </p>
+                                       </div>
+                                   </div>
+                                   <div class="col-md-4">
+                                       <div class="bg-light p-4 rounded">
+                                           <h5 class="fw-bold text-muted">Doanh số năm nay</h5>
+                                           <p class="h4">
+                                               <span id="thongKeDonHangNamNay" class="me-2">0</span>/
+                                               <span id="thongKeDoanhThuNamNay">0</span>
+                                           </p>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+
+                       <!-- Charts and Filters -->
+                       <div class="card mb-4">
+                           <div class="card-body">
+                               <h4 class="card-title text-center mb-4">Biểu đồ thống kê hóa đơn và sản phẩm</h4>
+                               <div class="row align-items-center mb-4">
+                                   <div class="col-md-6 d-flex flex-column flex-md-row">
+                                       <div class="mb-3 me-md-3">
+                                           <label for="startDate" class="form-label">Ngày bắt đầu:</label>
+                                           <input type="datetime-local" id="startDate" class="form-control">
+                                       </div>
+                                       <div class="mb-3">
+                                           <label for="endDate" class="form-label">Ngày kết thúc:</label>
+                                           <input type="datetime-local" id="endDate" class="form-control">
+                                       </div>
+                                   </div>
+                                   <div class="col-md-6 text-md-end">
+                                       <button id="apply-dates" class="btn btn-success me-2">Áp dụng</button>
+                                       <button id="last-7-days" class="btn btn-primary me-2">7 ngày</button>
+                                       <button id="last-month" class="btn btn-primary me-2">1 tháng</button>
+                                       <button id="export-excel" class="btn btn-secondary">Xuất Excel</button>
+                                   </div>
+                               </div>
+                               <div id="date-range-display" class="text-center mb-4 fw-bold text-muted"></div>
+                               <div class="chart-container">
+                                   <canvas id="invoiceChartBar"></canvas>
+                               </div>
+                           </div>
+                       </div>
+
+                       <!-- Order Status -->
+                       <div class="card mb-4">
+                           <div class="card-body">
+                               <h4 class="card-title text-center mb-4">Trạng thái đơn hàng</h4>
+                               <div class="row">
+                                   <div class="col-md-6">
+                                       <canvas id="invoiceChartDoughnut"></canvas>
+                                   </div>
+                                   <div id="legend" class="col-md-6 d-flex align-items-center"></div>
+                               </div>
+                           </div>
+                       </div>
+
+                       <!-- Product Tables -->
+                       <div class="row">
+                           <!-- Best Selling Products -->
+                           <div class="col-md-6">
+                               <div class="card">
+                                   <div class="card-body">
+                                       <h4 class="card-title text-center">Sản phẩm bán chạy nhất</h4>
+                                       <table id="tableDanhSachSanPham" class="table table-striped table-bordered">
+                                           <thead class="table-primary">
+                                           <tr>
+                                               <th>STT</th>
+                                               <th>Ảnh</th>
+                                               <th>Tên Sản Phẩm</th>
+                                               <th>Giá Bán</th>
+                                               <th>Số Lượng đã bán</th>
+                                           </tr>
+                                           </thead>
+                                           <tbody id="danhSachSanPham"></tbody>
+                                       </table>
+                                   </div>
+                               </div>
+                           </div>
+
+
+                           <!-- Low Stock Products -->
+                           <div class="col-md-6">
+                               <div class="card">
+                                   <div class="card-body">
+                                       <h4 class="card-title text-center">Sản phẩm sắp hết hàng</h4>
+                                       <table id="tabledanhSachSanPhamSapHetHang" class="table table-striped table-bordered">
+                                           <thead class="table-primary">
+                                           <tr>
+                                               <th>STT</th>
+                                               <th>Ảnh</th>
+                                               <th>Tên Sản Phẩm</th>
+                                               <th>Giá Bán</th>
+                                               <th>Số lượng còn lại</th>
+                                           </tr>
+                                           </thead>
+                                           <tbody id="danhSachSanPhamSapHetHang"></tbody>
+                                       </table>
+                                   </div>
+                               </div>
+                           </div>
+
+
+                       </div>
+                   </div>
+
+
+               </div>
+
+        </div>
+        <span th:replace="~{fragments/footer :: footer}"></span>
+    </div>
+</div>
+
+<script th:src="@{/js/feather.min.js}"></script>
+<script th:src="@{/js/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/Chart.min.js}"></script>
+<script th:src="@{/js/apexcharts.min.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+
+<script>
+    $(document).ready(function() {
+        // Gọi hàm để lấy sản phẩm bán chạy nhất
+        getTop10SanPhamBanChay();
+        getSanPhamSapHetHang();
+    });
+
+    function getTop10SanPhamBanChay() {
+        $.ajax({
+            url: '/san-pham-ban-chay-nhat', // Địa chỉ API
+            method: 'GET',
+            success: function(data) {
+                let tableRows = '';
+                data.forEach(function(sanPham, index) {
+                    tableRows += '<tr>';
+                    tableRows += '<td>' + (index + 1) + '</td>';
+                    let imageCell = sanPham.anh ?
+                        '<img src="/api/san-pham-chi-tiet/desktop-images/' + sanPham.anh + '" alt="Ảnh sản phẩm" style="width: 50px; height: 50px; object-fit: cover;">' :
+                        '<span>Chưa có ảnh</span>';
+                    tableRows += '<td>' + imageCell + '</td>';
+                    tableRows += '<td>' + sanPham.ten + '</td>';
+                    tableRows += '<td>' + sanPham.giaBan.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) + '</td>';
+                    tableRows += '<td>' + sanPham.tongSoLuong + '</td>';
+                    tableRows += '</tr>';
+                });
+
+                // Điền dữ liệu vào bảng
+                $('#danhSachSanPham').html(tableRows);
+
+                // Kiểm tra nếu DataTable đã được khởi tạo
+                if ($.fn.dataTable.isDataTable('#tableDanhSachSanPham')) {
+                    $('#tableDanhSachSanPham').DataTable().destroy(); // Hủy DataTable cũ nếu đã được khởi tạo
+                }
+
+                // Khởi tạo lại DataTable
+                $('#tableDanhSachSanPham').DataTable({
+                    "paging": true,   // Bật phân trang
+                    "searching": true, // Bật tìm kiếm
+                    "ordering": true,  // Bật sắp xếp cột
+                    "info": true,      // Hiển thị thông tin tổng số bản ghi
+                    "lengthChange": true, // Cho phép thay đổi số lượng dòng trên mỗi trang
+                    "pageLength": 10   // Mặc định hiển thị 10 dòng mỗi trang
+                });
+            },
+            error: function(error) {
+                console.log("Lỗi khi lấy dữ liệu:", error);
+            }
+        });
+    }
+
+    function getSanPhamSapHetHang() {
+        $.ajax({
+            url: '/sap-het-hang', // Địa chỉ API
+            method: 'GET',
+            success: function (data) {
+                console.log(data); // Kiểm tra dữ liệu trả về từ API
+                let tableRows = '';
+                data.forEach(function (sanPham, index) {
+                    tableRows += '<tr>';
+                    tableRows += '<td>' + (index + 1) + '</td>';
+
+                    // Kiểm tra nếu ảnh tồn tại
+                    let imageCell = sanPham.hinhAnhs && sanPham.hinhAnhs.length > 0 ?
+                        '<img src="/api/san-pham-chi-tiet/desktop-images/' + sanPham.hinhAnhs[0].tenHinhAnh + '" alt="Ảnh sản phẩm" style="width: 50px; height: 50px; object-fit: cover;">' :
+                        '<span>Chưa có ảnh</span>';
+
+                    tableRows += '<td>' + imageCell + '</td>';
+                    tableRows += '<td>' + sanPham.tenSP + '</td>'; // Sử dụng 'tenSP' nếu trong dữ liệu API là 'tenSP'
+                    tableRows += '<td>' + formatVND(sanPham.giaBan) + '</td>'; // Kiểm tra giá sản phẩm (nếu có)
+                    tableRows += '<td>' + sanPham.soLuong + '</td>'; // Kiểm tra số lượng sản phẩm (nếu có)
+                    tableRows += '</tr>';
+                });
+
+                // Điền dữ liệu vào bảng
+                $('#danhSachSanPhamSapHetHang').html(tableRows);
+
+                // Kiểm tra nếu DataTable đã được khởi tạo
+                if ($.fn.dataTable.isDataTable('#tabledanhSachSanPhamSapHetHang')) {
+                    $('#tabledanhSachSanPhamSapHetHang').DataTable().destroy(); // Hủy DataTable cũ nếu đã được khởi tạo
+                }
+
+                // Khởi tạo lại DataTable
+                $('#tabledanhSachSanPhamSapHetHang').DataTable({
+                    "paging": true,   // Bật phân trang
+                    "searching": true, // Bật tìm kiếm
+                    "ordering": true,  // Bật sắp xếp cột
+                    "info": true,      // Hiển thị thông tin tổng số bản ghi
+                    "lengthChange": true, // Cho phép thay đổi số lượng dòng trên mỗi trang
+                    "pageLength": 10   // Mặc định hiển thị 10 dòng mỗi trang
+                });
+            },
+            error: function (xhr, status, error) {
+                console.log("Lỗi khi lấy dữ liệu: " + status + " - " + error);
+            }
+        });
+    }
+
+
+    function formatVND(num) {
+        return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    }
+
+</script>
+
+
+
+
+
+</html>
