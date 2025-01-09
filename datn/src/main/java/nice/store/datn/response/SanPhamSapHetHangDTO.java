@@ -19,5 +19,5 @@ public class SanPhamSapHetHangDTO {
     private String tenSP;
     private BigDecimal giaBan;
     private Integer soLuong;
-    private List<HinhAnh> hinhAnhs;
+    private String hinhAnhs;
 }

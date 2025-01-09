@@ -1,5 +1,6 @@
 package nice.store.datn.service;
 
+import nice.store.datn.entity.HoaDon;
 import nice.store.datn.entity.SanPhamChiTiet;
 import nice.store.datn.repository.HoaDonRepository;
 import nice.store.datn.response.SanPhamBanChayDTO;
@@ -10,7 +11,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -46,7 +52,6 @@ public class ThongKeService {
         return thongKeRepository.getSanPhamSapHetHang();
     }
 
-
     public List<SanPhamSapHetHangDTO> getSanPhamSapHetHangDTO() {
         List<SanPhamChiTiet> sanPhamChiTietList = thongKeRepository.getSanPhamSapHetHang();
         List<SanPhamSapHetHangDTO> dtoList = new ArrayList<>();
@@ -59,10 +64,79 @@ public class ThongKeService {
             dto.setTenSP(sanPham.getSanPham().getTenSP());
             dto.setGiaBan(sanPham.getGiaBan());
             dto.setSoLuong(sanPham.getSoLuong());
-            //dto.setHinhAnhs(sanPham.getHinhAnhs());
+
+            // Lấy hình ảnh đầu tiên từ danh sách hình ảnh
+            if (sanPham.getHinhAnhs() != null && !sanPham.getHinhAnhs().isEmpty()) {
+                // Lấy URL của hình ảnh đầu tiên
+                dto.setHinhAnhs(sanPham.getHinhAnhs().get(0).getUrl()); // Giả sử bạn muốn lấy URL của hình ảnh
+            }
+
             dtoList.add(dto);
         }
 
         return dtoList;
     }
+
+
+
+
+    //    //danhthu
+//    public List<HoaDon> getDoanhThuHomNay() {
+//        LocalDate today = LocalDate.now();
+//
+//        LocalDateTime startOfDay = today.atStartOfDay();
+//        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+//
+//        return thongKeRepository.findByTrangThaiAndNgayThanhToanBetween(2, startOfDay, endOfDay);
+//
+//    }
+    public List<HoaDon> getDoanhThuHomNay() {
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+
+        // Danh sách trạng thái cần lọc
+        List<Integer> trangThais = Arrays.asList(2, 3, 4, 5, 6);
+
+        // Gọi repository với danh sách trạng thái
+        return thongKeRepository.findByTrangThaiInAndNgayThanhToanBetween(trangThais, startOfDay, endOfDay);
+    }
+
+    public List<HoaDon> getDoanhThuThangNay() {
+        LocalDate today = LocalDate.now();
+
+        // Xác định ngày bắt đầu và kết thúc của tháng này
+        LocalDate firstDayOfMonth = today.withDayOfMonth(1);  // Ngày đầu tiên của tháng
+        LocalDate lastDayOfMonth = today.withDayOfMonth(today.lengthOfMonth());  // Ngày cuối cùng của tháng
+
+        LocalDateTime startOfMonth = firstDayOfMonth.atStartOfDay();  // 00:00 ngày đầu tháng
+        LocalDateTime endOfMonth = lastDayOfMonth.atTime(LocalTime.MAX);  // 23:59 ngày cuối tháng
+        List<Integer> trangThais = Arrays.asList(2, 3, 4, 5, 6);
+        return thongKeRepository.findByTrangThaiInAndNgayThanhToanBetween(trangThais, startOfMonth, endOfMonth);
+    }
+
+    public List<HoaDon> getDoanhThuNamNay() {
+        // Lấy ngày bắt đầu và kết thúc của năm nay
+        LocalDate today = LocalDate.now();
+        LocalDate firstDayOfYear = today.withDayOfYear(1);  // Ngày đầu tiên trong năm
+        LocalDate lastDayOfYear = today.withDayOfYear(today.lengthOfYear());  // Ngày cuối cùng trong năm
+
+        // Chuyển đổi sang LocalDateTime
+        LocalDateTime startOfYear = firstDayOfYear.atStartOfDay();
+        LocalDateTime endOfYear = lastDayOfYear.atTime(LocalTime.MAX);
+        List<Integer> trangThais = Arrays.asList(2, 3, 4, 5, 6);
+        return thongKeRepository.findByTrangThaiInAndNgayThanhToanBetween(trangThais, startOfYear, endOfYear);
+    }
+
+
+    public List<HoaDon> getThongKeHoaDon(LocalDateTime startDate, LocalDateTime endDate) {
+        // Lọc hóa đơn theo khoảng thời gian
+        return thongKeRepository.findByNgayTaoBetween(startDate, endDate);
+    }
+
+
+    public List<HoaDon> getAllHoaDons() {
+        return thongKeRepository.findAll();
+    }
+
 }

@@ -1,28 +1,47 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Voler Admin Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+
+    <!-- Thêm jQuery (bắt buộc trước DataTables) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Thêm JS của DataTables -->
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 
     <!-- Thêm CSS của Bootstrap và các thư viện khác -->
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
     <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
     <link rel="stylesheet" th:href="@{/css/app.css}">
-    <!-- Tải jQuery -->
-    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Tải DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
 
-    <!-- Tải DataTables JS -->
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <style>
+        /* Nếu bạn muốn đảm bảo các phần tử chiếm đúng 50% chiều rộng */
+        .row {
+            display: flex;
+        }
 
+        .col-md-6 {
+            flex: 1;
+            padding: 15px;
+        }
+
+        /* Đảm bảo biểu đồ tròn không bị vỡ kích thước */
+        #invoiceChartDoughnut {
+            width: 100%;
+            height: 300px;  /* Tùy chỉnh chiều cao cho phù hợp */
+        }
+    </style>
 </head>
-
 
 
 <body>
@@ -33,10 +52,9 @@
         <span th:replace="~{fragments/header :: header}"></span>
         <div class="main-content container-fluid" layout:fragment="content"><!--dynamic content-->
                <div class="text-center">
-                   <h1>Thong Ke</h1>
-
-
                    <div class="container my-4">
+                       <h1>Thống Kê</h1>
+
                        <!-- Stats Cards -->
                        <div class="card mb-4">
                            <div class="card-body">
@@ -73,46 +91,58 @@
                        </div>
 
                        <!-- Charts and Filters -->
-                       <div class="card mb-4">
-                           <div class="card-body">
-                               <h4 class="card-title text-center mb-4">Biểu đồ thống kê hóa đơn và sản phẩm</h4>
-                               <div class="row align-items-center mb-4">
-                                   <div class="col-md-6 d-flex flex-column flex-md-row">
-                                       <div class="mb-3 me-md-3">
-                                           <label for="startDate" class="form-label">Ngày bắt đầu:</label>
-                                           <input type="datetime-local" id="startDate" class="form-control">
+                           <div class="card mb-4">
+                               <div class="card-body">
+                                   <h4 class="card-title text-center mb-4">Biểu đồ thống kê hóa đơn và sản phẩm</h4>
+                                   <div class="row align-items-center mb-4">
+                                       <div class="col-md-6 d-flex flex-column flex-md-row">
+                                           <div class="mb-3 me-md-3">
+                                               <label for="startDate" class="form-label">Ngày bắt đầu:</label>
+                                               <input type="datetime-local" id="startDate" class="form-control">
+                                           </div>
+                                           <div class="mb-3">
+                                               <label for="endDate" class="form-label">Ngày kết thúc:</label>
+                                               <input type="datetime-local" id="endDate" class="form-control">
+                                           </div>
                                        </div>
-                                       <div class="mb-3">
-                                           <label for="endDate" class="form-label">Ngày kết thúc:</label>
-                                           <input type="datetime-local" id="endDate" class="form-control">
+                                       <div class="col-md-6 text-md-end">
+                                           <button id="apply-dates" class="btn btn-success me-2">Áp dụng</button>
+                                           <button id="last-7-days" class="btn btn-primary me-2">7 ngày</button>
+                                           <button id="last-month" class="btn btn-primary me-2">1 tháng</button>
+                                           <button id="export-excel" class="btn btn-secondary">Xuất Excel</button>
                                        </div>
                                    </div>
-                                   <div class="col-md-6 text-md-end">
-                                       <button id="apply-dates" class="btn btn-success me-2">Áp dụng</button>
-                                       <button id="last-7-days" class="btn btn-primary me-2">7 ngày</button>
-                                       <button id="last-month" class="btn btn-primary me-2">1 tháng</button>
-                                       <button id="export-excel" class="btn btn-secondary">Xuất Excel</button>
+                                   <div id="date-range-display" class="text-center mb-4 fw-bold text-muted"></div>
+                                   <div class="chart-container">
+<!--                                       <canvas id="invoiceChartBar"></canvas>-->
+                                       <canvas id="invoiceChartBar" width="400" height="200"></canvas>
+
                                    </div>
                                </div>
-                               <div id="date-range-display" class="text-center mb-4 fw-bold text-muted"></div>
-                               <div class="chart-container">
-                                   <canvas id="invoiceChartBar"></canvas>
+                           </div>
+
+                       <!-- Order Status -->
+                       <!-- Order Status -->
+                       <div class="card mb-4">
+                           <div class="card-body">
+
+                               <div class="row">
+                                   <div class="col-md-4">
+                                       <div id="legend" class="d-flex flex-column align-items-start">
+                                           <h4 class="card-title text-center mb-4">Trạng thái đơn hàng</h4>
+                                       </div>
+                                   </div>
+                                   <!-- Cột bên trái: Biểu đồ trạng thái -->
+                                   <div class="col-md-8">
+                                       <canvas id="invoiceChartDoughnut"></canvas>
+                                   </div>
+                                   <!-- Cột bên phải: Legend chứa nhãn -->
+
                                </div>
                            </div>
                        </div>
 
-                       <!-- Order Status -->
-                       <div class="card mb-4">
-                           <div class="card-body">
-                               <h4 class="card-title text-center mb-4">Trạng thái đơn hàng</h4>
-                               <div class="row">
-                                   <div class="col-md-6">
-                                       <canvas id="invoiceChartDoughnut"></canvas>
-                                   </div>
-                                   <div id="legend" class="col-md-6 d-flex align-items-center"></div>
-                               </div>
-                           </div>
-                       </div>
+
 
                        <!-- Product Tables -->
                        <div class="row">
@@ -138,7 +168,9 @@
                            </div>
 
 
+
                            <!-- Low Stock Products -->
+                           <!-- HTML Table -->
                            <div class="col-md-6">
                                <div class="card">
                                    <div class="card-body">
@@ -153,11 +185,36 @@
                                                <th>Số lượng còn lại</th>
                                            </tr>
                                            </thead>
-                                           <tbody id="danhSachSanPhamSapHetHang"></tbody>
+                                           <tbody>
+                                           <!-- Duyệt qua danh sách sản phẩm và hiển thị dữ liệu -->
+                                           <tr th:each="sanPham, iterStat : ${sanPhamList}">
+                                               <td th:text="${iterStat.index + 1}"></td>
+
+                                               <td>
+                                                   <img th:if="${sanPham.hinhAnhs != null}"
+                                                        th:src="@{'/api/san-pham-chi-tiet/desktop-images/' + ${sanPham.hinhAnhs}}"
+                                                        alt="Ảnh sản phẩm"
+                                                        style="width: 50px; height: 50px; object-fit: cover;">
+                                                   <span th:if="${sanPham.hinhAnhs == null}">Chưa có ảnh</span>
+                                               </td>
+
+
+                                               <td th:text="${sanPham.tenSP}"></td>
+                                               <td th:text="${sanPham.giaBan}"></td>
+                                               <td th:text="${sanPham.soLuong}"></td>
+                                           </tr>
+                                           </tbody>
                                        </table>
+
+                                       <!-- Phân trang Bootstrap -->
+                                       <nav>
+                                           <ul class="pagination" id="pagination"></ul>
+                                       </nav>
                                    </div>
                                </div>
                            </div>
+
+
 
 
                        </div>
@@ -184,10 +241,64 @@
 
 <script>
     $(document).ready(function() {
+        // Lấy dữ liệu sản phẩm từ bảng
+        var rows = $('#tabledanhSachSanPhamSapHetHang tbody tr');
+        var itemsPerPage = 10;  // Số lượng sản phẩm trên mỗi trang
+        var numPages = Math.ceil(rows.length / itemsPerPage);  // Số trang
+
+        // Hàm hiển thị các sản phẩm trên một trang
+        function showPage(pageNum) {
+            var start = (pageNum - 1) * itemsPerPage;
+            var end = start + itemsPerPage;
+
+            rows.hide();
+            rows.slice(start, end).show();
+        }
+
+        // Tạo phân trang
+        for (var i = 1; i <= numPages; i++) {
+            $('#pagination').append('<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>');
+        }
+
+        // Sự kiện khi nhấp vào phân trang
+        $('#pagination').on('click', 'a', function(e) {
+            e.preventDefault();
+            var pageNum = $(this).text();
+            showPage(pageNum);
+        });
+
+        // Hiển thị trang đầu tiên khi load
+        showPage(1);
+
+    });
+</script>
+<script>
+    $(document).ready(function() {
         // Gọi hàm để lấy sản phẩm bán chạy nhất
         getTop10SanPhamBanChay();
-        getSanPhamSapHetHang();
+       // getSanPhamSapHetHang();
+        getDoanhThuHomNay();
+        getDoanhThuThangNay();
+        getDoanhThuNamNay();
+
+        drawStatusChart();
+
     });
+    window.onload = function() {
+
+        let today = new Date();
+
+        // Cuối ngày hôm nay
+        let endOfDay = new Date(today);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        // In ra console
+        console.log("Today: ", today.toISOString());
+        console.log("End of Day: ", endOfDay.toISOString());
+
+        // Gọi hàm drawChart
+        drawChart(today.toISOString(), endOfDay.toISOString());
+    }
 
     function getTop10SanPhamBanChay() {
         $.ajax({
@@ -211,78 +322,296 @@
                 // Điền dữ liệu vào bảng
                 $('#danhSachSanPham').html(tableRows);
 
-                // Kiểm tra nếu DataTable đã được khởi tạo
-                if ($.fn.dataTable.isDataTable('#tableDanhSachSanPham')) {
-                    $('#tableDanhSachSanPham').DataTable().destroy(); // Hủy DataTable cũ nếu đã được khởi tạo
-                }
-
-                // Khởi tạo lại DataTable
-                $('#tableDanhSachSanPham').DataTable({
-                    "paging": true,   // Bật phân trang
-                    "searching": true, // Bật tìm kiếm
-                    "ordering": true,  // Bật sắp xếp cột
-                    "info": true,      // Hiển thị thông tin tổng số bản ghi
-                    "lengthChange": true, // Cho phép thay đổi số lượng dòng trên mỗi trang
-                    "pageLength": 10   // Mặc định hiển thị 10 dòng mỗi trang
-                });
-            },
-            error: function(error) {
-                console.log("Lỗi khi lấy dữ liệu:", error);
             }
         });
     }
 
-    function getSanPhamSapHetHang() {
-        $.ajax({
-            url: '/sap-het-hang', // Địa chỉ API
-            method: 'GET',
-            success: function (data) {
-                console.log(data); // Kiểm tra dữ liệu trả về từ API
-                let tableRows = '';
-                data.forEach(function (sanPham, index) {
-                    tableRows += '<tr>';
-                    tableRows += '<td>' + (index + 1) + '</td>';
-
-                    // Kiểm tra nếu ảnh tồn tại
-                    let imageCell = sanPham.hinhAnhs && sanPham.hinhAnhs.length > 0 ?
-                        '<img src="/api/san-pham-chi-tiet/desktop-images/' + sanPham.hinhAnhs[0].tenHinhAnh + '" alt="Ảnh sản phẩm" style="width: 50px; height: 50px; object-fit: cover;">' :
-                        '<span>Chưa có ảnh</span>';
-
-                    tableRows += '<td>' + imageCell + '</td>';
-                    tableRows += '<td>' + sanPham.tenSP + '</td>'; // Sử dụng 'tenSP' nếu trong dữ liệu API là 'tenSP'
-                    tableRows += '<td>' + formatVND(sanPham.giaBan) + '</td>'; // Kiểm tra giá sản phẩm (nếu có)
-                    tableRows += '<td>' + sanPham.soLuong + '</td>'; // Kiểm tra số lượng sản phẩm (nếu có)
-                    tableRows += '</tr>';
-                });
-
-                // Điền dữ liệu vào bảng
-                $('#danhSachSanPhamSapHetHang').html(tableRows);
-
-                // Kiểm tra nếu DataTable đã được khởi tạo
-                if ($.fn.dataTable.isDataTable('#tabledanhSachSanPhamSapHetHang')) {
-                    $('#tabledanhSachSanPhamSapHetHang').DataTable().destroy(); // Hủy DataTable cũ nếu đã được khởi tạo
-                }
-
-                // Khởi tạo lại DataTable
-                $('#tabledanhSachSanPhamSapHetHang').DataTable({
-                    "paging": true,   // Bật phân trang
-                    "searching": true, // Bật tìm kiếm
-                    "ordering": true,  // Bật sắp xếp cột
-                    "info": true,      // Hiển thị thông tin tổng số bản ghi
-                    "lengthChange": true, // Cho phép thay đổi số lượng dòng trên mỗi trang
-                    "pageLength": 10   // Mặc định hiển thị 10 dòng mỗi trang
-                });
-            },
-            error: function (xhr, status, error) {
-                console.log("Lỗi khi lấy dữ liệu: " + status + " - " + error);
-            }
-        });
-    }
+    // function getSanPhamSapHetHang() {
+    //     $.ajax({
+    //         url: '/sap-het-hang', // Địa chỉ API
+    //         method: 'GET',
+    //         success: function (data) {
+    //             console.log(data); // Kiểm tra dữ liệu trả về từ API
+    //             let tableRows = '';
+    //             data.forEach(function (sanPham, index) {
+    //                 tableRows += '<tr>';
+    //                 tableRows += '<td>' + (index + 1) + '</td>';
+    //
+    //                 // Kiểm tra nếu ảnh tồn tại
+    //                 let imageCell = sanPham.hinhAnhs && sanPham.hinhAnhs.length > 0 ?
+    //                     '<img src="/api/san-pham-chi-tiet/desktop-images/' + sanPham.hinhAnhs[0].tenHinhAnh + '" alt="Ảnh sản phẩm" style="width: 50px; height: 50px; object-fit: cover;">' :
+    //                     '<span>Chưa có ảnh</span>';
+    //
+    //                 tableRows += '<td>' + imageCell + '</td>';
+    //                 tableRows += '<td>' + sanPham.tenSP + '</td>'; // Sử dụng 'tenSP' nếu trong dữ liệu API là 'tenSP'
+    //                 tableRows += '<td>' + formatVND(sanPham.giaBan) + '</td>'; // Kiểm tra giá sản phẩm (nếu có)
+    //                 tableRows += '<td>' + sanPham.soLuong + '</td>'; // Kiểm tra số lượng sản phẩm (nếu có)
+    //                 tableRows += '</tr>';
+    //             });
+    //
+    //             // Điền dữ liệu vào bảng
+    //             $('#danhSachSanPhamSapHetHang').html(tableRows);
+    //
+    //             // Kiểm tra nếu DataTable đã được khởi tạo
+    //             if ($.fn.dataTable.isDataTable('#tabledanhSachSanPhamSapHetHang')) {
+    //                 $('#tabledanhSachSanPhamSapHetHang').DataTable().destroy(); // Hủy DataTable cũ nếu đã được khởi tạo
+    //             }
+    //
+    //             // Khởi tạo lại DataTable
+    //             $('#tabledanhSachSanPhamSapHetHang').DataTable({
+    //                 "paging": true,   // Bật phân trang
+    //                 "searching": true, // Bật tìm kiếm
+    //                 "ordering": true,  // Bật sắp xếp cột
+    //                 "info": true,      // Hiển thị thông tin tổng số bản ghi
+    //                 "lengthChange": true, // Cho phép thay đổi số lượng dòng trên mỗi trang
+    //                 "pageLength": 10   // Mặc định hiển thị 10 dòng mỗi trang
+    //             });
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.log("Lỗi khi lấy dữ liệu: " + status + " - " + error);
+    //         }
+    //     });
+    // }
 
 
     function formatVND(num) {
         return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
     }
+
+    function getDoanhThuHomNay() {
+        $.ajax({
+            url: '/doanh-thu-hom-nay',
+            type: 'GET',
+            success: function(response) {
+                console.log('Dữ liệu doanh thu hôm nay:', response);  // Kiểm tra dữ liệu
+                let tongSoHoaDon = response.tongSoHoaDon;
+                let tongTien = response.tongTien;
+
+                $('#thongKeDonHangHomNay').text(tongSoHoaDon);  // Hiển thị số lượng hóa đơn
+                $('#thongKeDoanhThuHomNay').text(formatVND(tongTien));  // Hiển thị doanh thu
+
+                console.log('Doanh thu hôm nay:', tongSoHoaDon, tongTien);
+            },
+            error: function(error) {
+                console.error('Lỗi khi lấy doanh thu hôm nay:', error);
+            }
+        });
+    }
+    function getDoanhThuThangNay() {
+        $.ajax({
+            url: '/doanh-thu-thang-nay',  // API mới để lấy doanh thu tháng này
+            type: 'GET',
+            success: function(response) {
+                console.log('Dữ liệu doanh thu tháng này:', response);
+                let tongSoHoaDon = response.tongSoHoaDon;
+                let tongTien = response.tongTien;
+
+                // Cập nhật nội dung doanh thu tháng này vào giao diện
+                $('#thongKeDonHangThangNay').text(tongSoHoaDon);
+                $('#thongKeDoanhThuThangNay').text(formatVND(tongTien));
+
+                console.log('Doanh thu tháng này:', tongSoHoaDon, tongTien);
+            },
+            error: function(error) {
+                console.error('Lỗi khi lấy doanh thu tháng này:', error);
+            }
+        });
+    }
+    function getDoanhThuNamNay() {
+        $.ajax({
+            url: '/doanh-thu-nam-nay',
+            type: 'GET',
+            success: function(response) {
+                console.log('Dữ liệu doanh thu năm nay:', response);
+                let tongSoHoaDon = response.tongSoHoaDon;
+                let tongTien = response.tongTien;
+
+                $('#thongKeDonHangNamNay').text(tongSoHoaDon);
+                $('#thongKeDoanhThuNamNay').text(formatVND(tongTien));
+
+                console.log('Doanh thu năm nay:', tongSoHoaDon, tongTien);
+            },
+            error: function(error) {
+                console.error('Lỗi khi lấy doanh thu năm nay:', error);
+            }
+        });
+    }
+
+
+    // Hàm lấy dữ liệu và vẽ biểu đồ
+    // Hàm vẽ biểu đồ
+    let invoiceChart = null;
+
+    function drawChart(startDate, endDate) {
+        $.ajax({
+            url: '/thong-ke-hoadon',  // API để lấy dữ liệu thống kê
+            method: 'GET',
+            data: {
+                startDate: startDate,
+                endDate: endDate
+            },
+            success: function(response) {
+                // In ra dữ liệu nhận được từ API để kiểm tra
+                console.log('Response from API:', response);
+
+                const labels = response.labels;
+                const invoiceData = response.invoiceData;
+                const revenueData = response.revenueData;
+
+                console.log('Labels:', labels);
+                console.log('Invoice Data:', invoiceData);
+                console.log('Revenue Data:', revenueData);
+
+                if (invoiceChart) {
+                    invoiceChart.destroy();
+                }
+
+                const ctx = document.getElementById('invoiceChartBar').getContext('2d');
+                invoiceChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels, // Các nhãn trục X
+                        datasets: [
+                            {
+                                label: 'Số lượng hóa đơn',
+                                data: invoiceData, // Dữ liệu số lượng hóa đơn
+                                backgroundColor: 'rgba(54,162,235,0.2)', // Màu nền cho cột
+                                borderColor: 'rgba(54, 162, 235, 1)', // Màu viền cho cột
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Doanh thu',
+                                data: revenueData, // Dữ liệu doanh thu
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)', // Màu nền cho cột
+                                borderColor: 'rgba(255, 99, 132, 1)', // Màu viền cho cột
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                callbacks: {
+
+                                    label: function(tooltipItem) {
+                                        return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            },
+            error: function(error) {
+                console.error('Lỗi khi lấy dữ liệu thống kê:', error);
+            }
+        });
+    }
+
+
+    // Sự kiện áp dụng khoảng thời gian
+    $('#apply-dates').click(function() {
+        const startDate = $('#startDate').val();
+        const endDate = $('#endDate').val();
+        drawChart(startDate, endDate);
+    });
+
+    // Sự kiện cho các nút nhanh (7 ngày, 1 tháng)
+    $('#last-7-days').click(function() {
+        const today = new Date();
+        const last7Days = new Date(today.setDate(today.getDate() - 7));
+        drawChart(last7Days.toISOString(), new Date().toISOString());
+    });
+
+    $('#last-month').click(function() {
+        const today = new Date();
+        const lastMonth = new Date(today.setMonth(today.getMonth() - 1));
+        drawChart(lastMonth.toISOString(), new Date().toISOString());
+    });
+
+
+
+    // Hàm vẽ biểu đồ trạng thái
+    function drawStatusChart() {
+        $.ajax({
+            url: '/thong-ke-trang-thai',  // API lấy thống kê trạng thái
+            method: 'GET',
+            success: function(response) {
+                const labels = response.labels;
+                const data = response.data;
+
+                // Vẽ biểu đồ Doughnut
+                var ctx = document.getElementById('invoiceChartDoughnut').getContext('2d');
+                var invoiceChartDoughnut = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: ['#FF6347', '#ff4500', '#FFD700', '#32CD32', '#00BFFF', '#FF1493', '#FF69B4', '#8A2BE2'], // Màu sắc động cho các phần
+                            borderColor: '#FFFFFF',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(tooltipItem) {
+                                        return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            error: function(error) {
+                console.error('Có lỗi xảy ra khi lấy dữ liệu:', error);
+            }
+        });
+    }
+
+    document.getElementById('export-excel').addEventListener('click', function() {
+        let startDate = document.getElementById('startDate').value;
+        let endDate = document.getElementById('endDate').value;
+
+        $.ajax({
+            url: '/export-excel',
+            method: 'GET',
+            data: {
+                startDate: startDate,
+                endDate: endDate
+            },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(response) {
+                var link = document.createElement('a');
+                var url = window.URL.createObjectURL(response);
+                link.href = url;
+                link.download = 'ThongKeHoaDon.xlsx';
+                link.click();
+                window.URL.revokeObjectURL(url);
+            }
+        });
+    });
 
 </script>
 
