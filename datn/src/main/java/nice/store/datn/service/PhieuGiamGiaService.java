@@ -5,6 +5,7 @@ import nice.store.datn.repository.PhieuGiamGiaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -59,4 +60,23 @@ public class PhieuGiamGiaService {
         return phieuGiamGiaRepository.getVoucherPhuHop(max);
     }
 
+    public BigDecimal calculateDiscount(PhieuGiamGia voucher, BigDecimal totalAmount) {
+        BigDecimal discountAmount = BigDecimal.ZERO;
+
+        // Kiểm tra loại voucher và tính toán giảm giá
+        if (voucher.getLoaiVoucher().equals("PERCENTAGE")) {
+            // Giảm giá theo phần trăm
+            discountAmount = totalAmount.multiply(voucher.getGiaTriGiam()).divide(new BigDecimal(100));
+        } else if (voucher.getLoaiVoucher().equals("FIXED")) {
+            // Giảm giá theo số tiền cố định
+            discountAmount = voucher.getGiaTriGiam();
+        }
+
+        // Đảm bảo số tiền giảm không vượt quá tổng tiền
+        if (discountAmount.compareTo(totalAmount) > 0) {
+            discountAmount = totalAmount;
+        }
+
+        return discountAmount;
+    }
 }

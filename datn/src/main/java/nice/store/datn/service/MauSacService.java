@@ -16,7 +16,9 @@ import java.util.Optional;
 public class MauSacService {
     @Autowired
     private MauSacRepository mauSacRepository;
-
+    public List<MauSac> getMauSacByProductId(Integer productId) {
+        return mauSacRepository.findByProductId(productId);
+    }
     public MauSac create(MauSac mauSac) {
         mauSac.setNgayTao(LocalDateTime.now());
         return mauSacRepository.save(mauSac);

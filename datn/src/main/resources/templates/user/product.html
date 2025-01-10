@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang Chủ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+    }
+    /* Navigation Styles */
+    .nav-link {
+      color: #000;
+      transition: color 0.3s ease, border-bottom 0.3s ease;
+      font-weight: bold;
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #ff9800;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after,
+    .nav-item.active .nav-link::after {
+      width: 100%;
+    }
+    .nav-item.active .nav-link {
+      color: #ff9800;
+    }
+    /* Product Card Styles */
+    .product-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+    .product-image-wrapper {
+      position: relative;
+      padding-top: 100%;
+      overflow: hidden;
+    }
+    .product-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .product-card:hover .product-image {
+      transform: scale(1.05);
+    }
+    .hover-icons {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .product-card:hover .hover-icons {
+      opacity: 1;
+    }
+    .hover-icons a {
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.9);
+      color: #333;
+      transition: all 0.3s ease;
+    }
+    .hover-icons a:hover {
+      background-color: #ff9800;
+      color: white;
+    }
+    .product-info {
+      padding: 15px;
+      text-align: center;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .product-name {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .product-price {
+      color: #ff9800;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    /* Filter Styles */
+    .filter-group {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .filter-group h4 {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #ff9800;
+    }
+    .filter-label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    .filter-label:hover {
+      color: #ff9800;
+    }
+    .filter-checkbox {
+      margin-right: 10px;
+    }
+    /* Pagination */
+    .pagination {
+      margin-top: 30px;
+      gap: 8px;
+    }
+    .pagination .btn {
+      min-width: 40px;
+      height: 40px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    .pagination .btn.active {
+      background-color: #ff9800;
+      border-color: #ff9800;
+      color: white;
+    }
+    .product-count {
+      text-align: center;
+      margin-top: 15px;
+      color: #666;
+    }
+    /* Responsive */
+    @media (max-width: 768px) {
+      .filter-group {
+        margin-bottom: 15px;
+      }
+      .product-card {
+        margin-bottom: 15px;
+      }
+    }
+    .filter-group select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: white;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+    }
+    .filter-group select:focus {
+      border-color: #ff9800;
+      outline: none;
+    }
+    .filter-group select option {
+      padding: 8px;
+    }
+  </style>
+</head>
+<body>
+<!-- Header -->
+<header class="bg-white border-bottom py-3">
+  <div class="container d-flex justify-content-between align-items-center">
+    <div class="social-links">
+      <a href="#" class="text-dark mr-3"><i class="fab fa-facebook"></i></a>
+      <a href="#" class="text-dark mr-3"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="text-dark mr-3"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="text-dark"><i class="fab fa-twitter"></i></a>
+    </div>
+    <div class="user-options">
+      <a href="#" class="text-dark mr-3">Đăng nhập</a>
+      <a href="#" class="text-dark">Đăng kí</a>   <div class="user-icons d-inline-block ml-3">
+      <a href="/cart/view" class="text-dark">
+        <i class="fa fa-shopping-cart"></i>
+        <!-- Hiển thị số lượng sản phẩm trong giỏ hàng -->
+        <span class="badge badge-danger" th:text="${cart != null ? cart.gioHangCTs.size() : 0}"></span>
+      </a>
+    </div>
+    </div>
+  </div>
+</header>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <img th:src="@{/img/logo1r.jpg}" alt="Logo" width="80" height="80"
+           style="border-radius: 50%; border: 2px solid #fff;">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link active" th:href="@{/home}">TRANG CHỦ</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/product-use}">SẢN PHẨM</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/gioi-thieu}">GIỚI THIỆU</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/tra-cuu}">TRA CỨU ĐƠN HÀNG</a>
+        </li>
+      </ul>
+    </div>
+    <form class="form-inline my-2 my-lg-0 ml-3">
+      <div class="input-group">
+        <input class="form-control" type="search" placeholder="Tìm kiếm...">
+        <div class="input-group-append">
+          <button class="btn btn-outline-dark" type="submit">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <h2 class="text-center mb-4">Danh Sách Sản Phẩm</h2>
+
+  <div class="row">
+    <!-- Filter Sidebar -->
+    <div class="col-md-3">
+      <!-- Sort and Price Range Controls -->
+      <div class="filter-group">
+        <h4>Sắp xếp</h4>
+
+        <select id="sortSelect" class="form-control mb-3">
+          <option value="">Mặc định</option>
+          <option value="name-asc">Tên A-Z</option>
+          <option value="name-desc">Tên Z-A</option>
+          <option value="price-asc">Giá thấp đến cao</option>
+          <option value="price-desc">Giá cao đến thấp</option>
+        </select>
+
+        <h4 class="mt-3">Khoảng giá</h4>
+        <select id="priceRangeSelect" class="form-control">
+          <option value="">Tất cả giá</option>
+          <option value="0-500000">Dưới 500,000đ</option>
+          <option value="500000-1000000">500,000đ - 1,000,000đ</option>
+          <option value="1000000-2000000">1,000,000đ - 2,000,000đ</option>
+          <option value="2000000-999999999">Trên 2,000,000đ</option>
+        </select>
+      </div>
+
+      <form id="filterForm">
+        <!-- Thương hiệu -->
+        <div class="filter-group">
+          <h4>Thương hiệu</h4>
+          <div th:each="thuongHieu : ${listThuongHieu}">
+            <label class="filter-label">
+              <input type="checkbox" class="filter-checkbox" name="thuongHieu"
+                     th:value="${thuongHieu.tenThuongHieu}">
+              <span th:text="${thuongHieu.tenThuongHieu}"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Kích cỡ -->
+        <div class="filter-group">
+          <h4>Kích cỡ</h4>
+          <div th:each="kichCo : ${listKichCo}">
+            <label class="filter-label">
+              <input type="checkbox" class="filter-checkbox" name="kichCo"
+                     th:value="${kichCo.size}">
+              <span th:text="${kichCo.size}"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Màu sắc -->
+        <div class="filter-group">
+          <h4>Màu sắc</h4>
+          <div th:each="mauSac : ${listMauSac}">
+            <label class="filter-label">
+              <input type="checkbox" class="filter-checkbox" name="mauSac"
+                     th:value="${mauSac.tenMauSac}">
+              <span th:text="${mauSac.tenMauSac}"></span>
+            </label>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="col-md-9">
+      <div id="productContainer" class="row">
+        <div class="col-12 col-md-4 mb-4" th:each="sp : ${listSanPhamCT}"
+             th:data-thuong-hieu="${sp.tenThuongHieu}"
+             th:data-size="${sp.tenKichCo}"
+             th:data-color="${sp.tenMauSac}"
+             th:data-price="${sp.giaBan}"
+             th:data-name="${sp.tenSP}"
+             th:data-soluong="${sp.soLuong}"
+             th:data-mota="${sp.moTa}">
+
+          <div class="product-card">
+            <div class="product-image-wrapper">
+              <!-- Hiển thị hình ảnh sản phẩm -->
+              <img th:src="@{/desktop-images/{url}(url=${sp.url})}"
+                   alt="product-image" class="product-image">
+            </div>
+            <div class="product-info">
+              <div class="product-name" th:text="${sp.tenSP }"></div>
+              <div class="product-price" th:text="${#numbers.formatDecimal(sp.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></div>
+            </div>
+            <!-- Căn giữa nút "Xem chi tiết" -->
+            <div class="text-center">
+              <a class="btn btn-primary" th:href="@{/product-detail/{productId}(productId=${sp.idSanPham})}">Xem chi tiết</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Pagination -->
+    </div>
+
+
+
+    <div class="pagination d-flex justify-content-center mt-4" style="width: 100%; text-align: center;"></div>
+
+  </div>
+</div>
+
+
+
+
+<!-- Footer -->
+<footer class="bg-dark text-white mt-5 py-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 text-center">
+        <img th:src="@{/img/logo1r.jpg}" alt="Logo" width="80" height="80"
+             style="border-radius: 50%; border: 2px solid #fff; margin-bottom: 20px;">
+        <div>
+          <a href="#" class="text-white mr-3"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="text-white mr-3"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="text-white mr-3"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <h5>Thông tin liên hệ</h5>
+        <ul class="list-unstyled">
+          <li>Địa chỉ: Hà Nội, Việt Nam</li>
+          <li>Email: contact@example.com</li>
+          <li>Phone: (084) 123 456 789</li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <h5>Chính sách</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-white">Chính sách bảo hành</a></li>
+          <li><a href="#" class="text-white">Chính sách đổi trả</a></li>
+          <li><a href="#" class="text-white">Chính sách vận chuyển</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <h5>Hỗ trợ</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-white">FAQs</a></li>
+          <li><a href="#" class="text-white">Hướng dẫn mua hàng</a></li>
+          <li><a href="#" class="text-white">Tra cứu đơn hàng</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+
+
+  class ProductManager {
+    constructor() {
+      this.filterForm = document.getElementById('filterForm');
+      this.productContainer = document.getElementById('productContainer');
+      this.paginationContainer = document.querySelector('.pagination');
+      this.sortSelect = document.getElementById('sortSelect');
+      this.priceRangeSelect = document.getElementById('priceRangeSelect');
+      this.productsPerPage = 9;
+      this.currentPage = 1;
+      this.products = [];
+      this.filteredProducts = [];
+      this.init();
+    }
+
+    init() {
+      this.products = Array.from(this.productContainer.getElementsByClassName('col-12 col-md-4'));
+      this.setupEventListeners();
+      this.applyFilters();
+    }
+
+    setupEventListeners() {
+      const checkboxes = this.filterForm.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+          this.currentPage = 1;
+          this.applyFilters();
+        });
+      });
+
+      if (this.sortSelect) {
+        this.sortSelect.addEventListener('change', () => {
+          this.currentPage = 1;
+          this.applyFilters();
+        });
+      }
+
+      if (this.priceRangeSelect) {
+        this.priceRangeSelect.addEventListener('change', () => {
+          this.currentPage = 1;
+          this.applyFilters();
+        });
+      }
+    }
+
+    applyFilters() {
+      const selectedFilters = this.getSelectedFilters();
+      this.filteredProducts = this.products.filter(product => {
+        const thuongHieu = product.getAttribute('data-thuong-hieu');
+        const kichCo = product.getAttribute('data-size');
+        const mauSac = product.getAttribute('data-color');
+        const price = parseFloat(product.getAttribute('data-price'));
+
+        const matchesThuongHieu = selectedFilters.thuongHieu.length === 0 ||
+                selectedFilters.thuongHieu.includes(thuongHieu);
+        const matchesKichCo = selectedFilters.kichCo.length === 0 ||
+                selectedFilters.kichCo.includes(kichCo);
+        const matchesMauSac = selectedFilters.mauSac.length === 0 ||
+                selectedFilters.mauSac.includes(mauSac);
+        const matchesPriceRange = this.checkPriceRange(price, selectedFilters.priceRange);
+
+        return matchesThuongHieu && matchesKichCo && matchesMauSac && matchesPriceRange;
+      });
+
+      // Lọc sản phẩm trùng tên
+      this.filteredProducts = this.removeDuplicateProducts(this.filteredProducts);
+
+      this.sortProducts(selectedFilters.sortBy);
+      this.displayProducts();
+      this.updatePagination();
+    }
+
+    removeDuplicateProducts(products) {
+      const uniqueProducts = [];
+      const productNames = new Set();
+
+      products.forEach(product => {
+        const productName = product.getAttribute('data-name');
+        if (!productNames.has(productName)) {
+          uniqueProducts.push(product);
+          productNames.add(productName);
+        }
+      });
+
+      return uniqueProducts;
+    }
+
+    getSelectedFilters() {
+      return {
+        thuongHieu: Array.from(this.filterForm.querySelectorAll('input[name="thuongHieu"]:checked'))
+                .map(input => input.value),
+        kichCo: Array.from(this.filterForm.querySelectorAll('input[name="kichCo"]:checked'))
+                .map(input => input.value),
+        mauSac: Array.from(this.filterForm.querySelectorAll('input[name="mauSac"]:checked'))
+                .map(input => input.value),
+        priceRange: this.priceRangeSelect ? this.priceRangeSelect.value : '',
+        sortBy: this.sortSelect ? this.sortSelect.value : ''
+      };
+    }
+
+    checkPriceRange(price, range) {
+      if (!range) return true;
+      const [min, max] = range.split('-').map(Number);
+      return price >= min && (max ? price <= max : true);
+    }
+
+    sortProducts(sortBy) {
+      if (sortBy === 'name-asc') {
+        this.filteredProducts.sort((a, b) => a.getAttribute('data-name').localeCompare(b.getAttribute('data-name')));
+      } else if (sortBy === 'name-desc') {
+        this.filteredProducts.sort((a, b) => b.getAttribute('data-name').localeCompare(a.getAttribute('data-name')));
+      } else if (sortBy === 'price-asc') {
+        this.filteredProducts.sort((a, b) => parseFloat(a.getAttribute('data-price')) - parseFloat(b.getAttribute('data-price')));
+      } else if (sortBy === 'price-desc') {
+        this.filteredProducts.sort((a, b) => parseFloat(b.getAttribute('data-price')) - parseFloat(a.getAttribute('data-price')));
+      }
+    }
+
+    displayProducts() {
+      const start = (this.currentPage - 1) * this.productsPerPage;
+      const end = start + this.productsPerPage;
+
+      this.products.forEach(product => {
+        product.style.display = 'none';
+      });
+
+      this.filteredProducts.slice(start, end).forEach(product => {
+        product.style.display = 'block';
+      });
+
+      this.updatePagination();
+    }
+
+    updatePagination() {
+      const totalPages = Math.ceil(this.filteredProducts.length / this.productsPerPage);
+      this.paginationContainer.innerHTML = '';
+
+      if (totalPages <= 1) return;
+
+      const paginationWrapper = document.createElement('div');
+      paginationWrapper.className = 'd-flex justify-content-center flex-wrap gap-2';
+
+      // Previous button
+      if (this.currentPage > 1) {
+        paginationWrapper.appendChild(
+                this.createPaginationButton('«', () => {
+                  this.currentPage--;
+                  this.displayProducts();
+                })
+        );
+      }
+
+      // Page numbers
+      for (let i = 1; i <= totalPages; i++) {
+        paginationWrapper.appendChild(
+                this.createPaginationButton(i, () => {
+                  this.currentPage = i;
+                  this.displayProducts();
+                }, i === this.currentPage)
+        );
+      }
+
+      // Next button
+      if (this.currentPage < totalPages) {
+        paginationWrapper.appendChild(
+                this.createPaginationButton('»', () => {
+                  this.currentPage++;
+                  this.displayProducts();
+                })
+        );
+      }
+
+      this.paginationContainer.appendChild(paginationWrapper);
+    }
+
+    createPaginationButton(text, onClick, isActive = false) {
+      const button = document.createElement('button');
+      button.className = `btn ${isActive ? 'btn-dark' : 'btn-outline-dark'} mx-1`;
+      button.textContent = text;
+      button.addEventListener('click', onClick);
+      return button;
+    }
+  }
+
+  // Initialize when DOM is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    const productManager = new ProductManager();
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var productContainer = document.getElementById('productContainer');
+    var sortSelect = document.getElementById('sortSelect');
+    var products = Array.from(productContainer.children);
+
+    function sortProducts() {
+      var sortBy = sortSelect.value;
+      products.sort(function(a, b) {
+        var nameA = a.getAttribute('data-name').toLowerCase();
+        var nameB = b.getAttribute('data-name').toLowerCase();
+        var priceA = parseFloat(a.getAttribute('data-price'));
+        var priceB = parseFloat(b.getAttribute('data-price'));
+
+        switch (sortBy) {
+          case 'name-asc':
+            return nameA.localeCompare(nameB);
+          case 'name-desc':
+            return nameB.localeCompare(nameA);
+          case 'price-asc':
+            return priceA - priceB;
+          case 'price-desc':
+            return priceB - priceA;
+          default:
+            return 0;
+        }
+      });
+
+      products.forEach(function(product) {
+        productContainer.appendChild(product);
+      });
+    }
+
+    sortSelect.addEventListener('change', sortProducts);
+  });
+</script>
+</body>
+</html>
+

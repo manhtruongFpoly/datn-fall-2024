@@ -1,12 +1,20 @@
 package nice.store.datn.service;
 
 
+import jakarta.servlet.http.HttpSession;
 import nice.store.datn.entity.GioHang;
+import nice.store.datn.entity.GioHangCT;
+import nice.store.datn.entity.KhachHang;
+import nice.store.datn.repository.GioHangChiTietRepository;
 import nice.store.datn.repository.GioHangrepository;
+import nice.store.datn.repository.KhachHangRepository;
+import nice.store.datn.response.CartItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +23,10 @@ public class GioHangService {
 
     @Autowired
     private GioHangrepository gioHangrepository;
+    @Autowired
+    private KhachHangRepository khachHangRepository;
+    @Autowired
+    private GioHangChiTietRepository gioHangChiTietRepository;
 
     public GioHang create(GioHang gioHang) {
         gioHang.setNgayTao(LocalDateTime.now());
@@ -42,6 +54,12 @@ public class GioHangService {
 
     //delete GioHang
     public void deleteGhById(int id) {
-         gioHangrepository.deleteById(id);
+        gioHangrepository.deleteById(id);
     }
+
+
+
+
+
 }
+

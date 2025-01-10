@@ -33,7 +33,7 @@ public class HoaDon {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_NV", referencedColumnName = "ID")
-    private Nhanvien nhanVien; // ánh xạ với entity NhanVien
+    private NhanVien nhanVien; // ánh xạ với entity NhanVien
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_KH", referencedColumnName = "ID")
@@ -123,6 +123,19 @@ public class HoaDon {
                 break;
         }
         return "";
+    }
+
+
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<HoaDonChiTiet> hoaDonChiTiets;
+
+    public List<HoaDonChiTiet> getHoaDonChiTiets() {
+        return hoaDonChiTiets;
+    }
+
+    public void setHoaDonChiTiets(List<HoaDonChiTiet> hoaDonChiTiets) {
+        this.hoaDonChiTiets = hoaDonChiTiets;
     }
 
 }

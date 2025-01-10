@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang Chủ</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+        }
+        .nav-link {
+            color: #000; /* Màu đen mặc định */
+            transition: color 0.3s ease, border-bottom 0.3s ease; /* Thêm hiệu ứng cho màu chữ và gạch chân */
+            font-weight: bold; /* Chữ đậm mặc định */
+            border-bottom: none; /* Không có gạch chân mặc định */
+        }
+
+        .nav-link:hover {
+            color: #000; /* Giữ màu đen khi hover */
+            border-bottom: 2px solid #ff9800; /* Thêm gạch chân khi hover */
+        }
+
+        .nav-item.active .nav-link,
+        .nav-link.active {
+            color: #ff9800; /* Màu khi được chọn */
+            font-weight: bold; /* Chữ đậm khi tab được chọn */
+            border-bottom: 2px solid #ff9800; /* Tạo gạch chân khi tab được chọn */
+        }
+
+        /* Loại bỏ gạch chân cho các tab không phải Home */
+        .nav-item:not(.active) .nav-link {
+            border-bottom: none;
+        }
+
+        /* Header Section */
+        header {
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .social-links a {
+            color: #333;
+            font-size: 1.2em;
+        }
+        .social-links a:hover {
+            color: #f15a22;
+        }
+        .user-options a {
+            color: #333;
+            font-size: 1.1em;
+        }
+        .user-options a:hover {
+            color: #f15a22;
+        }
+        .user-icons .badge {
+            background-color: #f15a22;
+        }
+        /* Carousel */
+        .carousel-item img {
+            width: 100%;
+            height: 500px; /* Cập nhật chiều cao cố định cho hình ảnh */
+            object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
+        }
+
+        /*form tra cưu đơn hàng*/
+        .form {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-label {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .form-control {
+            height: 50px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #ff9800;
+            box-shadow: 0 0 5px rgba(255, 152, 0, 0.5);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-danger {
+            background-color: #f15a22;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background-color: #d1481a;
+        }
+
+        .form-message {
+            color: #ff0000;
+            font-size: 14px;
+        }
+
+        .text-contact {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .form {
+                padding: 20px;
+            }
+        }
+        /* Footer */
+        .footer__heading {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .footer__list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer__item {
+            margin-bottom: 8px;
+        }
+
+        .footer__item--link {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer__item--link:hover {
+            color: #ff9800;
+        }
+
+        .social-icon {
+            font-size: 18px;
+            margin-right: 10px;
+            color: #fff;
+            transition: color 0.3s ease;
+        }
+
+        .social-icon:hover {
+            color: #ff9800;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header Section -->
+<header class="bg-white border-bottom py-3">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="social-links">
+            <a href="#" class="text-dark mr-3"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="text-dark mr-3"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-dark mr-3"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="text-dark"><i class="fab fa-twitter"></i></a>
+        </div>
+        <div class="user-options">
+            <a href="#" class="text-dark mr-3">Đăng nhập</a>
+            <a href="#" class="text-dark">Đăng kí</a>
+            <div class="user-icons d-inline-block ml-3">
+                <a href="#" class="text-dark"><i class="fa fa-shopping-cart"></i><span class="badge badge-danger">3</span></a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container d-flex align-items-center justify-content-between py-3">
+        <!-- Logo -->
+        <div class="d-flex align-items-center">
+            <img th:src="@{/images/logo1r.jpg}" alt="Logo" width="80" height="80" style="border-radius: 50%; border: 2px solid #fff; margin-right: 20px;">
+            <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+
+        <!-- Navbar Links -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/home}">TRANG CHỦ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/product-use">SẢN PHẨM</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " th:href="@{/gioi-thieu}">GIỚI THIỆU</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/tra-cuu}">TRA CỨU ĐƠN HÀNG</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Search Form -->
+        <form class="d-flex ms-3">
+            <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+            <button class="btn btn-outline-dark" type="submit"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
+</nav>
+
+<!-- Content Section -->
+<div class="page-login">
+    <h1 class="title-heading" style="text-align: center">Tra cứu đơn hàng</h1>
+
+    <form action="" method="POST" class="form" id="form-1">
+        <div class="form-group">
+            <label for="invoice-id" class="form-label">Mã hóa đơn</label>
+            <input id="invoice-id" name="invoice-id" type="text" placeholder="VD: #123456" class="form-control">
+            <span class="form-message"></span>
+        </div>
+        <div class="form-group">
+            <label for="phone" class="form-label">Số điện thoại</label>
+            <input id="phone" pattern="[0-9]{10}" name="phone" type="tel" placeholder="0912*******" class="form-control">
+            <span class="form-message"></span>
+        </div>
+        <div class="form-group d-flex justify-content-center mt-4">
+            <button class="btn btn-danger btn-lg px-4 py-2">Tra cứu</button>
+        </div>
+    </form>
+</div>
+
+<!-- Footer Section -->
+<footer style="background-color: #000; color: #fff; padding: 40px 0; margin-top: 30px" >
+    <footer style="background-color: #000; color: #fff; padding: 40px 0;">
+        <div class="container">
+            <div class="row">
+                <!-- Logo và Thông tin liên hệ -->
+                <div class="col-sm-12 col-md-6 col-lg-3 mb-4 text-center">
+                    <img th:src="@{/images/logo1r.jpg}" alt="Logo" width="80" height="80"
+                         style="border-radius: 50%; border: 2px solid #fff; margin-bottom: 20px;">
+                    <ul class="footer__list" style="list-style: none; padding: 0;">
+                        <li class="footer__item"><i class="fas fa-map-marker-alt"></i> Hà Nội, Viet Nam</li>
+                        <li class="footer__item"><i class="fas fa-phone-alt"></i> <a href="tel:0123456789" style="color: #fff;">0123456789</a></li>
+                        <li class="footer__item"><i class="fas fa-envelope"></i> <a href="mailto:abc@gmail.com" style="color: #fff;">abc@gmail.com</a></li>
+                        <li>
+                            <a href="#" class="social-icon"><i class="fab fa-facebook-f" style="margin-right: 10px;"></i></a>
+                            <a href="#" class="social-icon" style="color: #e1306c;"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-icon" style="color: #ff0000;"><i class="fab fa-youtube"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-twitter" style="color: #00acee;"></i></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Thông tin của chúng tôi -->
+                <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+                    <h6 class="footer__heading">Thông tin của chúng tôi</h6>
+                    <ul class="footer__list">
+                        <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 1:   13 P. Trịnh Văn Bô, Xuân Phương, Nam Từ Liêm, Hà Nội, Việt Nam</a></li>
+                        <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 2: 583 Vũ Tông Phan, Thanh Xuân , Hà Nội, Việt Nam</a></li>
+
+                    </ul>
+                </div>
+
+                <!-- Chính sách -->
+                <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+                    <h6 class="footer__heading">Chính sách</h6>
+                    <ul class="footer__list">
+                        <li class="footer__item"><a href="#" class="footer__item--link">Chính sách bảo hành</a></li>
+                        <li class="footer__item"><a href="#" class="footer__item--link">Chính sách đổi trả</a></li>
+                        <li class="footer__item"><a href="#" class="footer__item--link">Chính sách thanh toán</a></li>
+                        <li class="footer__item"><a href="#" class="footer__item--link">Chính sách giao nhận hàng</a></li>
+                        <li class="footer__item"><a href="#" class="footer__item--link">Chính sách bảo mật</a></li>
+                    </ul>
+                </div>
+
+                <!-- Hỗ trợ chung -->
+                <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+                    <h6 class="footer__heading">Hỗ trợ chung</h6>
+                    <ul class="footer__list">
+                        <li class="footer__item"><a href="#" class="footer__item--link">Trang chủ</a></li>
+                        <li class="footer__item"><a href="user/intro.html" class="footer__item--link">Giới thiệu</a></li>
+                        <li class="footer__item"><a href="./Product.html" class="footer__item--link">Sản phẩm</a></li>
+                        <li class="footer__item"><a href="user/contact.html" class="footer__item--link">Liên hệ</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dòng cuối Footer -->
+        <div class="text-center" style="padding-top: 20px; border-top: 1px solid #333; margin-top: 20px;">
+            <p>&copy; 2024 NICE STORE. All rights reserved.</p>
+            <a href="#" style="text-decoration: none; color: #fff; margin-right: 10px;">Privacy Policy</a> |
+            <a href="#" style="text-decoration: none; color: #fff; margin-left: 10px;">Terms of Service</a>
+        </div>
+    </footer>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

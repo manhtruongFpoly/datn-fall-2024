@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -135,6 +136,7 @@ public class SanPhamCTService {
 
         return new SanPhamCTResponse(
                 sanPhamChiTiet.getId(),
+                sanPhamChiTiet.getSanPham().getId(),
                 sanPhamChiTiet.getMaSpct(),
                 sanPhamChiTiet.getSanPham().getTenSP(),
                 sanPhamChiTiet.getMauSac().getTenMauSac(),
@@ -211,6 +213,82 @@ public class SanPhamCTService {
     public Optional<SanPhamChiTiet> getSanPhamChiTietById(Integer id) {
         return sanPhamChiTietRepository.findById(id);
     }
+
+
+    private SanPhamCTResponse convertToResponse(SanPhamChiTiet sanPhamChiTiet) {
+        String imageUrl = (sanPhamChiTiet.getHinhAnhs() != null && !sanPhamChiTiet.getHinhAnhs().isEmpty())
+                ? sanPhamChiTiet.getHinhAnhs().get(0).getUrl()
+                : null;
+
+        return new SanPhamCTResponse(
+                sanPhamChiTiet.getId(),
+                sanPhamChiTiet.getSanPham().getId(),
+                sanPhamChiTiet.getMaSpct(),
+                sanPhamChiTiet.getSanPham().getTenSP(),
+                sanPhamChiTiet.getMauSac().getTenMauSac(),
+                sanPhamChiTiet.getLoaiGiay().getTenLoaiGiay(),
+                sanPhamChiTiet.getKichCo().getSize(),
+                sanPhamChiTiet.getChatLieu().getTenChatLieu(),
+                sanPhamChiTiet.getDeGiay().getTenDeGiay(),
+                sanPhamChiTiet.getThuongHieu().getTenThuongHieu(),
+                sanPhamChiTiet.getGiaBan(),
+                sanPhamChiTiet.getSoLuong(),
+                sanPhamChiTiet.getMoTa(),
+                sanPhamChiTiet.getNgayTao(),
+                sanPhamChiTiet.getNgaySua(),
+                sanPhamChiTiet.getTrangThai(),
+                imageUrl
+        );
+    }
+
+    // Lấy tất cả SanPhamCTResponse từ danh sách SanPhamChiTiet
+    public List<SanPhamCTResponse> getAllSanPhamCTResponses() {
+        List<SanPhamChiTiet> sanPhamChiTietList = sanPhamCTRepository.findAll(); // Lấy danh sách dữ liệu từ repository
+        List<SanPhamCTResponse> responseList = new ArrayList<>();
+
+        for (SanPhamChiTiet sanPhamChiTiet : sanPhamChiTietList) {
+            responseList.add(convertToResponse(sanPhamChiTiet)); // Chuyển từng SanPhamChiTiet sang SanPhamCTResponse
+        }
+
+        return responseList;
+    }
+    public SanPhamCTResponse getSanPhamCTById1(Integer productId) {
+        // Lấy chi tiết sản phẩm từ cơ sở dữ liệu
+        Optional<SanPhamChiTiet> product = sanPhamCTRepository.findById(productId);
+
+        if (product.isPresent()) {
+            // Chuyển đổi từ SanPhamChiTiet sang SanPhamCTResponse
+            return convertToResponse(product.get());
+        }
+
+        // Nếu không tìm thấy sản phẩm, trả về null hoặc xử lý tùy chỉnh
+        return null;
+    }
+
+    public Optional<SanPhamChiTiet> findByMauSacAndKichCo(Integer mauSacId, Integer kichCoId, Integer idSp) {
+        return sanPhamChiTietRepository.findByMauSacAndKichCo(mauSacId, kichCoId, idSp);
+    }
+
+
+    public Integer getQuantityByAttributes(Integer productId, Integer colorId, Integer sizeId, BigDecimal giaBan) {
+        return sanPhamCTRepository.findQuantityByProductAndAttributes(productId, colorId, sizeId, giaBan);
+    }
+
+    public Integer getSanPhamCTIdByAttributes(Integer productId, Integer colorId, Integer sizeId, BigDecimal giaBan) {
+        // Lấy sản phẩm chi tiết dựa trên các thuộc tính
+        Optional<SanPhamChiTiet> sanPhamChiTietOptional = sanPhamCTRepository.findTopByProductAndAttributesNative(productId, colorId, sizeId, giaBan);
+
+        if (sanPhamChiTietOptional.isPresent()) {
+            // Trả về ID của sản phẩm chi tiết nếu tìm thấy
+            return sanPhamChiTietOptional.get().getId();
+        } else {
+            // Trả về null nếu không tìm thấy sản phẩm chi tiết
+            return null;
+        }
+    }
+
+
+
 }
 
 

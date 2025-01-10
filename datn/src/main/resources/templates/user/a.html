@@ -1,0 +1,459 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang Chủ</title>
+    <!-- CSS links -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            color: #000;
+            transition: color 0.3s ease, border-bottom 0.3s ease;
+            font-weight: bold;
+            border-bottom: none;
+        }
+
+        .nav-link:hover {
+            color: #000;
+            border-bottom: 2px solid #ff9800;
+        }
+
+        .nav-item.active .nav-link {
+            color: #ff9800;
+            font-weight: bold;
+            border-bottom: 2px solid #ff9800;
+        }
+
+        /* Product Card */
+        .product-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-image-wrapper {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hover-icons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: none;
+        }
+
+        .product-card:hover .hover-icons {
+            display: block;
+        }
+
+        .hover-icons a {
+            margin: 0 5px;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .hover-icons a:hover {
+            background-color: #ff9800;
+        }
+
+        .product-info {
+            padding: 15px;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            color: #ff9800;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        /* Filter Form */
+        .filter-group {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .filter-group h4 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .filter-checkbox {
+            margin-right: 10px;
+        }
+
+        .filter-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .filter-label:hover {
+            color: #ff9800;
+        }
+
+        /* Pagination */
+        .pagination {
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .pagination .btn {
+            margin: 0 5px;
+            min-width: 40px;
+        }
+
+        .product-count {
+            text-align: center;
+            margin: 20px 0;
+            color: #666;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .filter-group {
+                margin-bottom: 15px;
+            }
+
+            .product-card {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="bg-white border-bottom py-3">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="social-links">
+            <a href="#" class="text-dark mr-3"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="text-dark mr-3"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-dark mr-3"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="text-dark"><i class="fab fa-twitter"></i></a>
+        </div>
+        <div class="user-options">
+            <a href="#" class="text-dark mr-3">Đăng nhập</a>
+            <a href="#" class="text-dark">Đăng kí</a>
+            <div class="user-icons d-inline-block ml-3">
+                <a href="#" class="text-dark"><i class="fa fa-shopping-cart"></i></a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <img th:src="@{/images/logo1r.jpg}" alt="Logo" width="80" height="80"
+                 style="border-radius: 50%; border: 2px solid #fff;">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">TRANG CHỦ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">SẢN PHẨM</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">GIỚI THIỆU</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">TRA CỨU ĐƠN HÀNG</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0 ml-3">
+                <input class="form-control mr-sm-2" type="search" placeholder="Tìm kiếm...">
+                <button class="btn btn-outline-dark" type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Danh Sách Sản Phẩm</h2>
+
+    <div class="row">
+        <!-- Filter Sidebar -->
+        <div class="col-md-3">
+            <form id="filterForm">
+                <!-- Thương hiệu -->
+                <div class="filter-group">
+                    <h4>Thương hiệu</h4>
+                    <div th:each="thuongHieu : ${listThuongHieu}">
+                        <label class="filter-label">
+                            <input type="checkbox" class="filter-checkbox" name="thuongHieu"
+                                   th:value="${thuongHieu.tenThuongHieu}">
+                            <span th:text="${thuongHieu.tenThuongHieu}"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Kích cỡ -->
+                <div class="filter-group">
+                    <h4>Kích cỡ</h4>
+                    <div th:each="kichCo : ${listKichCo}">
+                        <label class="filter-label">
+                            <input type="checkbox" class="filter-checkbox" name="kichCo"
+                                   th:value="${kichCo.size}">
+                            <span th:text="${kichCo.size}"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Màu sắc -->
+                <div class="filter-group">
+                    <h4>Màu sắc</h4>
+                    <div th:each="mauSac : ${listMauSac}">
+                        <label class="filter-label">
+                            <input type="checkbox" class="filter-checkbox" name="mauSac"
+                                   th:value="${mauSac.tenMauSac}">
+                            <span th:text="${mauSac.tenMauSac}"></span>
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="col-md-9">
+            <div id="productContainer" class="row">
+                <!-- Product Template -->
+                <div class="col-12 col-md-4 mb-4" th:each="sp : ${listSanPhamCT}"
+                     th:data-thuong-hieu="${sp.thuongHieu}"
+                     th:data-size="${sp.kichCo}"
+                     th:data-color="${sp.mauSac}"
+                     th:data-price="${sp.giaBan}">
+                    <div class="product-card">
+                        <div class="product-image-wrapper">
+                            <div th:each="hinhAnh : ${sp.hinhAnhs}">
+                                <img th:src="@{/desktop-images/{url}(url=${hinhAnh.url})}"
+                                     alt="product-image" class="product-image">
+                            </div>
+                            <div class="hover-icons">
+                                <a href="#" class="add-to-cart-btn">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </a>
+                                <a href="#" class="view-details-btn">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name" th:text="${sp.sanPham.tenSP}"></div>
+                            <div class="product-price" th:text="${sp.giaBan} + ' VNĐ'"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pagination mt-3 d-flex justify-content-center"></div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white mt-5 py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 text-center">
+                <img th:src="@{/images/logo1r.jpg}" alt="Logo" width="80" height="80"
+                     style="border-radius: 50%; border: 2px solid #fff; margin-bottom: 20px;">
+                <div>
+                    <a href="#" class="text-white mr-3"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-white mr-3"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-white mr-3"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <h5>Thông tin liên hệ</h5>
+                <ul class="list-unstyled">
+                    <li>Địa chỉ: Hà Nội, Việt Nam</li>
+                    <li>Email: contact@example.com</li>
+                    <li>Phone: (084) 123 456 789</li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h5>Chính sách</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-white">Chính sách bảo hành</a></li>
+                    <li><a href="#" class="text-white">Chính sách đổi trả</a></li>
+                    <li><a href="#" class="text-white">Chính sách vận chuyển</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h5>Hỗ trợ</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-white">FAQs</a></li>
+                    <li><a href="#" class="text-white">Hướng dẫn mua hàng</a></li>
+                    <li><a href="#" class="text-white">Tra cứu đơn hàng</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- JavaScript -->
+<script>
+    class ProductManager {
+        constructor() {
+            this.filterForm = document.getElementById('filterForm');
+            this.productContainer = document.getElementById('productContainer');
+            this.paginationContainer = document.querySelector('.pagination');
+            this.productsPerPage = 9;
+            this.currentPage = 1;
+            this.products = []; // Lưu danh sách sản phẩm
+            this.filteredProducts = []; // Lưu sản phẩm đã lọc
+            this.init();
+        }
+
+        init() {
+            // Khởi tạo sản phẩm và thêm sự kiện lọc
+            this.products = Array.from(this.productContainer.querySelectorAll('.col-12.col-md-4'));
+            this.setupEventListeners();
+            this.applyFilters(); // Hiển thị ban đầu
+        }
+
+        setupEventListeners() {
+            this.filterForm.addEventListener('change', () => {
+                this.currentPage = 1;
+                this.applyFilters();
+            });
+        }
+
+        applyFilters() {
+            const filters = this.getSelectedFilters();
+
+            // Lọc sản phẩm theo điều kiện
+            this.filteredProducts = this.products.filter(product => {
+                const productData = this.getProductData(product);
+                return this.checkProductFilters(productData, filters);
+            });
+
+            this.updatePagination();
+            this.displayProducts();
+        }
+
+        getSelectedFilters() {
+            return {
+                thuongHieu: Array.from(this.filterForm.querySelectorAll('input[name="thuongHieu"]:checked')).map(input => input.value),
+                kichCo: Array.from(this.filterForm.querySelectorAll('input[name="kichCo"]:checked')).map(input => input.value),
+                mauSac: Array.from(this.filterForm.querySelectorAll('input[name="mauSac"]:checked')).map(input => input.value),
+            };
+        }
+
+        getProductData(product) {
+            return {
+                thuongHieu: product.dataset.thuongHieu,
+                kichCo: product.dataset.size,
+                mauSac: product.dataset.color,
+            };
+        }
+
+        checkProductFilters(productData, selectedFilters) {
+            const { thuongHieu, kichCo, mauSac } = selectedFilters;
+
+            return (
+                (thuongHieu.length === 0 || thuongHieu.includes(productData.thuongHieu)) &&
+                (kichCo.length === 0 || kichCo.includes(productData.kichCo)) &&
+                (mauSac.length === 0 || mauSac.includes(productData.mauSac))
+            );
+        }
+
+        displayProducts() {
+            const start = (this.currentPage - 1) * this.productsPerPage;
+            const end = this.currentPage * this.productsPerPage;
+
+            // Hiển thị sản phẩm trong phạm vi trang hiện tại
+            this.products.forEach((product, index) => {
+                product.style.display = this.filteredProducts.includes(product) && index >= start && index < end ? 'block' : 'none';
+            });
+        }
+
+        updatePagination() {
+            const totalProducts = this.filteredProducts.length;
+            const totalPages = Math.ceil(totalProducts / this.productsPerPage);
+
+            // Xóa nút phân trang cũ
+            this.paginationContainer.innerHTML = '';
+
+            // Thêm nút phân trang mới
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.className = `btn btn-outline-dark ${i === this.currentPage ? 'active' : ''}`;
+                pageButton.innerText = i;
+                pageButton.addEventListener('click', () => {
+                    this.currentPage = i;
+                    this.displayProducts();
+                });
+
+                this.paginationContainer.appendChild(pageButton);
+            }
+        }
+    }
+
+    // Khởi tạo ProductManager khi DOM đã tải xong
+    document.addEventListener('DOMContentLoaded', () => {
+        new ProductManager();
+    });
+
+</script>
+
+<!-- Include Bootstrap and other JS libraries -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

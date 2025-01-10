@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang Chủ</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+    }
+    .nav-link {
+      color: #000; /* Màu đen mặc định */
+      transition: color 0.3s ease, border-bottom 0.3s ease; /* Thêm hiệu ứng cho màu chữ và gạch chân */
+      font-weight: bold; /* Chữ đậm mặc định */
+      border-bottom: none; /* Không có gạch chân mặc định */
+    }
+
+    .nav-link:hover {
+      color: #000; /* Giữ màu đen khi hover */
+      border-bottom: 2px solid #ff9800; /* Thêm gạch chân khi hover */
+    }
+
+    .nav-item.active .nav-link,
+    .nav-link.active {
+      color: #ff9800; /* Màu khi được chọn */
+      font-weight: bold; /* Chữ đậm khi tab được chọn */
+      border-bottom: 2px solid #ff9800; /* Tạo gạch chân khi tab được chọn */
+    }
+
+    /* Loại bỏ gạch chân cho các tab không phải Home */
+    .nav-item:not(.active) .nav-link {
+      border-bottom: none;
+    }
+
+
+
+    /* Header Section */
+    header {
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .social-links a {
+      color: #333;
+      font-size: 1.2em;
+    }
+    .social-links a:hover {
+      color: #f15a22;
+    }
+    .user-options a {
+      color: #333;
+      font-size: 1.1em;
+    }
+    .user-options a:hover {
+      color: #f15a22;
+    }
+    .user-icons .badge {
+      background-color: #f15a22;
+    }
+    /* Carousel */
+    .carousel-item img {
+      width: 100%;
+      height: 500px; /* Cập nhật chiều cao cố định cho hình ảnh */
+      object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
+    }
+
+
+
+
+
+    /*footer*/
+    .footer__heading {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .footer__list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer__item {
+      margin-bottom: 8px;
+    }
+
+    .footer__item--link {
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer__item--link:hover {
+      color: #ff9800;
+    }
+
+    .social-icon {
+      font-size: 18px;
+      margin-right: 10px;
+      color: #fff;
+      transition: color 0.3s ease;
+    }
+
+    .social-icon:hover {
+      color: #ff9800;
+    }
+
+  </style>
+</head>
+<body>
+<!-- Header Section -->
+<header class="bg-white border-bottom py-3">
+  <div class="container d-flex justify-content-between align-items-center">
+    <div class="social-links">
+      <a href="#" class="text-dark mr-3"><i class="fab fa-facebook"></i></a>
+      <a href="#" class="text-dark mr-3"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="text-dark mr-3"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="text-dark"><i class="fab fa-twitter"></i></a>
+    </div>
+    <div class="user-options">
+      <a href="#" class="text-dark mr-3">Đăng nhập</a>
+      <a href="#" class="text-dark">Đăng kí</a>
+      <div class="user-icons d-inline-block ml-3">
+
+        <a href="#" class="text-dark"><i class="fa fa-shopping-cart"></i><span class="badge badge-danger">3</span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container d-flex align-items-center justify-content-between py-3">
+    <!-- Logo -->
+    <div class="d-flex align-items-center">
+      <img th:src="@{/images/logo1r.jpg}" alt="Logo" width="80" height="80"
+           style="border-radius: 50%; border: 2px solid #fff; margin-right: 20px;">
+
+      <!-- Toggler Button cho Mobile -->
+      <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+
+    <!-- Navbar Links -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link  " th:href="@{/home}">TRANG CHỦ</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/product-use">SẢN PHẨM</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"  active th:href="@{/gioi-thieu}">GIỚI THIỆU</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"th:href="@{/tra-cuu}">TRA CỨU ĐƠN HÀNG</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Search Form -->
+    <form class="d-flex ms-3">
+      <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+      <button class="btn btn-outline-dark" type="submit"><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+
+</nav>
+<h1 style="text-align: center">Giới Thiệu</h1>
+<div class="container">
+  <!-- Section Giới Thiệu -->
+  <section class="content">
+    <h2 class="section-title">Giới Thiệu Về Nice Store</h2>
+    <p><strong>Nice Store</strong> là một cửa hàng chuyên cung cấp các sản phẩm giày thời trang với chất lượng vượt trội và kiểu dáng hiện đại, phục vụ nhu cầu đa dạng của khách hàng. Chúng tôi luôn mang đến những sản phẩm giày đẹp mắt, bền bỉ, và thoải mái, phù hợp với xu hướng thời trang mới nhất trên thế giới.</p>
+    <p>Với mục tiêu mang đến sự hài lòng tuyệt đối cho khách hàng, <strong>Nice Store</strong> luôn chú trọng đến việc lựa chọn các sản phẩm giày có chất lượng cao từ những thương hiệu uy tín, với cam kết cung cấp giá cả hợp lý và dịch vụ tận tâm. Chúng tôi cung cấp các mẫu giày từ thể thao, giày công sở, giày casual, cho đến giày thời trang với nhiều kiểu dáng và màu sắc khác nhau, phù hợp cho cả nam và nữ.</p>
+    <p>Tại <strong>Nice Store</strong>, mỗi đôi giày đều được lựa chọn kỹ lưỡng, đảm bảo tính thẩm mỹ, sự thoải mái và độ bền cao. Chúng tôi luôn hướng tới việc mang lại những trải nghiệm mua sắm tuyệt vời cho khách hàng, từ khi chọn lựa sản phẩm đến lúc nhận hàng.</p>
+    <p>Đặc biệt, chúng tôi cung cấp dịch vụ tư vấn trực tuyến, giúp khách hàng chọn lựa những đôi giày phù hợp với phong cách cá nhân. Hãy đến với chúng tôi để cảm nhận sự khác biệt!</p>
+  </section>
+
+  <!-- Section Chính Sách -->
+  <section class="content">
+    <h2 class="section-title">Chính Sách Mua Hàng và Dịch Vụ</h2>
+    <p>Chúng tôi cam kết mang đến cho bạn những dịch vụ và chính sách mua sắm tốt nhất khi lựa chọn mua hàng tại <strong>Nice Store</strong>. Các chính sách này nhằm đảm bảo quyền lợi tối đa cho khách hàng, mang đến một trải nghiệm mua sắm dễ dàng, an tâm và tin cậy. Dưới đây là những chính sách mà chúng tôi áp dụng:</p>
+
+    <ul class="policy-list">
+      <li><span>Chính Sách Đổi Trả:</span> Tại <strong>Nice Store</strong>, chúng tôi hiểu rằng đôi khi khách hàng có thể thay đổi suy nghĩ về sản phẩm đã mua. Vì vậy, chúng tôi áp dụng chính sách đổi trả linh hoạt trong vòng <strong>7 ngày</strong> kể từ ngày nhận hàng. Điều kiện áp dụng: sản phẩm không bị hư hại, còn nguyên tem mác và hộp đựng. Nếu sản phẩm bị lỗi hoặc không như mô tả, khách hàng sẽ được hoàn lại toàn bộ số tiền hoặc đổi sản phẩm mới.</li>
+
+      <li><span>Chính Sách Bảo Hành:</span> Tất cả các sản phẩm giày tại <strong>Nice Store</strong> đều có chính sách bảo hành <strong>6 tháng</strong> đối với các lỗi về chất liệu và sản xuất. Tuy nhiên, bảo hành không áp dụng đối với các hư hỏng do người sử dụng, như rách, bẩn, hoặc hư hại do va đập. Chúng tôi luôn cố gắng đảm bảo chất lượng sản phẩm khi đến tay khách hàng.</li>
+
+      <li><span>Chính Sách Giao Hàng:</span> Chúng tôi cung cấp dịch vụ giao hàng nhanh chóng và tiện lợi với phí vận chuyển <strong>miễn phí</strong> cho đơn hàng trên <strong>500.000 VND</strong> trong khu vực nội thành. Đối với các đơn hàng ngoại thành, chúng tôi áp dụng mức phí vận chuyển hợp lý, và thời gian giao hàng sẽ trong khoảng từ <strong>2-5 ngày</strong> làm việc, tùy thuộc vào địa chỉ giao nhận. Chúng tôi cam kết giao hàng đúng hẹn và đảm bảo an toàn cho sản phẩm.</li>
+
+      <li><span>Chính Sách Thanh Toán:</span> Chúng tôi cung cấp nhiều hình thức thanh toán tiện lợi, bao gồm thanh toán khi nhận hàng (COD), chuyển khoản ngân hàng, và thanh toán qua các ví điện tử như MoMo, ZaloPay, và các thẻ tín dụng. Tất cả các giao dịch đều được bảo mật và an toàn, mang đến cho bạn sự an tâm tuyệt đối khi mua sắm tại <strong>Nice Store</strong>.</li>
+
+      <li><span>Chính Sách Khuyến Mãi:</span> Chúng tôi thường xuyên tổ chức các chương trình khuyến mãi hấp dẫn, giảm giá lên đến <strong>50%</strong> cho các sản phẩm giày mới và sản phẩm bán chạy. Hãy đăng ký nhận thông báo từ chúng tôi để không bỏ lỡ bất kỳ cơ hội mua sắm nào. Các chương trình ưu đãi sẽ được cập nhật thường xuyên trên website và các kênh truyền thông của cửa hàng.</li>
+    </ul>
+
+    <p>Với những chính sách mua sắm tuyệt vời, chúng tôi mong muốn đem đến cho khách hàng trải nghiệm mua sắm tuyệt vời, an tâm và tin cậy. Hãy đến <strong>Nice Store</strong> để chọn cho mình đôi giày hoàn hảo nhất!</p>
+
+
+  </section>
+</div>
+
+
+<footer style="background-color: #000; color: #fff; padding: 40px 0; margin-top: 30px">
+  <div class="container">
+    <div class="row">
+      <!-- Logo và Thông tin liên hệ -->
+      <div class="col-sm-12 col-md-6 col-lg-3 mb-4 text-center">
+        <img th:src="@{/images/logo1r.jpg}" alt="Logo" width="80" height="80"
+             style="border-radius: 50%; border: 2px solid #fff; margin-bottom: 20px;">
+        <ul class="footer__list" style="list-style: none; padding: 0;">
+          <li class="footer__item"><i class="fas fa-map-marker-alt"></i> Hà Nội, Viet Nam</li>
+          <li class="footer__item"><i class="fas fa-phone-alt"></i> <a href="tel:0123456789" style="color: #fff;">0123456789</a></li>
+          <li class="footer__item"><i class="fas fa-envelope"></i> <a href="mailto:abc@gmail.com" style="color: #fff;">abc@gmail.com</a></li>
+          <li>
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f" style="margin-right: 10px;"></i></a>
+            <a href="#" class="social-icon" style="color: #e1306c;"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon" style="color: #ff0000;"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter" style="color: #00acee;"></i></a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Thông tin của chúng tôi -->
+      <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+        <h6 class="footer__heading">Thông tin của chúng tôi</h6>
+        <ul class="footer__list">
+          <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 1:   13 P. Trịnh Văn Bô, Xuân Phương, Nam Từ Liêm, Hà Nội, Việt Nam</a></li>
+          <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 2: 583 Vũ Tông Phan, Thanh Xuân , Hà Nội, Việt Nam</a></li>
+
+        </ul>
+      </div>
+
+      <!-- Chính sách -->
+      <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+        <h6 class="footer__heading">Chính sách</h6>
+        <ul class="footer__list">
+          <li class="footer__item"><a href="#" class="footer__item--link">Chính sách bảo hành</a></li>
+          <li class="footer__item"><a href="#" class="footer__item--link">Chính sách đổi trả</a></li>
+          <li class="footer__item"><a href="#" class="footer__item--link">Chính sách thanh toán</a></li>
+          <li class="footer__item"><a href="#" class="footer__item--link">Chính sách giao nhận hàng</a></li>
+          <li class="footer__item"><a href="#" class="footer__item--link">Chính sách bảo mật</a></li>
+        </ul>
+      </div>
+
+      <!-- Hỗ trợ chung -->
+      <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+        <h6 class="footer__heading">Hỗ trợ chung</h6>
+        <ul class="footer__list">
+          <li class="footer__item"><a href="#" class="footer__item--link">Trang chủ</a></li>
+          <li class="footer__item"><a href="user/intro.html" class="footer__item--link">Giới thiệu</a></li>
+          <li class="footer__item"><a href="./Product.html" class="footer__item--link">Sản phẩm</a></li>
+          <li class="footer__item"><a href="user/contact.html" class="footer__item--link">Liên hệ</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dòng cuối Footer -->
+  <div class="text-center" style="padding-top: 20px; border-top: 1px solid #333; margin-top: 20px;">
+    <p>&copy; 2024 NICE STORE. All rights reserved.</p>
+    <a href="#" style="text-decoration: none; color: #fff; margin-right: 10px;">Privacy Policy</a> |
+    <a href="#" style="text-decoration: none; color: #fff; margin-left: 10px;">Terms of Service</a>
+  </div>
+</footer>
+
+
+
+<script>// Lấy tất cả các tab
+document.querySelectorAll('.nav-link').forEach(item => {
+  item.addEventListener('click', function() {
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.classList.remove('active'); // Loại bỏ lớp active khỏi tất cả các tab
+    });
+    this.classList.add('active'); // Thêm lớp active cho tab hiện tại
+  });
+});
+
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

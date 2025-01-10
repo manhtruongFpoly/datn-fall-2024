@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi Tiết Sản Phẩm</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        header {
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-detail {
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .product-image img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .color-option, .size-option {
+            display: inline-block;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .color-option button,
+        .size-option button {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #f5f5f5;
+        }
+
+        .color-option button.active,
+        .size-option button.active {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+
+        footer {
+            background-color: #f8f9fa;
+            padding: 40px 0;
+        }
+
+        .footer__heading {
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .footer__item--link {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .footer__item--link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="bg-white border-bottom py-3">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="social-links">
+            <a href="#" class="text-dark mr-3"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="text-dark mr-3"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-dark mr-3"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="text-dark"><i class="fab fa-twitter"></i></a>
+        </div>
+        <div class="user-options">
+            <a href="#" class="text-dark mr-3">Đăng nhập</a>
+            <a href="#" class="text-dark">Đăng kí</a>
+            <div class="user-icons d-inline-block ml-3">
+                <a href="/cart/view" class="text-dark">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span id="iconSoLuongGioHang" class="badge badge-danger"></span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container d-flex align-items-center justify-content-between py-3">
+        <div class="d-flex align-items-center">
+            <img th:src="@{/img/logo1r.jpg}" alt="Logo" width="80" height="80"
+                 style="border-radius: 50%; border: 2px solid #fff; margin-right: 20px;">
+            <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/home}">TRANG CHỦ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/product-use">SẢN PHẨM</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/gioi-thieu}">GIỚI THIỆU</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/tra-cuu}">TRA CỨU ĐƠN HÀNG</a>
+                </li>
+            </ul>
+        </div>
+
+        <form class="d-flex ms-3">
+            <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+            <button class="btn btn-outline-dark" type="submit"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
+</nav>
+
+<!-- Product Detail -->
+<div class="container mt-4">
+    <div class="product-detail">
+        <div class="row">
+            <!-- Hình ảnh sản phẩm -->
+            <div hidden> <h3 id="idSanPham" th:text="${sanPhamCT.idSanPham}"> ID SP</h3></div>
+            <div class="col-md-6">
+                <div class="product-image">
+                    <img th:if="${sanPhamCT.url != null}" th:src="@{/desktop-images/{url}(url=${sanPhamCT.url})}" alt="Product Image" class="img-fluid"/>
+                    <p th:if="${sanPhamCT.url == null}">Không có ảnh</p>
+                </div>
+
+            </div>
+            <!-- Thông tin sản phẩm -->
+            <div class="col-md-6">
+                <h2 th:text="${sanPhamCT.tenSP}">Tên sản phẩm</h2>
+                <p><strong>Thương hiệu:</strong>
+                    <span th:text="${sanPhamCT.tenThuongHieu}"
+                          th:attr="data-thuongHieu=${sanPhamCT.tenThuongHieu}">
+        Thương hiệu
+    </span>
+                </p>
+
+                <div class="product-size">
+                    <h4>Màu Sắc</h4>
+                    <div class="color-option" th:each="mauSac : ${listMauSac}">
+                        <button th:class="${mauSac.id == selectedColor ? 'active' : ''}"
+                                th:value="${mauSac.id}"
+                                th:text="${mauSac.tenMauSac}"
+                                th:attr="data-color=${mauSac.id}">
+                        </button>
+                    </div>
+
+                    <h4>Kích Thước</h4>
+                    <div class="size-option" th:each="kichCo : ${listKichCo}">
+                        <button th:class="${kichCo.id == selectedSize ? 'active' : ''}"
+                                th:value="${kichCo.id}"
+                                th:text="${kichCo.size}"
+                                th:attr="data-size=${kichCo.id}">
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hiển thị số lượng sản phẩm còn lại -->
+                <div id="available-quantity"
+                     th:text="${quantity != null ? 'Số Lượng Sản Phẩm: ' + quantity : 'Chọn màu sắc và kích cỡ'}">
+                    Số Lượng Sản Phẩm:
+                </div>
+
+
+                <p><strong>Giá bán:</strong> <span id="giaBan" th:text="${#numbers.formatDecimal(sanPhamCT.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span></p>
+
+
+                <!--                Lấy số lượng ở đây -->
+                <p><strong>Số lượng:</strong> <input type="number" min="1" value="1" class="form-control"
+                                                     id="quantityInput"
+                                                     style="width: 100px;"></p>
+                <p><strong>Mô tả:</strong> <span th:text="${sanPhamCT.moTa}">Mô tả</span></p>
+                <div class="d-flex">
+                    <button class="btn btn-primary">Mua ngay</button>
+                    <form id="add-to-cart-form" class="ml-2">
+                        <button type="submit" class="btn btn-outline-secondary">Thêm vào giỏ hàng</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-3 mb-4 text-center">
+                <img th:src="@{/images/logo1r.jpg}" alt="Logo" width="80" height="80"
+                     style="border-radius: 50%; border: 2px solid #fff; margin-bottom: 20px;">
+                <ul class="footer__list">
+                    <li class="footer__item"><i class="fas fa-map-marker-alt"></i> Hà Nội, Viet Nam</li>
+                    <li class="footer__item"><i class="fas fa-phone-alt"></i> <a href="tel:0123456789"
+                                                                                 class="footer__item--link">0123456789</a>
+                    </li>
+                    <li class="footer__item"><i class="fas fa-envelope"></i> <a href="mailto:abc@gmail.com"
+                                                                                class="footer__item--link">abc@gmail.com</a>
+                    </li>
+                    <li>
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+                <h6 class="footer__heading">Thông tin của chúng tôi</h6>
+                <ul class="footer__list">
+                    <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 1: 13 P. Trịnh Văn Bô, Xuân
+                        Phương, Nam Từ Liêm, Hà Nội, Việt Nam</a></li>
+                    <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 2: 583 Vũ Tông Phan, Thanh
+                        Xuân, Hà Nội, Việt Nam</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+                <h6 class="footer__heading">Chính sách</h6>
+                <ul class="footer__list">
+                    <li class="footer__item"><a href="#" class="footer__item--link">Chính sách bảo hành</a></li>
+                    <li class="footer__item"><a href="#" class="footer__item--link">Chính sách đổi trả</a></li>
+                    <li class="footer__item"><a href="#" class="footer__item--link">Chính sách thanh toán</a></li>
+                    <li class="footer__item"><a href="#" class="footer__item--link">Chính sách giao nhận hàng</a></li>
+                    <li class="footer__item"><a href="#" class="footer__item--link">Chính sách bảo mật</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+                <h6 class="footer__heading">Hỗ trợ chung</h6>
+                <ul class="footer__list">
+                    <li class="footer__item"><a href="#" class="footer__item--link">Trang chủ</a></li>
+                    <li class="footer__item"><a href="#" class="footer__item--link">Giới thiệu</a></li>
+                    <li class="footer__item"><a href="#" class="footer__item--link">Sản phẩm</a></li>
+                    <li class="footer__item"><a href="#" class="footer__item--link">Liên hệ</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="text-center" style="padding-top: 20px; border-top: 1px solid #333; margin-top: 20px;">
+        <p>&copy; 2024 NICE STORE. All rights reserved.</p>
+        <a href="#" class="footer__item--link">Privacy Policy</a> |
+        <a href="#" class="footer__item--link">Terms of Service</a>
+    </div>
+</footer>
+
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+<script>
+    // Mảng giỏ hàng
+    let cart = [];
+    const url = window.location.href; // Lấy URL hiện tại
+    const pathname = new URL(url).pathname; // Lấy phần đường dẫn
+    const idHienTai = pathname.split('/').filter(part => part !== '').pop(); // Lấy phần tử cuối cùng
+    console.log(idHienTai); // Kết quả: "1"
+
+
+    // Thêm hiệu ứng hover cho nút
+    document.querySelectorAll('.btn').forEach(button => {
+        button.addEventListener('mouseenter', () => {
+            button.style.transform = 'translateY(-2px)';
+            button.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+        });
+
+        button.addEventListener('mouseleave', () => {
+            button.style.transform = 'translateY(0)';
+            button.style.boxShadow = 'none';
+        });
+    });
+
+    // Xử lý click vào các nút màu sắc
+    document.querySelectorAll('.color-option button').forEach(button => {
+        button.addEventListener('click', () => {
+            // Bỏ chọn tất cả các nút màu sắc
+            document.querySelectorAll('.color-option button').forEach(btn => btn.classList.remove('active'));
+
+            // Chọn nút được click
+            button.classList.add('active');
+
+            // Log thông tin màu sắc đã chọn
+            console.log("Đã chọn màu sắc:", button.getAttribute('data-color'));
+
+            // Cập nhật số lượng còn lại
+            updateAvailableQuantity();
+        });
+    });
+
+    // Xử lý click vào các nút kích cỡ
+    document.querySelectorAll('.size-option button').forEach(button => {
+        button.addEventListener('click', () => {
+            // Bỏ chọn tất cả các nút kích cỡ
+            document.querySelectorAll('.size-option button').forEach(btn => btn.classList.remove('active'));
+
+            // Chọn nút được click
+            button.classList.add('active');
+
+            // Log thông tin kích cỡ đã chọn
+            console.log("Đã chọn kích cỡ:", button.getAttribute('data-size'));
+
+            // Cập nhật số lượng còn lại
+            updateAvailableQuantity();
+        });
+    });
+
+    let SanPhamCTId = null;
+    let soLuongTon = null;
+    // Cập nhật số lượng sản phẩm có sẵn dựa trên màu sắc và kích cỡ đã chọn
+    function updateAvailableQuantity() {
+        const selectedColorButton = document.querySelector('.color-option button.active');
+        const selectedSizeButton = document.querySelector('.size-option button.active');
+        var thuongHieuElement = document.querySelector('span[data-thuongHieu]');
+        var thuongHieuId = thuongHieuElement.getAttribute('data-thuongHieu');
+        const giaBan = document.getElementById("giaBan").innerText;
+        const giaBanFormatted = giaBan.replace(' VNĐ', '').replace(/,/g, '');
+        console.log(thuongHieuId );
+        if (selectedColorButton && selectedSizeButton) {
+            const colorId = selectedColorButton.value;
+            const sizeId = selectedSizeButton.value;
+            const url = `/product-detail-tra-sl-sp-va-id-spct/${idHienTai}?colorId=${colorId}&sizeId=${sizeId}&giaBan=${giaBanFormatted}`;
+
+            console.log("Gọi API với URL:", url);
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    // Log dữ liệu trả về từ API
+                    console.log("Dữ liệu trả về từ API:", data);
+                    const availableQuantity  = data.quantity || 0;
+                    SanPhamCTId = data.sanPhamCTId;
+                    soLuongTon = availableQuantity;
+                    document.getElementById('available-quantity').textContent =
+                        availableQuantity > 0 ? `Số lượng sản phẩm: ${availableQuantity + 'id Spct : ' + SanPhamCTId}` : 'Hết hàng';
+                    // Log số lượng còn lại
+                    console.log("Số lượng còn lại:", availableQuantity > 0 ? availableQuantity : 'Hết hàng');
+                })
+                .catch(error => console.error('Error:', error));
+        } else {
+            console.log("Chưa chọn màu sắc hoặc kích cỡ.");
+        }
+    }
+
+
+    //hiển thi so nhỏ ở icon giohang
+    function updateCartDisplay() {
+        const cartDisplay = document.getElementById('iconSoLuongGioHang');
+        const uniqueCartItems = cart.reduce((uniqueItems, item) => {
+            const foundItem = uniqueItems.find(
+                uniqueItem => uniqueItem.id === item.id && uniqueItem.color === item.color && uniqueItem.size === item.size
+            );
+            if (!foundItem) {
+                uniqueItems.push(item);
+            }
+            return uniqueItems;
+        }, []);
+        const uniqueCartItemCount = uniqueCartItems.length;
+        cartDisplay.textContent = uniqueCartItemCount > 0 ? uniqueCartItemCount : ''; // Hiển thị số sản phẩm nếu có, ngược lại để trống
+    }
+
+    //hàm này dùng để lưu thông tin cart chưa bắn về data base
+    document.getElementById('add-to-cart-form').addEventListener('submit', function (event) {
+        event.preventDefault(); // Ngăn hành vi mặc định (chuyển trang)
+        const idSPCT = SanPhamCTId; // ID sản phẩm chi tiết (SanPhamCTId)
+        const  soLuongTonFE = soLuongTon;
+        // Lấy số lượng từ input (input có id là 'quantityInput')
+        const quantityInput = document.getElementById('quantityInput');
+        let quantity = parseInt(quantityInput.value); // Chuyển giá trị nhập vào thành số
+
+        // Kiểm tra số lượng hợp lệ
+        if (isNaN(quantity) || quantity <= 0) {
+            alert("Vui lòng nhập một số lượng hợp lệ (> 0)!");
+            quantityInput.focus(); // Đưa con trỏ vào ô nhập
+            return; // Dừng việc xử lý nếu số lượng không hợp lệ
+        }
+        if (soLuongTonFE == "Hết hàng" || soLuongTonFE == 0) {
+            console.log("Sản phẩm này đã hết hàng.");
+            alert("Sản phẩm này đã hết hàng.")
+            return; // Dừng lại, không tiếp tục thực hiện các thao tác khác
+        }
+        const selectedColorButton = document.querySelector('.color-option button.active');
+        const selectedSizeButton = document.querySelector('.size-option button.active');
+        const color = selectedColorButton ? selectedColorButton.getAttribute('data-color') : null;
+        const size = selectedSizeButton ? selectedSizeButton.getAttribute('data-size') : null;
+
+        if (color && size) {
+            // Kiểm tra sản phẩm đã có trong giỏ hàng chưa (so sánh cả id, color, size)
+            let productInCart = cart.find(item => item.id === idSPCT && item.color === color && item.size === size);
+
+            if (productInCart) {
+                productInCart.quantity += quantity; // Tăng số lượng nếu sản phẩm đã có
+            } else {
+                cart.push({id: idSPCT, color, size, quantity}); // Thêm sản phẩm mới
+            }
+
+            updateCartDisplay();
+            console.log("Giỏ hàng hiện tại:", cart);
+
+            // Gửi giỏ hàng lên server
+            fetch('/api/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId: idSPCT, quantity: quantity }),
+            })
+                .then(response => response.json()) // Parse JSON từ server
+                .then(data => {
+                    if (data.status === "success") {
+                        alert(data.message); // Hiển thị thông báo thành công
+                    } else {
+                        alert(data.message); // Hiển thị lỗi từ server
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
+                });
+
+
+
+        } else {
+            console.error("Vui lòng chọn màu sắc và kích thước trước khi thêm vào giỏ hàng!");
+        }
+        updateCartDisplay();
+    });
+
+    //th:attr="data-size=${kichCo.id}"> lấy ra data-size nhưng k khai báo
+    //<div id="available-quantity"
+    // th:text="${quantity != null ? 'Số Lượng Sản Phẩm: ' + quantity : 'Chọn màu sắc và kích cỡ'}">
+    //   Số Lượng Sản Phẩm:
+    // </div>
+    //available-quantity dùng cá này cũng k khai báo id ở html
+
+    //----->> f12 ra xem
+    // 1: đã chọn được id kc , ms
+    // 2: đã hiển thị số nhỏ ở giohang và số lượng tồn của sản phẩm khi chọn 2 list
+    // 3: đã add được theo id , ms , kc vào List tạm Cart let cart = [];
+    // 4: logic này --> giờ chỉ cần bắn dữ liệu trọng cart (list Tạm) vào đb
+    // 5: lưu ý thêm sản phẩm vào giỏ hàng nhưng k chuyển trang thì listTam mới tồn tại
+    // 6: cần lưu vào 1 sesson để giữ khi ấn vào icon giỏ hàng để nó hiện ra
+
+    //7 : thanh toán (chọn voucher lưu vào bảng hóa đơn)
+    // tạo hd -- lưu spct vào hdct -- > update dịa chỉ lưu vào bảng hóa đơn
+    // thanh toán chuyển trạng thái
+
+
+</script>
+
+</html>

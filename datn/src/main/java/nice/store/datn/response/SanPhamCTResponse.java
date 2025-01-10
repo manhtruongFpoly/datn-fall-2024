@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class SanPhamCTResponse {
     private Integer id;
-
+    private Integer idSanPham;
     private String maSPCT;
     private String tenSP;
     private String tenMauSac;

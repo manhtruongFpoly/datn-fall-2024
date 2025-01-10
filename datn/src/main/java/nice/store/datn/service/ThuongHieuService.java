@@ -1,6 +1,7 @@
 package nice.store.datn.service;
 
 import nice.store.datn.entity.ChatLieu;
+import nice.store.datn.entity.KichCo;
 import nice.store.datn.entity.SanPham;
 import nice.store.datn.entity.ThuongHieu;
 import nice.store.datn.repository.ChatLieuRepository;
@@ -84,5 +85,18 @@ public class ThuongHieuService {
     public List<ThuongHieu> getOldestThuongHieu() {
         return THrepository.findOldestThuongHieu();
     }
+
+
+    public ThuongHieu getThuongHieuByProductId(Integer id) {
+        List<ThuongHieu> thuongHieuList = THrepository.findByProductId(id);
+        if (!thuongHieuList.isEmpty()) {
+            return thuongHieuList.get(0);
+        } else {
+            return null;
+        }
+    }
+
+
+
 
 }

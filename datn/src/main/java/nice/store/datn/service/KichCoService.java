@@ -15,7 +15,9 @@ public class KichCoService {
 
     @Autowired
     private KichCoRepository kichCoRepository;
-
+    public List<KichCo> getKichCoByProductId(Integer id) {
+        return kichCoRepository.findByProductId(id);
+    }
     // Method to generate a new MaKichCo (size code)
     private String generateMaKichCo() {
         String prefix = "KC";

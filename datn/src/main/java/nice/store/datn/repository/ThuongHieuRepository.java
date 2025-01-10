@@ -1,5 +1,6 @@
 package nice.store.datn.repository;
 
+import nice.store.datn.entity.KichCo;
 import nice.store.datn.entity.ThuongHieu;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +40,11 @@ public interface ThuongHieuRepository extends JpaRepository<ThuongHieu, Integer>
     // Lọc theo ngày tạo cũ nhất
     @Query(value = "SELECT * FROM thuong_hieu ORDER BY ngay_tao ASC", nativeQuery = true)
     List<ThuongHieu> findOldestThuongHieu();
+
+    @Query("SELECT th FROM ThuongHieu th " +
+            "JOIN SanPhamChiTiet spct ON spct.thuongHieu.id = th.id " +
+            "WHERE spct.sanPham.id = :productId")
+    List<ThuongHieu> findByProductId(@Param("productId") Integer productId);
 
 
 }

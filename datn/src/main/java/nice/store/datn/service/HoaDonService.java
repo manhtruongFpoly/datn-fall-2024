@@ -171,7 +171,7 @@ public class HoaDonService {
         dto.setLoaiHoaDon(hoaDon.getLoaiHoaDon());
         dto.setPhiShip(hoaDon.getPhiShip());
 
-        dto.setNhanVienTen(hoaDon.getNhanVien() != null ? hoaDon.getNhanVien().getTEN() : null);
+        dto.setNhanVienTen(hoaDon.getNhanVien() != null ? hoaDon.getNhanVien().getTen() : null);
         dto.setKhachHangTen(hoaDon.getKhachHang() != null ? hoaDon.getKhachHang().getTen() : null);
         dto.setPhieuGiamGiaMa(hoaDon.getPhieuGiamGia() != null ? hoaDon.getPhieuGiamGia().getMa() : null);
 

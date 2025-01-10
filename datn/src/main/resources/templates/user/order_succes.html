@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Giỏ hàng</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .cart-container {
+      padding: 40px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+    .cart-item {
+      border-bottom: 1px solid #eee;
+      padding: 20px 0;
+    }
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+    .cart-item img {
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    .cart-summary {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .cart-summary h4 {
+      margin-bottom: 20px;
+    }
+    .cart-summary .total {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .table th, .table td {
+      vertical-align: middle;
+    }
+    .quantity-input {
+      width: 60px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="bg-white border-bottom py-3">
+  <div class="container d-flex justify-content-between align-items-center">
+    <div class="social-links">
+      <a href="#" class="text-dark mr-3"><i class="fab fa-facebook"></i></a>
+      <a href="#" class="text-dark mr-3"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="text-dark mr-3"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="text-dark"><i class="fab fa-twitter"></i></a>
+    </div>
+    <div class="user-options">
+      <a href="#" class="text-dark mr-3">Đăng nhập</a>
+      <a href="#" class="text-dark">Đăng kí</a>
+      <div class="user-icons d-inline-block ml-3">
+        <a href="#" class="text-dark"><i class="fa fa-shopping-cart"></i><span class="badge badge-danger"></span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container d-flex align-items-center justify-content-between py-3">
+    <div class="d-flex align-items-center">
+      <img th:src="@{/img/logo1r.jpg}" alt="Logo" width="80" height="80" style="border-radius: 50%; border: 2px solid #fff; margin-right: 20px;">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link active" th:href="@{/home}">TRANG CHỦ</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/product-use}">SẢN PHẨM</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/gioi-thieu}">GIỚI THIỆU</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/tra-cuu}">TRA CỨU ĐƠN HÀNG</a>
+        </li>
+      </ul>
+    </div>
+
+    <form class="d-flex ms-3">
+      <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+      <button class="btn btn-outline-dark" type="submit"><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+</nav>
+
+<!-- Giỏ hàng -->
+<div class="container mt-4">
+  <div class="cart-container">
+    <h1>Giỏ hàng của bạn</h1>
+
+    <!-- Kiểm tra giỏ hàng trống -->
+    <div th:if="${cart == null or cart.gioHangCTs == null or cart.gioHangCTs.empty}">
+      <p>Giỏ hàng của bạn đang trống.</p>
+      <a th:href="@{/product-use}" class="btn btn-primary">Tiếp tục mua sắm</a>
+    </div>
+
+    <!-- Hiển thị sản phẩm trong giỏ hàng -->
+    <div th:if="${cart != null and cart.gioHangCTs != null and !cart.gioHangCTs.empty}">
+      <!-- Form cập nhật giỏ hàng -->
+      <form th:action="@{/cart/update}" method="post">
+        <!-- Bảng sản phẩm -->
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">Hình ảnh</th>
+            <th scope="col">Thông tin sản phẩm</th>
+            <th scope="col">Số lượng</th>
+            <th scope="col">Giá</th>
+            <th scope="col">Thành tiền</th>
+            <th scope="col">Hành động</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="item, stat : ${cart.gioHangCTs}">
+            <!-- Hình ảnh sản phẩm -->
+            <td>
+              <img th:src="@{/desktop-images/{url}(url=${item.sanPhamChiTiet.hinhAnhs[0].url})}"
+                   alt="Product Image" class="img-fluid" width="100" height="100" />
+            </td>
+            <!-- Thông tin sản phẩm (gộp tên, màu sắc, kích cỡ vào 1 ô) -->
+            <td>
+              <div>
+                <h5 th:text="${item.sanPhamChiTiet.sanPham.tenSP}">Tên sản phẩm</h5>
+                <p>
+                  <span>Màu sắc: </span>
+                  <span th:text="${item.sanPhamChiTiet.mauSac?.tenMauSac}">Màu sắc</span>
+                </p>
+                <p>
+                  <span>Kích cỡ: </span>
+                  <span th:text="${item.sanPhamChiTiet.kichCo?.size}">Kích cỡ</span>
+                </p>
+              </div>
+            </td>
+            <!-- Số lượng (có thể chỉnh sửa) -->
+            <td>
+              <input type="number" name="quantity"
+                     th:value="${item.soLuong}" class="form-control quantity-input" min="1" />
+              <input type="hidden" name="productId"
+                     th:value="${item.sanPhamChiTiet.id}" />
+            </td>
+            <!-- Giá -->
+            <td th:text="${#numbers.formatDecimal(item.sanPhamChiTiet.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Giá</td>
+            <!-- Thành tiền -->
+            <td th:text="${#numbers.formatDecimal(item.soLuong * item.sanPhamChiTiet.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Thành tiền</td>
+            <!-- Nút xóa sản phẩm -->
+            <td>
+              <form th:action="@{/cart/remove}" method="post">
+                <input type="hidden" name="productId" th:value="${item.sanPhamChiTiet.id}" />
+                <button type="submit" class="btn btn-danger">Xóa</button>
+              </form>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <!-- Tổng cộng và thanh toán -->
+        <div class="cart-summary">
+          <h4>Tổng cộng</h4>
+          <p class="total">Tổng tiền:
+            <span th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">Tổng tiền</span>
+          </p>
+          <button type="submit" class="btn btn-primary">Cập nhật giỏ hàng</button>
+          <a th:href="@{/product-use}" class="btn btn-info">Quay lại mua hàng</a>
+          <a th:href="@{/checkout}" class="btn btn-success">Thanh toán</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12 col-md-6 col-lg-3 mb-4 text-center">
+        <img th:src="@{/images/logo1r.jpg}" alt="Logo" width="80" height="80" style="border-radius: 50%; border: 2px solid #fff; margin-bottom: 20px;">
+        <ul class="footer__list">
+          <li class="footer__item"><i class="fas fa-map-marker-alt"></i> Hà Nội, Viet Nam</li>
+          <li class="footer__item"><i class="fas fa-phone-alt"></i> <a href="tel:0123456789" class="footer__item--link">0123456789</a></li>
+          <li class="footer__item"><i class="fas fa-envelope"></i> <a href="mailto:abc@gmail.com" class="footer__item--link">abc@gmail.com</a></li>
+          <li>
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+        <h6 class="footer__heading">Thông tin của chúng tôi</h6>
+        <ul class="footer__list">
+          <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 1: 13 P. Trịnh Văn Bô, Xuân Phương, Nam Từ Liêm, Hà Nội, Việt Nam</a></li>
+          <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 2: 583 Vũ Tông Phan, Thanh Xuân, Hà Nội, Việt Nam</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+        <h6 class="footer__heading">Chính sách</h6>
+        <ul class="footer__list">
+          <li class="footer__item"><a href="#" class="footer__item--link">Chính sách bảo hành</a></li>
+          <li class="footer__item"><a href="#" class="footer__item--link">Chính sách đổi trả</a></li>
+          <li class="footer__item"><a href="#" class="footer__item--link">Chính sách thanh toán</a></li>
+          <li class="footer__item"><a href="#" class="footer__item--link">Chính sách giao nhận hàng</a></li>
+          <li class="footer__item"><a href="#" class="footer__item--link">Chính sách bảo mật</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+        <h6 class="footer__heading">Hỗ trợ chung</h6>
+        <ul class="footer__list">
+          <li class="footer__item"><a href="#" class="footer__item--link">Trang chủ</a></li>
+          <li class="footer__item"><a href="#" class="footer__item--link">Giới thiệu</a></li>
+          <li class="footer__item"><a href="#" class="footer__item--link">Sản phẩm</a></li>
+          <li class="footer__item"><a href="#" class="footer__item--link">Liên hệ</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="text-center" style="padding-top: 20px; border-top: 1px solid #333; margin-top: 20px;">
+    <p>&copy; 2024 NICE STORE. All rights reserved.</p>
+    <a href="#" class="footer__item--link">Privacy Policy</a> |
+    <a href="#" class="footer__item--link">Terms of Service</a>
+  </div>
+</footer>
+
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

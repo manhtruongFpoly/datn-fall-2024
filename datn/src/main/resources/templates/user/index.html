@@ -270,8 +270,13 @@
       <a href="#" class="text-dark mr-3">Đăng nhập</a>
       <a href="#" class="text-dark">Đăng kí</a>
       <div class="user-icons d-inline-block ml-3">
-
-        <a href="#" class="text-dark"><i class="fa fa-shopping-cart"></i><span class="badge badge-danger"></span></a>
+        <div class="user-icons d-inline-block ml-3">
+          <a href="/cart/view" class="text-dark">
+            <i class="fa fa-shopping-cart"></i>
+            <!-- Hiển thị số lượng sản phẩm trong giỏ hàng -->
+            <span class="badge badge-danger" th:text="${cart != null ? cart.gioHangCTs.size() : 0}"></span>
+          </a>
+        </div>
       </div>
     </div>
   </div>

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,7 +33,9 @@ public class HinhAnhService {
         }
         return null;
     }
-
+    public List<HinhAnh> getAllImages() {
+        return hinhAnhRepository.findAll();
+    }
 
     @Transactional
     public void deleteHinhAnh(Integer id) {

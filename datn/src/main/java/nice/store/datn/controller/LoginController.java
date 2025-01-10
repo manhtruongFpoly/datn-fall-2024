@@ -11,10 +11,6 @@ public class LoginController {
     }
 
 
-    @RequestMapping("/home")
-    public String loginSubmit(){
-        return "index";
-    }
 
     @RequestMapping("PhieuGiamGia")
     public String PhieuGiamGia(){

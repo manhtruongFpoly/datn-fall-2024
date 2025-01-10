@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thông Tin Liên Hệ</title>
+  <!-- Các file CSS và JS của bạn ở đây -->
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <nav class="header_nav hidden-sm hidden-xs">
+    <div class="container">
+      <ul class="header_nav-list nav">
+        <li class="header_nav-list-item "><a href="index.html" th:class="${activePage == 'home' ? 'active' : ''}">Trang chủ</a></li>
+        <li class="header_nav-list-item"><a href="intro.html" th:class="${activePage == 'intro' ? 'active' : ''}">Giới thiệu</a></li>
+        <li class="header_nav-list-item has-mega">
+          <a href="./Product.html">Sản phẩm<i class="fas fa-angle-right" style="margin-left: 5px;" ></i></a>
+          <div class="mega-content" style="overflow-x: hidden;">
+            <div class="row">
+              <ul class="col-8 no-padding level0">
+                <li class="level1">
+                  <a class="hmega" href="./Product.html">Tất cả sản phẩm</a>
+                </li>
+                <li class="level1">
+                  <a class="hmega">Giày, dép</a>
+                  <ul class="level1">
+                    <li class="level2"><a href="./Product.html">Bóng đá</a></li>
+                    <li class="level2"><a href="./Product.html">Chạy</a></li>
+                    <li class="level2"><a href="./Product.html">Cầu lông</a></li>
+                    <li class="level2"><a href="./Product.html">Bóng rổ</a></li>
+                    <li class="level2"><a href="./Product.html">Quần vợt</a></li>
+                  </ul>
+                </li>
+                <li class="level1">
+                  <a class="hmega">Quần, áo</a>
+                  <ul class="level1">
+                    <li class="level2"><a href="./Product.html">Bóng đá</a></li>
+                    <li class="level2"><a href="./Product.html">Chạy</a></li>
+                    <li class="level2"><a href="./Product.html">Cầu lông</a></li>
+                    <li class="level2"><a href="./Product.html">Bóng rổ</a></li>
+                    <li class="level2"><a href="./Product.html">Quần vợt</a></li>
+                  </ul>
+                </li>
+                <li class="level1">
+                  <a class="hmega">Phụ kiện</a>
+                  <ul class="level1">
+                    <li class="level2"><a href="./Product.html">Bóng đá</a></li>
+                    <li class="level2"><a href="./Product.html">Chạy</a></li>
+                    <li class="level2"><a href="./Product.html">Cầu lông</a></li>
+                    <li class="level2"><a href="./Product.html">Bóng rổ</a></li>
+                    <li class="level2"><a href="./Product.html">Quần vợt</a></li>
+                    <li class="level2"><a href="./Product.html">Bơi lội</a></li>
+                    <li class="level2"><a href="./Product.html">Golf</a></li>
+                  </ul>
+                </li>
+              </ul>
+              <div class="col-4">
+                <a href="">
+                  <picture>
+                    <img src="https://media.giphy.com/media/mj7HcKFq23oobJMcOG/giphy.gif" alt="" width="80%">
+                  </picture>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="header_nav-list-item"><a href="news.html" th:class="${activePage == 'news' ? 'active' : ''}">Tin tức</a></li>
+        <li class="header_nav-list-item"><a href="contact.html" th:class="${activePage == 'contact' ? 'active' : ''}">Liên hệ</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<!-- Main Content -->
+<div class="content" style="margin-top: 30px">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 col-12">
+        <div class="info-shop">
+          <h3 class="title-heading">Thông tin liên hệ</h3>
+          <ul class="contact-info">
+            <li>P&T SHOP xin hân hạnh phục vụ quý khách với những bộ quần áo phục kiện rất nhiều khách
+              hàng tại Việt Nam ưa thích và chọn lựa.</li>
+            <li class="footer__item">
+              <p><i class="fas fa-search-location footer__item-icon"></i> Ho Chi Minh, Viet Nam</p>
+            </li>
+            <li class="footer__item">
+              <p><i class="fas fa-phone-square-alt footer__item-icon"></i> Phone: <a
+                      href="tel:0123456789">0123456789</a></p>
+            </li>
+            <li class="footer__item">
+              <p><i class="fas fa-envelope-square footer__item-icon"></i> Email: <a
+                      href="mailto:abc@gmail.com">abc@gmail.com</a></p>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-8 col-12">
+        <div class="page-login">
+          <h3 class="title-heading">Gửi thông tin</h3>
+          <span class="text-contact">Bạn hãy điền nội dung tin nhắn vào form dưới đây
+                        và gửi cho chúng tôi. Chúng tôi sẽ trả lời bạn sau khi nhận được.
+                    </span>
+          <form action="" method="POST" class="form" id="form-1">
+            <div class="form-group">
+              <label for="fullname" class="form-label">Tên đầy đủ</label>
+              <input id="fullname" name="fullname" type="text" placeholder="VD: Quốc Trung"
+                     class="form-control">
+              <span class="form-message"></span>
+            </div>
+            <div class="form-group">
+              <label for="email" class="form-label">Email</label>
+              <input id="email" name="email" type="text" placeholder="VD: email@domain.com"
+                     class="form-control">
+              <span class="form-message"></span>
+            </div>
+            <div class="form-group">
+              <label for="phone" class="form-label">Điện thoại</label>
+              <input id="phone" pattern="[0-9]{10}" name="phone" type="tel" placeholder="0912*******"
+                     class="form-control">
+              <span class="form-message"></span>
+            </div>
+            <label for="phone" class="form-label">Nội dung</label>
+            <div class="form-group">
+              <textarea name="noidung" id="noidung" cols="70" rows="10"></textarea>
+              <span class="form-message"></span>
+            </div>
+
+            <button class="form-submit btn-blocker" style="border-radius: unset;">Gửi tin nhắn<i
+                    class="fas fa-arrow-right" style="font-size: 16px;margin-left: 10px;"></i></button>
+          </form>
+        </div>
+      </div>
+      <div class="col-12">
+        <h3 style="text-align: center; margin-top:30px;border-top:1px solid #333;padding-top:10px">Bản đồ cửa hàng</h3>
+        <div class="mapbox">
+          <iframe th:src="@{https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.954111076736!2d106.7086283147493!3d10.81482379229551!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175289741790d39%3A0x95362685e34cec2f!2zQuG6v24gWGUgTWnhu4FuIMSQw7RuZyDEkGluaCBC4buZIEzEqW5o!5e0!3m2!1svi!2s!4v1637980933100!5m2!1svi!2s}"
+                  width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer" style="background-color: #E0E0E0;padding-top:50px;">
+  <div class="footer__content">
+    <div class="container">
+      <div class="footer__top row">
+        <div class="footer__top-col col-md-3">
+          <img src="https://s3-ap-southeast-1.amazonaws.com/assets.rosemary.vn/images/logo/footer_logo.svg" alt="Logo">
+        </div>
+        <div class="footer__top-col col-md-6">
+          <ul>
+            <li><a href="./about.html">Giới thiệu</a></li>
+            <li><a href="./terms.html">Điều khoản sử dụng</a></li>
+            <li><a href="./privacy.html">Chính sách bảo mật</a></li>
+            <li><a href="./shipping.html">Chính sách vận chuyển</a></li>
+            <li><a href="./returns.html">Chính sách đổi trả</a></li>
+          </ul>
+        </div>
+        <div class="footer__top-col col-md-3">
+          <div>
+            <h3 class="footer__contact-heading">Liên hệ</h3>
+            <p class="footer__contact-item"><i class="fas fa-phone-square-alt"></i> <a href="tel:0123456789">0123456789</a></p>
+            <p class="footer__contact-item"><i class="fas fa-envelope"></i> <a href="mailto:abc@gmail.com">abc@gmail.com</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

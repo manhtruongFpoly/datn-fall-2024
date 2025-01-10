@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
+
 import java.util.Optional;
 
 @Repository
@@ -16,9 +17,11 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
 
     List<SanPhamChiTiet> findBySanPhamId(Integer sanPhamId);
 
-    //    @Query("SELECT count(spct) FROM SanPhamChiTiet spct WHERE spct.sanPham.id = :productId")
-    @Query("SELECT SUM(spct.soLuong) FROM SanPhamChiTiet spct WHERE spct.sanPham.id = :productId")
-    Integer findTotalQuantityByProductId(@Param("productId") Integer productId);
+    @Query("SELECT s FROM SanPhamChiTiet s WHERE s.mauSac.id = :mauSacId AND s.kichCo.id = :kichCoId AND s.id = :idSp")
+    Optional<SanPhamChiTiet> findByMauSacAndKichCo(@Param("mauSacId") Integer mauSacId,
+                                                   @Param("kichCoId") Integer kichCoId,
+                                                   @Param("idSp") Integer idSp);
+
 
     @Query("SELECT s FROM SanPhamChiTiet s WHERE " +
             "s.mauSac.id = :mauSacId AND " +
@@ -27,7 +30,8 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
             "s.chatLieu.id = :chatLieuId AND " +
             "s.deGiay.id = :deGiayId AND " +
             "s.thuongHieu.id = :thuongHieuId AND " +
-            "s.sanPham.id = :idSp") // Thay maSpct bằng sanPham.id
+            "s.sanPham.id = :idSp")
+        // Thay maSpct bằng sanPham.id
     Optional<SanPhamChiTiet> findByMauSacIdAndTheLoaiIdAndKichCoIdAndChatLieuIdAndDeGiayIdAndThuongHieuIdAndSanPhamId(
             @Param("mauSacId") Integer mauSacId,
             @Param("theLoaiId") Integer theLoaiId,
@@ -38,6 +42,39 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
             @Param("idSp") Integer idSp  // Tham số mới idSp
     );
 
+    @Query("SELECT spct FROM SanPhamChiTiet spct WHERE spct.mauSac.id = :mauSacId AND spct.kichCo.id = :kichCoId")
+    Optional<SanPhamChiTiet> findByMauSacAndKichCo(@Param("mauSacId") Integer mauSacId, @Param("kichCoId") Integer kichCoId);
+
+    @Query("SELECT SUM(spct.soLuong) FROM SanPhamChiTiet spct WHERE spct.sanPham.id = :productId")
+    Integer findTotalQuantityByProductId(@Param("productId") Integer productId);
+
+
+    //cilnt
+    @Query(value = "SELECT TOP 1 spct.SO_LUONG " +
+            "FROM SAN_PHAM_CT spct " +
+            "WHERE spct.ID_SP = :productId " +
+            "AND spct.ID_MAU_SAC = :colorId " +
+            "AND spct.ID_KICH_CO = :sizeId " +
+            "AND spct.GIA_BAN = :giaBan " +
+            "ORDER BY spct.SO_LUONG DESC",
+            nativeQuery = true)
+    Integer findQuantityByProductAndAttributes(@Param("productId") Integer productId,
+                                               @Param("colorId") Integer colorId,
+                                               @Param("sizeId") Integer sizeId,
+                                               @Param("giaBan") BigDecimal giaBan);
+
+    @Query(value = "SELECT TOP 1 * " +
+            "FROM SAN_PHAM_CT spct " +
+            "WHERE spct.ID_SP = :productId " +
+            "AND spct.ID_MAU_SAC = :colorId " +
+            "AND spct.ID_KICH_CO = :sizeId " +
+            "AND spct.GIA_BAN = :giaBan " +
+            "ORDER BY spct.SO_LUONG DESC",
+            nativeQuery = true)
+    Optional<SanPhamChiTiet> findTopByProductAndAttributesNative(@Param("productId") Integer productId,
+                                                                 @Param("colorId") Integer colorId,
+                                                                 @Param("sizeId") Integer sizeId,
+                                                                 @Param("giaBan") BigDecimal giaBan);
 
 
 }

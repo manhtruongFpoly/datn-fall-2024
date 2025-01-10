@@ -72,12 +72,13 @@ public class KhachHang {
     @JsonIgnore
     private Role idRole;
 
-    @OneToMany(mappedBy = "idKH", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JsonManagedReference
-    private List<GioHang> idGH;
+//    @OneToMany(mappedBy = "idKH", cascade = CascadeType.ALL, orphanRemoval = true)
+//// @JsonManagedReference
+//    private List<GioHang> idGH;
+
 
     @OneToMany(mappedBy = "idKH", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-   // @JsonManagedReference
+    // @JsonManagedReference
     private List<DiaChi> diaChi = new ArrayList<>();
 
 
