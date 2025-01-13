@@ -101,8 +101,9 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container d-flex align-items-center justify-content-between py-3">
         <div class="d-flex align-items-center">
-            <img th:src="@{/img/logo1r.jpg}" alt="Logo" width="80" height="80"
-                 style="border-radius: 50%; border: 2px solid #fff; margin-right: 20px;">
+            <div class="sidebar-header">
+                <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo" style="text-align: center;width: 80%;height: 60px">
+            </div>
             <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -207,7 +208,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12 col-md-6 col-lg-3 mb-4 text-center">
-                <img th:src="@{/images/logo1r.jpg}" alt="Logo" width="80" height="80"
+                <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo" style="text-align: center;width: 80%;height: 60px">
                      style="border-radius: 50%; border: 2px solid #fff; margin-bottom: 20px;">
                 <ul class="footer__list">
                     <li class="footer__item"><i class="fas fa-map-marker-alt"></i> Hà Nội, Viet Nam</li>
@@ -323,9 +324,12 @@
         });
     });
 
+
+
+
     let SanPhamCTId = null;
     let soLuongTon = null;
-    // Cập nhật số lượng sản phẩm có sẵn dựa trên màu sắc và kích cỡ đã chọn
+  //  Cập nhật số lượng sản phẩm có sẵn dựa trên màu sắc và kích cỡ đã chọn
     function updateAvailableQuantity() {
         const selectedColorButton = document.querySelector('.color-option button.active');
         const selectedSizeButton = document.querySelector('.size-option button.active');
@@ -337,7 +341,7 @@
         if (selectedColorButton && selectedSizeButton) {
             const colorId = selectedColorButton.value;
             const sizeId = selectedSizeButton.value;
-            const url = `/product-detail-tra-sl-sp-va-id-spct/${idHienTai}?colorId=${colorId}&sizeId=${sizeId}&giaBan=${giaBanFormatted}`;
+            const url = `/product-detail-tra-sl-sp-va-id-spct/${idHienTai}?colorId=${colorId}&sizeId=${sizeId}`;
 
             console.log("Gọi API với URL:", url);
 
@@ -346,11 +350,15 @@
                 .then(data => {
                     // Log dữ liệu trả về từ API
                     console.log("Dữ liệu trả về từ API:", data);
-                    const availableQuantity  = data.quantity || 0;
+                    const availableQuantity  = data.sanPhamCT.soLuong || 0;
                     SanPhamCTId = data.sanPhamCTId;
                     soLuongTon = availableQuantity;
+                    const  giaBanUp = data.sanPhamCT.giaBan;
                     document.getElementById('available-quantity').textContent =
-                        availableQuantity > 0 ? `Số lượng sản phẩm: ${availableQuantity + 'id Spct : ' + SanPhamCTId}` : 'Hết hàng';
+                        availableQuantity > 0 ? `Số lượng sản phẩm: ${availableQuantity}` : 'Hết hàng';
+                    document.getElementById('giaBan').textContent = `${giaBanUp} VNĐ`;
+
+
                     // Log số lượng còn lại
                     console.log("Số lượng còn lại:", availableQuantity > 0 ? availableQuantity : 'Hết hàng');
                 })

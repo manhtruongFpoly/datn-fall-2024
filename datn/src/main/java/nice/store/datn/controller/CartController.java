@@ -61,27 +61,10 @@ public class CartController {
     }
 
     @PostMapping("/checkout")
-    public String checkout(@RequestParam("selectedProducts") List<Integer> selectedProducts, Model model) {
-        // Log các sản phẩm đã chọn
-        System.out.println("Sản phẩm đã chọn để thanh toán: ");
-        selectedProducts.forEach(productId -> System.out.println("Product ID: " + productId));
+    public String checkout(Model model) {
 
-//        // Giả sử bạn có một service để tìm sản phẩm theo ID
-//        List<SanPhamCTResponse> selectedItems = sanPhamCTService.getProductsByIds(selectedProducts);
-
-        // Thêm sản phẩm đã chọn vào mô hình và chuyển đến trang thanh toán
-    //    model.addAttribute("selectedItems", selectedItems);
-
-        return "checkout";  // Đây là view thanh toán của bạn
+        return "/user/ThanhToanChuaDangNhap"; // Trang thanh toán
     }
-
-
-
-
-
-
-
-
 
 
 

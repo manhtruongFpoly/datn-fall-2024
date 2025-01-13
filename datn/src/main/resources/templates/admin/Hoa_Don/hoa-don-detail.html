@@ -717,7 +717,7 @@
                             <td class="px-3 py-2">${index + 1}</td>
                             <td class="px-3 py-2">${item.tienDaThanhToan}</td>
                             <td class="px-3 py-2">${item.ngayTao}</td>
-                            <td class="px-3 py-2"> ${item.loaiThanhToan === true ? 'Đã Thanh Toán' : 'Chưa Thanh Toán'}</td>
+                            <td class="px-3 py-2"> ${item.loaiThanhToan === true ? 'Đã Thanh Toán' : 'Trả khi nhận hàng'}</td>
                             <td class="px-3 py-2">${item.tenThanhToan}</td>
                             <td class="px-3 py-2">${item.ghiChu || 'Không có ghi chú'}</td>
 
@@ -805,7 +805,8 @@
                     idSP.push({
                         id: item.idSPCT,
                         soLuong: item.soLuong,
-                        donGia: item.donGia // Lưu giá trị donGia
+                        donGia: item.donGia, // Lưu giá trị donGia
+                        phiShip: item.phiShip
                     });
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -831,16 +832,16 @@
                 });
 
                 // Tính tổng tiền từ mảng idSP
-                const totalAmount = idSP.reduce((sum, item) => sum + (item.donGia * item.soLuong), 0);
-
+                const totalAmount = idSP.reduce((sum, item) => sum + (item.donGia * item.soLuong  ), 0);
+                const phiShip = idSP[0].phiShip;
                 document.querySelector('#tongTienChiTiet').innerHTML = `
                 <div class="d-flex justify-between mb-3">
                     <span class="text-lg">Tổng tiền hàng:</span>
                     <span class="tongTienHang text-lg text-primary">${totalAmount} VNĐ</span>
                 </div>
                 <div class="d-flex justify-between mb-3">
-                    <span class="text-lg">Phí vận chuyển:</span>
-                    <span class="text-lg text-muted">0 VNĐ</span>
+                    <span class="text-lg">Phí vận chuyển:${phiShip} </span>
+                    <span class="text-lg text-muted"> VNĐ</span>
                 </div>
                 <div class="d-flex justify-between mb-3">
                     <span class="text-lg">Voucher:</span>
@@ -849,7 +850,7 @@
                 <hr class="my-2">
                 <div class="d-flex justify-between">
                     <span class="text-xl text-orange-700">Tổng tiền thanh toán:</span>
-                    <span class="tongThanhToan text-xl text-orange-700">${totalAmount - data[0].giaTriMax} VNĐ</span>
+                    <span class="tongThanhToan text-xl text-orange-700">${totalAmount - data[0].giaTriMax + phiShip} VNĐ</span>
                 </div>
             `;
                 console.log(idSP);

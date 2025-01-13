@@ -265,18 +265,29 @@ public class SanPhamCTService {
         return null;
     }
 
+    public SanPhamCTResponse getSanPhamCTById2(Integer productId, Integer colorId, Integer sizeId) {
+        Optional<SanPhamChiTiet> product = sanPhamCTRepository.findAllByAttributes(productId, colorId, sizeId);
+
+        if (product.isPresent()) {
+            // Chuyển đổi từ SanPhamChiTiet sang SanPhamCTResponse
+            return convertToResponse(product.get());
+        }
+
+        return null;
+    }
+
     public Optional<SanPhamChiTiet> findByMauSacAndKichCo(Integer mauSacId, Integer kichCoId, Integer idSp) {
         return sanPhamChiTietRepository.findByMauSacAndKichCo(mauSacId, kichCoId, idSp);
     }
 
 
-    public Integer getQuantityByAttributes(Integer productId, Integer colorId, Integer sizeId, BigDecimal giaBan) {
-        return sanPhamCTRepository.findQuantityByProductAndAttributes(productId, colorId, sizeId, giaBan);
+    public Integer getQuantityByAttributes(Integer productId, Integer colorId, Integer sizeId) {
+        return sanPhamCTRepository.findQuantityByProductAndAttributes(productId, colorId, sizeId);
     }
 
-    public Integer getSanPhamCTIdByAttributes(Integer productId, Integer colorId, Integer sizeId, BigDecimal giaBan) {
+    public Integer getSanPhamCTIdByAttributes(Integer productId, Integer colorId, Integer sizeId) {
         // Lấy sản phẩm chi tiết dựa trên các thuộc tính
-        Optional<SanPhamChiTiet> sanPhamChiTietOptional = sanPhamCTRepository.findTopByProductAndAttributesNative(productId, colorId, sizeId, giaBan);
+        Optional<SanPhamChiTiet> sanPhamChiTietOptional = sanPhamCTRepository.findTopByProductAndAttributesNative(productId, colorId, sizeId);
 
         if (sanPhamChiTietOptional.isPresent()) {
             // Trả về ID của sản phẩm chi tiết nếu tìm thấy

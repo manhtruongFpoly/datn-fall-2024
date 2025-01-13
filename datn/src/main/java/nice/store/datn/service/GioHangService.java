@@ -58,7 +58,13 @@ public class GioHangService {
     }
 
 
-
+    public GioHangCT deleteById(Integer id) {
+        Optional<GioHangCT> optional = gioHangChiTietRepository.findById(id);
+        return optional.map(o -> {
+            gioHangChiTietRepository.delete(o);
+            return o;
+        }).orElse(null);
+    }
 
 
 }

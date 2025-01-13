@@ -5,8 +5,15 @@
     <title>Giỏ hàng</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJxnT0y7b9z8I6fbd9EKg0o4p8c6Ezr4qIuRmrz5lzFZ8N2b+8v2mF0FY2xR" crossorigin="anonymous">
+    <!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJxnT0y7b9z8I6fbd9EKg0o4p8c6Ezr4qIuRmrz5lzFZ8N2b+8v2mF0FY2xR" crossorigin="anonymous">-->
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Thêm CSS của DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"/>
+
+    <!-- Thêm jQuery và DataTables JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
     <style>
         /*body {*/
@@ -181,7 +188,8 @@
             <a href="#" class="text-dark mr-3">Đăng nhập</a>
             <a href="#" class="text-dark">Đăng kí</a>
             <div class="user-icons d-inline-block ml-3">
-                <a href="#" class="text-dark"><i class="fa fa-shopping-cart"></i><span class="badge badge-danger"></span></a>
+                <a href="#" class="text-dark"><i class="fa fa-shopping-cart"></i><span
+                        class="badge badge-danger"></span></a>
             </div>
         </div>
     </div>
@@ -191,7 +199,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container d-flex align-items-center justify-content-between py-3">
         <div class="d-flex align-items-center">
-            <img th:src="@{/img/logo1r.jpg}" alt="Logo" width="80" height="80" style="border-radius: 50%; border: 2px solid #fff; margin-right: 20px;">
+            <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo" style="text-align: center;width: 80%;height: 60px">
+
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -226,7 +235,7 @@
     <div class="cart-container">
         <h2>Giỏ hàng có sản phẩm</h2>
         <div th:if="${cart != null and cart.gioHangCTs != null and !cart.gioHangCTs.isEmpty()}">
-            <form action="@{/checkout}" method="post">
+            <form th:action="@{/cart/checkout}" method="post">
                 <table class="table">
                     <thead>
                     <tr>
@@ -244,34 +253,52 @@
                         <td th:text="${stat.index + 1}">STT</td>
                         <td>
                             <div class="product-image">
-                                <img th:if="${item.hinhAnh != null}" th:src="@{/desktop-images/{url}(url=${item.hinhAnh})}" alt="Product Image" class="img-fluid" width="100" height="100"/>
+                                <!-- Hiển thị ảnh sản phẩm nếu có -->
+                                <img th:if="${item.hinhAnh != null}"
+                                     th:src="@{/desktop-images/{url}(url=${item.hinhAnh})}" alt="Product Image"
+                                     class="img-fluid" width="100" height="100"/>
+                                <!-- Hiển thị thông báo khi không có ảnh -->
                                 <p th:if="${item.hinhAnh == null}">Không có ảnh</p>
                             </div>
                         </td>
                         <td>
                             <div>
-                                <h5 th:text="${item.productId}">ID</h5>
-                                <h5 th:text="${item.tenSanPham}">Tên sản phẩm</h5>
-                                <p><span>Màu sắc: </span><span th:text="${item.mauSac}">Màu sắc</span></p>
-                                <p><span>Kích cỡ: </span><span th:text="${item.kichCo}">Kích cỡ</span></p>
+                                <!-- Hiển thị ID và tên sản phẩm -->
+                                <h5 th:id="'productId-' + ${item.productId}" th:text="${item.productId}">ID</h5>
+                                <h5 th:id="'productName-' + ${item.productId}" th:text="${item.tenSanPham}">Tên sản
+                                    phẩm</h5>
+
+                                <!-- Hiển thị màu sắc và kích cỡ -->
+                                <p><span>Màu sắc: </span><span th:id="'color-' + ${item.productId}"
+                                                               th:text="${item.mauSac}">Màu sắc</span></p>
+                                <p><span>Kích cỡ: </span><span th:id="'size-' + ${item.productId}"
+                                                               th:text="${item.kichCo}">Kích cỡ</span></p>
                             </div>
                         </td>
                         <td>
-                            <span th:text="${item.soLuong}">Số lượng</span>
+                            <!-- Hiển thị số lượng sản phẩm -->
+                            <span th:id="'quantity-' + ${item.productId}" th:text="${item.soLuong}">Số lượng</span>
                         </td>
                         <td>
-                            <span th:text="${#numbers.formatDecimal(item.giaBan, 0, 'COMMA', 0, 'POINT')}">Giá</span>
+                            <!-- Hiển thị giá sản phẩm -->
+                            <span th:id="'price-' + ${item.productId}"
+                                  th:text="${#numbers.formatDecimal(item.giaBan, 0, 'COMMA', 0, 'POINT')}">Giá</span>
                         </td>
                         <td>
-                            <span th:text="${#numbers.formatDecimal(item.soLuong * item.giaBan, 0, 'COMMA', 0, 'POINT')}">Thành tiền</span>
+                            <!-- Hiển thị thành tiền (Số lượng * Giá) -->
+                            <span th:id="'total-' + ${item.productId}"
+                                  th:text="${#numbers.formatDecimal(item.soLuong * item.giaBan, 0, 'COMMA', 0, 'POINT')}">Thành tiền</span>
                         </td>
                         <td>
-                            <input type="checkbox" name="selectedProducts" th:value="${item.productId}" class="checkbox-large" onchange="logSelectedProduct(this)"/>
+                            <!-- Checkbox để chọn sản phẩm -->
+                            <input type="checkbox" name="selectedProducts" th:value="${item.productId}"
+                                   class="checkbox-large" onchange="logSelectedProduct(this)"/>
                         </td>
                     </tr>
+
                     </tbody>
                 </table>
-                <button type="submit" class="btn btn-success">Chuyển sang thanh toán</button>
+
                 <!-- Chia row 9-3-3 -->
                 <div class="row">
                     <!-- Phần 9 cột: Tổng tiền và các nút điều hướng -->
@@ -279,26 +306,37 @@
                         <div class="cart-summary">
                             <h4>Tổng cộng</h4>
                             <p class="total">Tổng tiền:
-                                <span th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}">Tổng tiền</span>
+                                <span id="total-price" data-total="${total}"
+                                      th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}">Tổng tiền</span>
                             </p>
-                            <button type="submit" class="btn btn-primary">Cập nhật giỏ hàng</button>
                             <a th:href="@{/product-use}" class="btn btn-info">Quay lại mua hàng</a>
-                            <a th:href="@{/checkout}" class="btn btn-success">Thanh toán</a>
+                            <!--                            <a th:href="@{/checkout}" class="btn btn-success">Thanh toán</a>-->
                         </div>
+
+
                     </div>
 
                     <!-- Phần 3 cột: Chọn phiếu giảm giá -->
                     <div class="col-md-3">
                         <div class="coupon-section">
                             <h4>Chọn phiếu giảm giá</h4>
-                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#couponModal">Chọn phiếu</button>
+                            <button type="button" class="btn btn-warning" data-toggle="modal"
+                                    data-target="#couponModal">Chọn phiếu
+                            </button>
+                            <br>
+                            <div>
+                                <h5 hidden id="coupon-display-id"></h5>
+                                <input hidden type="text" name="idPhieuGiamGia" id="coupon-id" readonly/>
+                                <h4 id="coupon-name">Tên :</h4>
+                                Giảm :<input type="text" name="giaTriGiamMax" id="giaTriGiamMax" readonly/>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Modal chọn phiếu giảm giá -->
-                <div class="modal fade" id="couponModal" tabindex="-1" role="dialog" aria-labelledby="couponModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
+                <div class="modal fade" id="couponModal" tabindex="-1" role="dialog" aria-labelledby="couponModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="couponModalLabel">Chọn phiếu giảm giá</h5>
@@ -307,20 +345,40 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <!-- Danh sách phiếu giảm giá (ví dụ) -->
-                                <ul>
-                                    <li><input type="radio" name="coupon" value="10%"> Giảm 10%</li>
-                                    <li><input type="radio" name="coupon" value="20%"> Giảm 20%</li>
-                                    <li><input type="radio" name="coupon" value="50%"> Giảm 50%</li>
-                                </ul>
+                                <table id="coupon-table" class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Mã</th>
+                                        <th>Tên</th>
+
+                                        <th>Số Lượng</th>
+                                        <th>Giảm (%)</th>
+                                        <th>Tối Thiểu (VNĐ)</th>
+                                        <th>Giảm Tối Đa</th>
+                                        <th>Ngày Bắt Đầu</th>
+                                        <th>Ngày Kết Thúc</th>
+                                        <th>Chọn</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="coupon-table-body">
+                                    </tbody>
+                                    <div id="pagination"></div> <!-- Chỗ này sẽ hiển thị các nút phân trang -->
+
+                                </table>
+
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                                <button type="button" class="btn btn-primary" onclick="applyCoupon()">Áp dụng phiếu</button>
+                                <button type="button" class="btn btn-primary" onclick="applyCoupon()">Áp dụng phiếu
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <button type="submit" class="btn btn-success">Chuyển sang thanh toán</button>
+
             </form>
         </div>
         <div th:if="${cart == null or cart.gioHangCTs.isEmpty()}">
@@ -330,17 +388,21 @@
 </div>
 
 
-
 <!-- Footer -->
 <footer>
     <div class="container">
         <div class="row">
             <div class="col-sm-12 col-md-6 col-lg-3 mb-4 text-center">
-                <img th:src="@{/images/logo1r.jpg}" alt="Logo" width="80" height="80" style="border-radius: 50%; border: 2px solid #fff; margin-bottom: 20px;">
+                <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo" style="text-align: center;width: 80%;height: 60px">
+
                 <ul class="footer__list">
                     <li class="footer__item"><i class="fas fa-map-marker-alt"></i> Hà Nội, Viet Nam</li>
-                    <li class="footer__item"><i class="fas fa-phone-alt"></i> <a href="tel:0123456789" class="footer__item--link">0123456789</a></li>
-                    <li class="footer__item"><i class="fas fa-envelope"></i> <a href="mailto:abc@gmail.com" class="footer__item--link">abc@gmail.com</a></li>
+                    <li class="footer__item"><i class="fas fa-phone-alt"></i> <a href="tel:0123456789"
+                                                                                 class="footer__item--link">0123456789</a>
+                    </li>
+                    <li class="footer__item"><i class="fas fa-envelope"></i> <a href="mailto:abc@gmail.com"
+                                                                                class="footer__item--link">abc@gmail.com</a>
+                    </li>
                     <li>
                         <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
@@ -352,8 +414,10 @@
             <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
                 <h6 class="footer__heading">Thông tin của chúng tôi</h6>
                 <ul class="footer__list">
-                    <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 1: 13 P. Trịnh Văn Bô, Xuân Phương, Nam Từ Liêm, Hà Nội, Việt Nam</a></li>
-                    <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 2: 583 Vũ Tông Phan, Thanh Xuân, Hà Nội, Việt Nam</a></li>
+                    <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 1: 13 P. Trịnh Văn Bô, Xuân
+                        Phương, Nam Từ Liêm, Hà Nội, Việt Nam</a></li>
+                    <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 2: 583 Vũ Tông Phan, Thanh
+                        Xuân, Hà Nội, Việt Nam</a></li>
                 </ul>
             </div>
             <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
@@ -391,16 +455,210 @@
 </body>
 
 <script>
-    function logSelectedProduct(checkbox) {
-        var productId = checkbox.value; // Lấy productId từ giá trị của checkbox
-        var isChecked = checkbox.checked; // Kiểm tra xem checkbox có được chọn không
 
-        if (isChecked) {
-            console.log('Sản phẩm đã chọn: ' + productId);
+    function logSelectedProduct(checkbox) {
+        // Tìm đến dòng chứa checkbox
+        var row = checkbox.closest("tr");
+
+        // Lấy ID sản phẩm từ thẻ <h5> chứa ID sản phẩm
+        var productIdElement = row.querySelector("h5[id^='productId-']");
+        var productId = productIdElement ? productIdElement.textContent.trim() : "";
+
+        // Lấy tên sản phẩm từ thẻ <h5> chứa tên sản phẩm
+        var productNameElement = row.querySelector("h5[id^='productName-']");
+        var productName = productNameElement ? productNameElement.textContent.trim() : "";
+
+        // Lấy số lượng sản phẩm
+        var quantityElement = row.querySelector("span[id^='quantity-']");
+        var quantity = quantityElement ? quantityElement.textContent.trim() : "Không có số lượng";
+
+        // Lấy giá bán
+        var priceElement = row.querySelector("span[id^='price-']");
+        var price = priceElement ? priceElement.textContent.trim() : "Không có giá";
+
+        // Lấy màu sắc
+        var colorElement = row.querySelector("span[id^='color-']");
+        var color = colorElement ? colorElement.textContent.trim() : "Chưa có màu sắc";
+
+        // Lấy kích cỡ
+        var sizeElement = row.querySelector("span[id^='size-']");
+        var size = sizeElement ? sizeElement.textContent.trim() : "Chưa có kích cỡ";
+
+        // Lấy ảnh sản phẩm
+        var imageElement = row.querySelector("img");
+        var image = imageElement ? imageElement.getAttribute("src") : "Không có ảnh";
+
+        // Tạo đối tượng sản phẩm
+        var productData = {
+            productId: productId,
+            productName: productName,
+            quantity: quantity,
+            price: price,
+            color: color,
+            size: size,
+            image: image
+        };
+
+        // Lấy mảng cartItems từ sessionStorage hoặc tạo mới nếu chưa có
+        var cartItems = JSON.parse(sessionStorage.getItem("cartItems")) || [];
+
+        if (checkbox.checked) {
+            // Nếu checkbox được chọn, kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+            var productExists = cartItems.some(item => item.productId === productId);
+
+            if (!productExists) {
+                // Nếu sản phẩm chưa có trong giỏ hàng, thêm vào
+                cartItems.push(productData);
+            }
         } else {
-            console.log('Sản phẩm đã bỏ chọn: ' + productId);
+            // Nếu checkbox bị bỏ chọn, tìm và xóa sản phẩm khỏi giỏ hàng
+            cartItems = cartItems.filter(item => item.productId !== productId);
+        }
+
+        // Lưu lại mảng vào sessionStorage
+        sessionStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+        // In ra console để kiểm tra
+        console.log("Cart items in sessionStorage:", cartItems);
+    }
+
+    //rest lại sesson mỗi khi truy cập gio ahngf để lấy sl đúng nhất
+    window.onload = function () {
+        sessionStorage.clear();
+        console.log("sessionStorage đã được reset.");
+    }
+    let currentPage = 1;
+    const itemsPerPage = 10;
+    let coupons = [];
+
+    function updatePagination() {
+        const totalPages = Math.ceil(coupons.length / itemsPerPage);
+        const pagination = document.querySelector('#pagination');
+        pagination.innerHTML = ''; // Xóa nút phân trang hiện tại
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.onclick = function () {
+                currentPage = i;
+                displayCoupons(currentPage);
+            };
+            pagination.appendChild(pageButton);
         }
     }
+    function loadCoupons() {
+        var totalText = document.getElementById('total-price').innerText;
+        var totalWithoutComma = totalText.replace(/,/g, ''); // Loại bỏ dấu phẩy
+        var totalValue = parseFloat(totalWithoutComma);
+        console.log(totalValue);
+        // Gọi API và truyền totalAmount vào yêu cầu
+        $.ajax({
+            url: '/api/phieu-giam-gia-online', // Đường dẫn API của bạn
+            method: 'GET',
+            data: {totalAmount: totalValue}, // Truyền tổng tiền qua query parameter
+            success: function (data) {
+                coupons = data; // Lưu dữ liệu phiếu giảm giá vào biến coupons
+                displayCoupons(currentPage); // Hiển thị trang đầu tiên
+            },
+            error: function (xhr, status, error) {
+                console.error('Error loading coupons:', error);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        loadCoupons();
+
+    });
+
+    function applyCoupon() {
+        const selectedCoupon = document.querySelector('input[name="coupon"]:checked');
+        if (selectedCoupon) {
+            const couponId = selectedCoupon.value; // Lấy ID của coupon đã chọn
+            const coupon = coupons.find(c => c.id == couponId); // Tìm coupon trong mảng coupons
+
+            // Hiển thị thông tin phiếu giảm giá
+            document.querySelector('h5#coupon-display-id').innerText = `ID: ${coupon.id}`;
+            document.querySelector('input#coupon-id').value = coupon.id;
+            document.querySelector('h4#coupon-name').innerText = `Tên: ${coupon.ten}`;
+
+            // Hiển thị giá trị giảm giá
+            document.querySelector('input#giaTriGiamMax').value = coupon.giaTriMax;  // Hiển thị giá trị giảm giá tối đa
+
+            // Đóng modal sau khi áp dụng phiếu
+            $('#couponModal').modal('hide');
+        } else {
+            alert("Vui lòng chọn một phiếu giảm giá.");
+        }
+    }
+
+
+    //lưu tien voi pgg
+    // function saveCartToSessionStorage() {
+    //     var totalPrice = document.getElementById("total-price").textContent.trim();
+    //     var couponId = document.getElementById("coupon-id").value;
+    //     var cartData = {
+    //         totalPrice: totalPrice,
+    //         couponId: couponId
+    //     };
+    //     sessionStorage.setItem("cartData", JSON.stringify(cartData));
+    //     console.log(sessionStorage);
+    // }
+    function saveCartToSessionStorage() {
+        var totalPrice = document.getElementById("total-price").textContent.trim();
+        var couponId = document.getElementById("coupon-id").value;
+        var couponName = document.getElementById("coupon-name").textContent.replace('Tên: ', '');  // Lấy tên phiếu giảm giá
+        var discountValue = document.getElementById("giaTriGiamMax").value;  // Lấy giá trị giảm giá
+
+        var cartData = {
+            totalPrice: totalPrice,
+            couponId: couponId,
+            couponName: couponName,
+            discountValue: discountValue
+        };
+
+        sessionStorage.setItem("cartData", JSON.stringify(cartData));
+        console.log(sessionStorage);  // Kiểm tra xem dữ liệu đã được lưu trong sessionStorage
+    }
+
+    // Đảm bảo sự kiện click vào nút thanh toán chỉ lưu phiếu giảm giá và tổng tiền
+    document.querySelector('.btn-success').addEventListener('click', function (event) {
+        saveCartToSessionStorage();
+    });
+
+
+    // Hàm hiển thị các phiếu giảm giá
+    function displayCoupons(page) {
+        const couponTableBody = document.querySelector('#coupon-table-body');
+        couponTableBody.innerHTML = ''; // Xóa bảng hiện tại
+
+        const start = (page - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const couponsToDisplay = coupons.slice(start, end);
+
+        couponsToDisplay.forEach((coupon, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td>${start + index + 1}</td>
+            <td>${coupon.ma}</td>
+            <td>${coupon.ten}</td>
+            <td>${coupon.soLuong}</td>
+            <td>${coupon.giaTriGiam}%</td>
+            <td>${coupon.donToiThieu ? coupon.donToiThieu.toLocaleString('vi-VN') + ' VNĐ' : 'Không yêu cầu'}</td>
+            <td>${coupon.giaTriMax ? coupon.giaTriMax.toLocaleString('vi-VN') + ' VNĐ' : 'Không yêu cầu'}</td>
+            <td>${coupon.ngayBatDau}</td>
+            <td>${coupon.ngayKetThuc}</td>
+            <td>
+                <input type="radio" name="coupon" value="${coupon.id}" />  <!-- Nút chọn với coupon.id -->
+            </td>
+             `;
+            couponTableBody.appendChild(row);
+        });
+
+        // Cập nhật nút phân trang
+        updatePagination();
+    }
 </script>
+
 
 </html>

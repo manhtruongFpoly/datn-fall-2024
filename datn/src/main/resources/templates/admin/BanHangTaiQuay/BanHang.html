@@ -1609,6 +1609,24 @@
 <script>
     $(document).ready(function () {
 
+        const DateNow = new Date();
+        const DateShip = DateNow.setDate(DateNow.getDate() + 4);
+        $('#thoiGianDuKien').text(formatDateFromTimestamp(DateShip));
+
+        function formatDateFromTimestamp(timestamp) {
+            const date = new Date(timestamp);
+
+            const day = date.getDate();
+            const month = date.getMonth() + 1;  // Cộng thêm 1 vì tháng bắt đầu từ 0
+            const year = date.getFullYear();
+
+            // Đảm bảo tháng và ngày có 2 chữ số
+            const formattedDay = day < 10 ? '0' + day : day;
+            const formattedMonth = month < 10 ? '0' + month : month;
+
+            return `${formattedDay}/${formattedMonth}/${year}`;
+        }
+
         xoaPhuongThucThanhToan();
 
         let checkThanhToan = 0;

@@ -313,54 +313,6 @@ public class SanPhamCTController {
     }
 
 
-//    @GetMapping("/product-detail/{productId}")
-//    public String viewProductDetail(@PathVariable("productId") Integer productId,
-//                                    Model model,
-//                                    @RequestParam(value = "colorId", required = false) Integer colorId,
-//                                    @RequestParam(value = "sizeId", required = false) Integer sizeId) {
-//        // Lấy chi tiết sản phẩm theo ID
-//        SanPhamCTResponse sanPhamCT = sanPhamCTService.getSanPhamCTById1(productId);
-//
-//        // Nếu không tìm thấy sản phẩm, chuyển hướng đến trang lỗi
-//        if (sanPhamCT == null) {
-//            System.out.println("Không tìm thấy sản phẩm với ID: " + productId);
-//            return "redirect:/error";
-//        }
-//
-//        // Thêm chi tiết sản phẩm vào Model để hiển thị trên view
-//        model.addAttribute("sanPhamCT", sanPhamCT);
-//
-//        // Fetch các danh sách phụ theo productId
-//        List<MauSac> listMauSac = mauSacService.getMauSacByProductId(productId);
-//        List<KichCo> listKichCo = kichCoService.getKichCoByProductId(productId);
-//
-//        // Kiểm tra xem danh sách màu sắc và kích cỡ có dữ liệu không
-//        if (listMauSac == null || listMauSac.isEmpty()) {
-//            System.out.println("Không tìm thấy màu sắc cho sản phẩm ID: " + productId);
-//        }
-//        if (listKichCo == null || listKichCo.isEmpty()) {
-//            System.out.println("Không tìm thấy kích cỡ cho sản phẩm ID: " + productId);
-//        }
-//
-//        // Thêm danh sách màu sắc và kích cỡ vào model
-//        model.addAttribute("listMauSac", listMauSac);
-//        model.addAttribute("listKichCo", listKichCo);
-//
-//        // Lưu trữ thông tin về màu sắc và kích cỡ được chọn
-//        model.addAttribute("selectedColor", colorId);
-//        model.addAttribute("selectedSize", sizeId);
-//
-//        // Thêm các danh sách khác vào model nếu cần
-//        model.addAttribute("listThuongHieu", thuongHieuService.getAllTh());
-//        model.addAttribute("listChatLieu", chatLieuService.getAllChatLieu());
-//        model.addAttribute("listDeGiay", deGiayService.getAllDeGiay());
-//        model.addAttribute("listLoaiGiay", loaiGiayService.findAll());
-//
-//        // Trả về view chi tiết sản phẩm
-//        return "user/ProductDetail";
-//    }
-
-
     @GetMapping("/product-detail/{productId}")
     public String viewProductDetail(@PathVariable("productId") Integer productId,
                                     @RequestParam(value = "colorId", required = false) Integer colorId,
@@ -391,14 +343,14 @@ public class SanPhamCTController {
     @GetMapping("/product-detail-tra-sl-sp-va-id-spct/{productId}")
     @ResponseBody
     public Map<String, Object> getProductDetail(@PathVariable("productId") Integer productId,
-                                                @RequestParam(value = "colorId", required = false) Integer colorId,
-                                                @RequestParam(value = "sizeId", required = false) Integer sizeId,
-                                                @RequestParam(value = "giaBan", required = false) BigDecimal giaBan
+                                                @RequestParam(value = "colorId") Integer colorId,
+                                                @RequestParam(value = "sizeId") Integer sizeId
+
     ) {
         Map<String, Object> response = new HashMap<>();
 
         // Lấy chi tiết sản phẩm (vẫn dùng productId để lấy thông tin cơ bản của sản phẩm)
-        SanPhamCTResponse sanPhamCT = sanPhamCTService.getSanPhamCTById1(productId);
+        SanPhamCTResponse sanPhamCT = sanPhamCTService.getSanPhamCTById2(productId, colorId,sizeId);
         response.put("sanPhamCT", sanPhamCT);
 
         // Danh sách màu sắc và kích cỡ
@@ -410,7 +362,7 @@ public class SanPhamCTController {
         // Lấy idSanPhamCT từ các thuộc tính màu sắc, kích cỡ
         Integer sanPhamCTId = null;
         if (colorId != null && sizeId != null) {
-            sanPhamCTId = sanPhamCTService.getSanPhamCTIdByAttributes(productId, colorId, sizeId,giaBan);
+            sanPhamCTId = sanPhamCTService.getSanPhamCTIdByAttributes(productId, colorId, sizeId);
         }
 
         // Trả về id của SanPhamCT nếu tìm thấy
@@ -419,7 +371,7 @@ public class SanPhamCTController {
         // Lấy số lượng sản phẩm chi tiết dựa trên thuộc tính colorId và sizeId
         Integer quantity = null;
         if (colorId != null && sizeId != null) {
-            quantity = sanPhamCTService.getQuantityByAttributes(productId, colorId, sizeId, giaBan);
+            quantity = sanPhamCTService.getQuantityByAttributes(productId, colorId, sizeId);
         }
         response.put("quantity", quantity);
 

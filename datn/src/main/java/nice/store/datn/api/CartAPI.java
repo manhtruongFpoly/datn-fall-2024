@@ -2,21 +2,21 @@ package nice.store.datn.api;
 
 
 import jakarta.servlet.http.HttpSession;
-import nice.store.datn.entity.KichCo;
-import nice.store.datn.entity.MauSac;
+import nice.store.datn.entity.*;
 import nice.store.datn.response.SanPhamCTResponse;
-import nice.store.datn.service.CartService;
-import nice.store.datn.service.KichCoService;
-import nice.store.datn.service.MauSacService;
-import nice.store.datn.service.SanPhamCTService;
+import nice.store.datn.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class CartAPI {
@@ -46,7 +46,6 @@ public class CartAPI {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
 
 
     @Autowired
@@ -89,7 +88,101 @@ public class CartAPI {
     }
 
 
+    @Autowired
+    private PhieuGiamGiaService phieuGiamGiaService;
+
+    @GetMapping("/api/phieu-giam-gia-online")
+    public ResponseEntity<List<PhieuGiamGia>> hienThi(@RequestParam("totalAmount") BigDecimal totalAmount) {
+        List<PhieuGiamGia> danhSach = phieuGiamGiaService.findAll();
+        LocalDate now = LocalDate.now();
+
+        // Lọc phiếu giảm giá phù hợp
+        List<PhieuGiamGia> phieuGiamGiaPhuHop = danhSach.stream()
+                .filter(pgg -> {
+                    // Kiểm tra trạng thái: Ngày hiện tại phải nằm trong khoảng ngày bắt đầu và kết thúc
+                    boolean isActive = pgg.getNgayBatDau() != null && pgg.getNgayKetThuc() != null
+                            && !now.isBefore(pgg.getNgayBatDau()) && !now.isAfter(pgg.getNgayKetThuc());
+
+                    // Kiểm tra tổng tiền phải lớn hơn đơn tối thiểu
+                    boolean isTotalValid = totalAmount != null && totalAmount.compareTo(pgg.getDonToiThieu()) >= 0;
+
+                    // Nếu cả 2 điều kiện trên thỏa mãn và phiếu giảm giá đang hoạt động
+                    return isActive && isTotalValid;
+                })
+                .collect(Collectors.toList());
+
+        // Cập nhật trạng thái cho các phiếu giảm giá còn lại
+        phieuGiamGiaPhuHop.forEach(pgg -> {
+            if (pgg.getNgayBatDau() != null && pgg.getNgayKetThuc() != null) {
+                if (now.isBefore(pgg.getNgayBatDau())) {
+                    pgg.setTrangThai(2); // Chưa diễn ra
+                } else if (now.isAfter(pgg.getNgayKetThuc())) {
+                    pgg.setTrangThai(1); // Ngừng hoạt động
+                } else {
+                    pgg.setTrangThai(0); // Hoạt động
+                }
+            } else {
+                pgg.setTrangThai(1);
+            }
+        });
+
+        return ResponseEntity.ok(phieuGiamGiaPhuHop);
+    }
 
 
+    @Autowired
+    HoaDonService hoaDonService;
+
+    @PostMapping("/api/gio-hang/tao-hoa-don-dat-hang-khong-dang-nhap")
+    public ResponseEntity<?> taoHoaDonDatHang2(@RequestBody HoaDon hoaDon) {
+
+        hoaDon.setDiaChiNguoiNhan(hoaDon.getDiaChiNguoiNhan());
+        hoaDon.setNgayTao(LocalDateTime.now());
+        hoaDon.setLoaiHoaDon("Online");
+        hoaDon.setTrangThai(1);
+        hoaDon.setMaHd(hoaDon.getMaHd());
+        hoaDon.setTenNguoiNhan(hoaDon.getTenNguoiNhan());
+        hoaDon.setKhachHang(hoaDon.getKhachHang());
+        hoaDon.setTongTien(hoaDon.getTongTien());
+        hoaDon.setTienGiam(hoaDon.getTienGiam());
+        hoaDon.setPhiShip(hoaDon.getPhiShip());
+        hoaDon.setSdt(hoaDon.getSdt());
+//        if(hoaDon.getPhieuGiamGia().getId() == null){
+//            hoaDon.setPhieuGiamGia(null);
+//        }
+        PhieuGiamGia pg = new PhieuGiamGia();
+        pg.setGiaTriGiam(new BigDecimal(0));
+
+        HoaDon savedHoaDon = hoaDonService.add(hoaDon);
+
+        String maHoaDon = "HD" + String.format("%03d", savedHoaDon.getId());
+        savedHoaDon.setMaHd(maHoaDon);
+        hoaDonService.taoMaHoaDon(savedHoaDon.getId(), savedHoaDon);
+
+        return ResponseEntity.ok(savedHoaDon);
+    }
+
+    @Autowired HoaDonChiTietService hoaDonChiTietService;
+    @PostMapping("/api/gio-hang/them-san-pham-vao-hoa-don/{id}")
+    public ResponseEntity<?> themSanPhamVaoHoaDon (@PathVariable("id") Integer id ,@RequestBody HoaDonChiTiet hoaDonChiTiet){
+        hoaDonChiTiet.setSanPhamChiTiet(hoaDonChiTiet.getSanPhamChiTiet());
+        HoaDon hoaDon = new HoaDon();
+        hoaDon.setId(id);
+        hoaDonChiTiet.setHoaDon(hoaDon);
+        hoaDonChiTiet.setSoLuong(hoaDonChiTiet.getSoLuong());
+        hoaDonChiTiet.setDonGia(hoaDonChiTiet.getDonGia());
+        hoaDonChiTiet.setNgayTao(LocalDateTime.now());
+        hoaDonChiTiet.setTrangThai(1);
+        HoaDonChiTiet saveHDCT = hoaDonChiTietService.add(hoaDonChiTiet);
+
+        return ResponseEntity.ok(saveHDCT);
+    }
+
+
+    @Autowired GioHangService gioHangCTService;
+    @PostMapping("/api/gio-hang/delete-sp/{id}")
+    public ResponseEntity<?> deleteSP(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(gioHangCTService.deleteById(id));
+    }
 
 }

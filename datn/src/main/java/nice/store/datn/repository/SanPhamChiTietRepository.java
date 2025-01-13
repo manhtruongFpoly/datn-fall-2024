@@ -55,26 +55,29 @@ public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, 
             "WHERE spct.ID_SP = :productId " +
             "AND spct.ID_MAU_SAC = :colorId " +
             "AND spct.ID_KICH_CO = :sizeId " +
-            "AND spct.GIA_BAN = :giaBan " +
             "ORDER BY spct.SO_LUONG DESC",
             nativeQuery = true)
     Integer findQuantityByProductAndAttributes(@Param("productId") Integer productId,
                                                @Param("colorId") Integer colorId,
-                                               @Param("sizeId") Integer sizeId,
-                                               @Param("giaBan") BigDecimal giaBan);
+                                               @Param("sizeId") Integer sizeId
+                                               );
 
     @Query(value = "SELECT TOP 1 * " +
             "FROM SAN_PHAM_CT spct " +
             "WHERE spct.ID_SP = :productId " +
             "AND spct.ID_MAU_SAC = :colorId " +
             "AND spct.ID_KICH_CO = :sizeId " +
-            "AND spct.GIA_BAN = :giaBan " +
             "ORDER BY spct.SO_LUONG DESC",
             nativeQuery = true)
     Optional<SanPhamChiTiet> findTopByProductAndAttributesNative(@Param("productId") Integer productId,
                                                                  @Param("colorId") Integer colorId,
-                                                                 @Param("sizeId") Integer sizeId,
-                                                                 @Param("giaBan") BigDecimal giaBan);
+                                                                 @Param("sizeId") Integer sizeId
+                                                                );
 
+
+//    @Query("SELECT spct FROM SanPhamChiTiet spct WHERE spct.sanPham.id = :productId AND spct.mauSac.id = :colorId AND spct.kichCo.id = :sizeId")
+//    Optional<SanPhamChiTiet> findAllByAttributes(@Param("productId") Integer productId, @Param("colorId") Integer colorId, @Param("sizeId") Integer sizeId);
+   @Query("SELECT spct FROM SanPhamChiTiet spct WHERE spct.sanPham.id = :productId AND spct.mauSac.id = :colorId AND spct.kichCo.id = :sizeId")
+    Optional<SanPhamChiTiet> findAllByAttributes(@Param("productId") Integer productId, @Param("colorId") Integer colorId, @Param("sizeId") Integer sizeId);
 
 }
