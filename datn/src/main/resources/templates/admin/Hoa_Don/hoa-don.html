@@ -7,6 +7,12 @@
     <script src="https://kit.fontawesome.com/b0d3163487.js" crossorigin="anonymous"></script>
     <title>Dashboard - Voler Admin Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Thêm file CSS của DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+    <!-- Thêm file JS của jQuery và DataTables -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
     <!-- Link CSS files -->
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
@@ -53,7 +59,42 @@
     <div id="main"><!-- Content area -->
         <span th:replace="~{fragments/header :: header}"></span>
         <div class="main-content container-fluid" layout:fragment="content"><!-- Dynamic content -->
-
+            <!--//trưởng làm lọc-->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form id="filterForm">
+                        <div class="row">
+                            <!-- Trường tìm kiếm chung -->
+                            <div class="col-md-4">
+                                <label for="generalFilter" class="form-label">Tìm Kiếm</label>
+                                <input type="text" class="form-control" id="generalFilter" placeholder="Nhập mã hóa đơn, tên khách hàng hoặc số điện thoại">
+                            </div>
+                            <!-- Lọc theo trạng thái -->
+                            <div class="col-md-2">
+                                <label for="trangThaiFilter" class="form-label">Trạng Thái</label>
+                                <select class="form-select" id="trangThaiFilter">
+                                    <option value="">Tất cả</option>
+                                    <option value="0">Hóa Đơn Chờ</option>
+                                    <option value="1">Chờ xác nhận</option>
+                                    <option value="2">Đã xác nhận</option>
+                                    <option value="3">Chờ vận chuyển</option>
+                                    <option value="4">Vận chuyển</option>
+                                    <option value="5">Thanh toán</option>
+                                    <option value="6">Hoàn thành</option>
+                                    <option value="7">Huỷ</option>
+                                </select>
+                            </div>
+                            <!-- Nút reset -->
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="button" class="btn btn-outline-secondary w-100" onclick="resetFilter()">
+                                    <i class="fas fa-sync-alt"></i> <!-- Icon reset từ FontAwesome -->
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!---->
             <div class="container text-center">
                 <!-- Tabs navigation -->
                 <ul class="nav nav-pills justify-content-center mb-3" id="pills-tab" role="tablist">
@@ -601,4 +642,121 @@
 <script th:src="@{/js/dashboard.js}"></script>
 <script th:src="@{/js/main.js}"></script>
 </body>
+<script>
+    let currentFilter = {
+        generalFilter: "",
+        trangThaiFilter: ""
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Gắn sự kiện input và change cho các ô lọc
+        document.getElementById("generalFilter").addEventListener("input", filterTable);
+        document.getElementById("trangThaiFilter").addEventListener("change", filterTable);
+
+        // Gắn sự kiện click cho nút reset
+        document.querySelector("button[onclick='resetFilter()']").addEventListener("click", resetFilter);
+
+        // Gắn sự kiện khi chuyển tab
+        document.querySelectorAll('a[data-bs-toggle="pill"]').forEach(tab => {
+            tab.addEventListener('shown.bs.tab', function () {
+                applyFilterToAllTabs();
+            });
+        });
+    });
+
+    function filterTable() {
+        // Lấy giá trị từ các ô input
+        const generalFilter = document.getElementById("generalFilter").value.trim().toLowerCase();
+        const trangThai = document.getElementById("trangThaiFilter").value.trim(); // Giá trị là số (1, 2, 3, ...)
+
+        // Lưu trạng thái lọc
+        currentFilter.generalFilter = generalFilter;
+        currentFilter.trangThaiFilter = trangThai;
+
+        // Áp dụng lọc cho tất cả các tab
+        applyFilterToAllTabs();
+    }
+
+    function applyFilterToAllTabs() {
+        const { generalFilter, trangThaiFilter } = currentFilter;
+
+        // Lặp qua tất cả các tab
+        const tabPanes = document.querySelectorAll('.tab-pane');
+        tabPanes.forEach(tabPane => {
+            const rows = tabPane.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                // Lấy giá trị từ các cột trong hàng
+                const maHd = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+                const tenKhachHang = row.querySelector('td:nth-child(4)').textContent.trim().toLowerCase();
+                const sdt = row.querySelector('td:nth-child(5)').textContent.trim().toLowerCase();
+                const trangThaiCell = row.querySelector('td:nth-child(7) div').textContent.trim().toLowerCase(); // Lấy tên trạng thái
+
+                // Kiểm tra điều kiện lọc
+                const matchGeneralFilter = generalFilter === '' ||
+                    maHd.includes(generalFilter) ||
+                    tenKhachHang.includes(generalFilter) ||
+                    sdt.includes(generalFilter);
+
+                // So sánh giá trị trạng thái
+                const matchTrangThai = trangThaiFilter === '' || trangThaiCell === getTrangThaiName(trangThaiFilter);
+
+                // Hiển thị hoặc ẩn hàng dựa trên kết quả lọc
+                if (matchGeneralFilter && matchTrangThai) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Hàm chuyển đổi giá trị số thành tên trạng thái
+    function getTrangThaiName(trangThai) {
+        switch (trangThai) {
+            case '0': return 'hóa đơn chờ';
+            case '1': return 'chờ xác nhận';
+            case '2': return 'đã xác nhận';
+            case '3': return 'chờ vận chuyển';
+            case '4': return 'vận chuyển';
+            case '5': return 'thanh toán';
+            case '6': return 'hoàn thành';
+            case '7': return 'huỷ';
+            default: return '';
+        }
+    }
+
+    // Hàm reset bộ lọc
+    function resetFilter() {
+        // Reset giá trị của các ô input
+        document.getElementById("generalFilter").value = "";
+        document.getElementById("trangThaiFilter").value = "";
+
+        // Xóa trạng thái lọc
+        currentFilter.generalFilter = "";
+        currentFilter.trangThaiFilter = "";
+
+        // Gọi lại hàm lọc để hiển thị tất cả dữ liệu
+        applyFilterToAllTabs();
+    }
+</script>
+<script>
+    $(document).ready(function() {
+
+        $('table').DataTable({
+            "paging": true,
+            "searching": false,
+            "info": true,
+            "lengthChange": false,
+            "language": {
+                "paginate": {
+                    "next": "Tiếp theo",
+                    "previous": "Trước"
+                },
+                "info": "Hiển thị _START_ đến _END_ của _TOTAL_ hóa đơn"
+            }
+        });
+    });
+</script>
+
 </html>

@@ -326,53 +326,6 @@
         });
     }
 
-    // function getSanPhamSapHetHang() {
-    //     $.ajax({
-    //         url: '/sap-het-hang', // Địa chỉ API
-    //         method: 'GET',
-    //         success: function (data) {
-    //             console.log(data); // Kiểm tra dữ liệu trả về từ API
-    //             let tableRows = '';
-    //             data.forEach(function (sanPham, index) {
-    //                 tableRows += '<tr>';
-    //                 tableRows += '<td>' + (index + 1) + '</td>';
-    //
-    //                 // Kiểm tra nếu ảnh tồn tại
-    //                 let imageCell = sanPham.hinhAnhs && sanPham.hinhAnhs.length > 0 ?
-    //                     '<img src="/api/san-pham-chi-tiet/desktop-images/' + sanPham.hinhAnhs[0].tenHinhAnh + '" alt="Ảnh sản phẩm" style="width: 50px; height: 50px; object-fit: cover;">' :
-    //                     '<span>Chưa có ảnh</span>';
-    //
-    //                 tableRows += '<td>' + imageCell + '</td>';
-    //                 tableRows += '<td>' + sanPham.tenSP + '</td>'; // Sử dụng 'tenSP' nếu trong dữ liệu API là 'tenSP'
-    //                 tableRows += '<td>' + formatVND(sanPham.giaBan) + '</td>'; // Kiểm tra giá sản phẩm (nếu có)
-    //                 tableRows += '<td>' + sanPham.soLuong + '</td>'; // Kiểm tra số lượng sản phẩm (nếu có)
-    //                 tableRows += '</tr>';
-    //             });
-    //
-    //             // Điền dữ liệu vào bảng
-    //             $('#danhSachSanPhamSapHetHang').html(tableRows);
-    //
-    //             // Kiểm tra nếu DataTable đã được khởi tạo
-    //             if ($.fn.dataTable.isDataTable('#tabledanhSachSanPhamSapHetHang')) {
-    //                 $('#tabledanhSachSanPhamSapHetHang').DataTable().destroy(); // Hủy DataTable cũ nếu đã được khởi tạo
-    //             }
-    //
-    //             // Khởi tạo lại DataTable
-    //             $('#tabledanhSachSanPhamSapHetHang').DataTable({
-    //                 "paging": true,   // Bật phân trang
-    //                 "searching": true, // Bật tìm kiếm
-    //                 "ordering": true,  // Bật sắp xếp cột
-    //                 "info": true,      // Hiển thị thông tin tổng số bản ghi
-    //                 "lengthChange": true, // Cho phép thay đổi số lượng dòng trên mỗi trang
-    //                 "pageLength": 10   // Mặc định hiển thị 10 dòng mỗi trang
-    //             });
-    //         },
-    //         error: function (xhr, status, error) {
-    //             console.log("Lỗi khi lấy dữ liệu: " + status + " - " + error);
-    //         }
-    //     });
-    // }
-
 
     function formatVND(num) {
         return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
@@ -557,7 +510,7 @@
                         labels: labels,
                         datasets: [{
                             data: data,
-                            backgroundColor: ['#FF6347', '#ff4500', '#FFD700', '#32CD32', '#00BFFF', '#FF1493', '#FF69B4', '#8A2BE2'], // Màu sắc động cho các phần
+                            backgroundColor: ['#01ff06', '#18d9bd', '#FFD700', '#e76219', '#00BFFF', '#FF1493', '#FF69B4', '#8A2BE2'], // Màu sắc động cho các phần
                             borderColor: '#FFFFFF',
                             borderWidth: 2
                         }]
