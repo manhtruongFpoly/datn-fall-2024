@@ -1857,6 +1857,85 @@
         var $editQuanHuyen = $('#edit-quanhuyen');
         var $editPhuongXa = $('#edit-phuongxa');
 
+        function getThongTinKhachHang() {
+            $.ajax({
+                url: 'https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json',
+                dataType: 'json',
+                success: function (data) {
+                    citiesData = data;
+                    $editTinhThanh.empty().append('<option value="" selected>Chọn tỉnh thành</option>');
+                    $.each(data, function (index, city) {
+                        $editTinhThanh.append('<option value="' + city.Id + '">' + city.Name + '</option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Lỗi khi tải dữ liệu:', error);
+                }
+            });
+
+            $editTinhThanh.on('change', function () {
+                var cityId = $(this).val();
+                if (cityId) {
+                    $editQuanHuyen.empty().append('<option value="" selected>Chọn quận huyện</option>');
+                    var selectedCity = citiesData.find(city => city.Id === cityId);
+                    if (selectedCity) {
+                        $.each(selectedCity.Districts, function (index, district) {
+                            $editQuanHuyen.append('<option value="' + district.Id + '">' + district.Name + '</option>');
+                        });
+                    }
+                } else {
+                    $editQuanHuyen.empty().append('<option value="" selected>Chọn quận huyện</option>');
+                    $editPhuongXa.empty().append('<option value="" selected>Chọn phường xã</option>');
+                }
+            });
+
+            $editQuanHuyen.on('change', function () {
+                var districtId = $(this).val();
+                if (districtId) {
+                    // Clear and populate phường/xã dropdown
+                    $editPhuongXa.empty().append('<option value="" selected>Chọn phường xã</option>');
+                    var selectedDistrict = citiesData.flatMap(city => city.Districts).find(district => district.Id === districtId);
+                    if (selectedDistrict) {
+                        $.each(selectedDistrict.Wards, function (index, ward) {
+                            $editPhuongXa.append('<option value="' + ward.Id + '">' + ward.Name + '</option>');
+                        });
+                    }
+                } else {
+                    $editPhuongXa.empty().append('<option value="" selected>Chọn phường xã</option>');
+                }
+            });
+        }
+
+        function getAddressName(id, type) {
+            if (!citiesData || citiesData.length === 0) return id;  // Nếu không có dữ liệu thì trả lại id
+
+            let address = '';
+
+            switch (type) {
+                case 'tinhthanh':
+                    // Tìm tỉnh thành dựa trên ID
+                    let city = citiesData.find(city => city.Id.toString() === id.toString()); // Dùng toString để đảm bảo so khớp chính xác
+                    address = city ? city.Name : id;  // Nếu tìm thấy, trả về tên, nếu không trả lại ID
+                    break;
+                case 'quanhuyen':
+                    // Tìm quận huyện dựa trên ID
+                    let district = citiesData
+                        .flatMap(city => city.Districts)
+                        .find(district => district.Id.toString() === id.toString()); // Dùng toString để so khớp chính xác
+                    address = district ? district.Name : id;
+                    break;
+                case 'phuongxa':
+                    // Tìm phường xã dựa trên ID
+                    let ward = citiesData
+                        .flatMap(city => city.Districts)
+                        .flatMap(district => district.Wards)
+                        .find(ward => ward.Id.toString() === id.toString()); // Dùng toString để so khớp chính xác
+                    address = ward ? ward.Name : id;
+                    break;
+            }
+
+            return address;
+        }
 
         function getFormData() {
             ten = $('#edit-ten').val().trim();
@@ -1910,113 +1989,7 @@
 
             console.log("Full Address:", fullAddress);
         }
-
-
-
-        //lay api load ra danh sach các tỉnh từ api
-        // function getAddressName(id, type) {
-        //     if (!citiesData.length) return id;
-        //
-        //     let address = '';
-        //
-        //     switch (type) {
-        //         case 'tinhthanh':
-        //             let city = citiesData.find(city => city.Id === id);
-        //             address = city ? city.Name : id;
-        //             break;
-        //         case 'quanhuyen':
-        //             let district = citiesData.flatMap(city => city.Districts).find(district => district.Id === id);
-        //             address = district ? district.Name : id;
-        //             break;
-        //         case 'phuongxa':
-        //             let ward = citiesData.flatMap(city => city.Districts.flatMap(district => district.Wards)).find(ward => ward.Id === id);
-        //             address = ward ? ward.Name : id;
-        //             break;
-        //     }
-        //
-        //     return address;
-        // }
-        function getAddressName(id, type) {
-            if (!citiesData || citiesData.length === 0) return id;  // Nếu không có dữ liệu thì trả lại id
-
-            let address = '';
-
-            switch (type) {
-                case 'tinhthanh':
-                    // Tìm tỉnh thành dựa trên ID
-                    let city = citiesData.find(city => city.Id === parseInt(id));
-                    address = city ? city.Name : id;  // Nếu tìm thấy, trả về tên, nếu không trả lại ID
-                    break;
-                case 'quanhuyen':
-                    // Tìm quận huyện dựa trên ID
-                    let district = citiesData
-                        .flatMap(city => city.Districts)
-                        .find(district => district.Id === parseInt(id));
-                    address = district ? district.Name : id;
-                    break;
-                case 'phuongxa':
-                    // Tìm phường xã dựa trên ID
-                    let ward = citiesData
-                        .flatMap(city => city.Districts)
-                        .flatMap(district => district.Wards)
-                        .find(ward => ward.Id === parseInt(id));
-                    address = ward ? ward.Name : id;
-                    break;
-            }
-
-            return address;
-        }
-
         getThongTinKhachHang();
-
-        function getThongTinKhachHang() {
-            $.ajax({
-                url: 'https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json',
-                dataType: 'json',
-                success: function (data) {
-                    citiesData = data;
-                    $editTinhThanh.empty().append('<option value="" selected>Chọn tỉnh thành</option>');
-                    $.each(data, function (index, city) {
-                        $editTinhThanh.append('<option value="' + city.Id + '">' + city.Name + '</option>');
-                    });
-                },
-                error: function (xhr, status, error) {
-                    console.error('Lỗi khi tải dữ liệu:', error);
-                }
-            });
-
-            $editTinhThanh.on('change', function () {
-                var cityId = $(this).val();
-                if (cityId) {
-                    $editQuanHuyen.empty().append('<option value="" selected>Chọn quận huyện</option>');
-                    var selectedCity = citiesData.find(city => city.Id === cityId);
-                    if (selectedCity) {
-                        $.each(selectedCity.Districts, function (index, district) {
-                            $editQuanHuyen.append('<option value="' + district.Id + '">' + district.Name + '</option>');
-                        });
-                    }
-                } else {
-                    $editQuanHuyen.empty().append('<option value="" selected>Chọn quận huyện</option>');
-                    $editPhuongXa.empty().append('<option value="" selected>Chọn phường xã</option>');
-                }
-            });
-
-            $editQuanHuyen.on('change', function () {
-                var districtId = $(this).val();
-                if (districtId) {
-                    // Clear and populate phường/xã dropdown
-                    $editPhuongXa.empty().append('<option value="" selected>Chọn phường xã</option>');
-                    var selectedDistrict = citiesData.flatMap(city => city.Districts).find(district => district.Id === districtId);
-                    if (selectedDistrict) {
-                        $.each(selectedDistrict.Wards, function (index, ward) {
-                            $editPhuongXa.append('<option value="' + ward.Id + '">' + ward.Name + '</option>');
-                        });
-                    }
-                } else {
-                    $editPhuongXa.empty().append('<option value="" selected>Chọn phường xã</option>');
-                }
-            });
-        }
 
     });
 </script>
