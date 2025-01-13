@@ -143,7 +143,7 @@
                         <td th:text="${spct.chatLieu.tenChatLieu}"></td>
                         <td th:text="${spct.loaiGiay.tenLoaiGiay}"></td>
                         <td th:text="${spct.moTa}"></td>
-                        <td th:text="${spct.trangThai == 1 ? 'Còn Hàng' : 'Hết Hàng'}"></td>
+                        <td th:text="${spct.trangThai == 1 ? 'Hoạt Động' : 'Ngừng hoạt động'}"></td>
                         <td>
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
                                 <div th:each="hinhAnh : ${spct.hinhAnhs}"

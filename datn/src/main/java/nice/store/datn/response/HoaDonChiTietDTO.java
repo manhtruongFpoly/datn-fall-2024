@@ -21,6 +21,7 @@ public class HoaDonChiTietDTO {
     private String maHD;
     private BigDecimal giaTriMax;
     private Integer phiShip;
+    private String hinhAnh;
 
     public HoaDonChiTietDTO(HoaDonChiTiet hoaDonChiTiet) {
         this.id = hoaDonChiTiet.getId();
@@ -33,6 +34,10 @@ public class HoaDonChiTietDTO {
         this.maHD = hoaDonChiTiet.getHoaDon().getMaHd();
         this.giaTriMax = hoaDonChiTiet.getHoaDon().getPhieuGiamGia() != null ? hoaDonChiTiet.getHoaDon().getPhieuGiamGia().getGiaTriMax() : BigDecimal.valueOf(0);
         this.phiShip = hoaDonChiTiet.getHoaDon().getPhiShip();
+        this.hinhAnh = hoaDonChiTiet.getSanPhamChiTiet().getHinhAnhs().isEmpty()
+                ? null
+                : String.valueOf(hoaDonChiTiet.getSanPhamChiTiet().getHinhAnhs().get(0));
+
     }
 
 

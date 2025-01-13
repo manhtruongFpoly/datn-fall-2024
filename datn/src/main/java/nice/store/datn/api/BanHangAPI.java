@@ -102,10 +102,12 @@ public class BanHangAPI {
     public ResponseEntity<List<SanPhamChiTietDTO>> danhSachSanPham() {
         List<SanPhamChiTiet> danhSach = banHangService.getAllDSSanPham();
 
+        // Lọc các sản phẩm có trạng thái khác 0
         List<SanPhamChiTietDTO> danhSachDTO = danhSach.stream()
+                .filter(spct -> spct.getTrangThai() != 0)
                 .map(spct -> {
                     String hinhAnh = spct.getHinhAnhs() != null && !spct.getHinhAnhs().isEmpty()
-                            ? spct.getHinhAnhs().get(0).getUrl()  // Lấy URL của ảnh đầu tiên
+                            ? spct.getHinhAnhs().get(0).getUrl()
                             : null;
 
                     return new SanPhamChiTietDTO(

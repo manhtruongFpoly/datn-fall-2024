@@ -112,7 +112,7 @@
                              style="display: none;">
                             <div class="modal-content-danh-sach-san-pham-unique">
                                 <h1>Danh sách sản phẩm</h1>
-<!--                                boLoc spct-->
+                                <!--                                boLoc spct-->
                                 <div class="col-md-12 mb-4">
                                     <form method="get" id="searchForm" class="p-3 border rounded search-form">
                                         <h2 class="text-start">Lọc Tìm Kiếm </h2>
@@ -126,7 +126,8 @@
                                                 <select id="kichCo" name="kichCo" class="form-control">
                                                     <option value="">Tất cả</option>
                                                     <th:block th:each="kichCo : ${listKichCo}">
-                                                        <option th:value="${kichCo.size}" th:text="${kichCo.size}"></option>
+                                                        <option th:value="${kichCo.size}"
+                                                                th:text="${kichCo.size}"></option>
                                                     </th:block>
                                                 </select>
                                             </div>
@@ -138,7 +139,8 @@
                                                     <option value="">Tất cả</option>
                                                     <!-- Duyệt qua danh sách màu sắc và hiển thị -->
                                                     <th:block th:each="mauSac : ${listMauSac}">
-                                                        <option th:value="${mauSac.tenMauSac}" th:text="${mauSac.tenMauSac}"></option>
+                                                        <option th:value="${mauSac.tenMauSac}"
+                                                                th:text="${mauSac.tenMauSac}"></option>
                                                     </th:block>
                                                 </select>
                                             </div>
@@ -150,7 +152,8 @@
                                                     <option value="">Tất cả</option>
                                                     <!-- Duyệt qua danh sách chất liệu và hiển thị -->
                                                     <th:block th:each="chatLieu : ${listChatLieu}">
-                                                        <option th:value="${chatLieu.tenChatLieu}" th:text="${chatLieu.tenChatLieu}"></option>
+                                                        <option th:value="${chatLieu.tenChatLieu}"
+                                                                th:text="${chatLieu.tenChatLieu}"></option>
                                                     </th:block>
                                                 </select>
                                             </div>
@@ -162,7 +165,8 @@
                                                     <option value="">Tất cả</option>
                                                     <!-- Duyệt qua danh sách loại giày và hiển thị -->
                                                     <th:block th:each="loaiGiay : ${listLoaiGiay}">
-                                                        <option th:value="${loaiGiay.tenLoaiGiay}" th:text="${loaiGiay.tenLoaiGiay}"></option>
+                                                        <option th:value="${loaiGiay.tenLoaiGiay}"
+                                                                th:text="${loaiGiay.tenLoaiGiay}"></option>
                                                     </th:block>
                                                 </select>
                                             </div>
@@ -170,7 +174,8 @@
 
                                             <div class="col-md-3">
                                                 <label for="minPrice">Giá Từ:</label>
-                                                <input type="number" id="minPrice" name="minPrice" class="form-control" placeholder="Giá từ"
+                                                <input type="number" id="minPrice" name="minPrice" class="form-control"
+                                                       placeholder="Giá từ"
                                                        min="0" step="1000">
                                             </div>
 
@@ -189,7 +194,9 @@
                                             <button type="button" class="btn btn-primary mx-2" onclick="filterTable()"
                                                     style="display: none;">Tìm kiếm
                                             </button>
-                                            <button type="button" class="btn btn-secondary mx-2" onclick="resetForm()">Làm Mới</button>
+                                            <button type="button" class="btn btn-secondary mx-2" onclick="resetForm()">
+                                                Làm Mới
+                                            </button>
                                         </div>
                                     </form>
                                     <hr>
@@ -817,37 +824,52 @@
                     <thead class="table-primary">
                         <tr>
                             <th class="px-6 py-3 text-left">STT</th>
+                            <th class="px-6 py-3 text-left">Ảnh</th>
                             <th class="px-6 py-3 text-left">Sản phẩm</th>
                             <th class="px-6 py-3 text-left">Số lượng</th>
                             <th class="px-6 py-3 text-left">Tổng tiền</th>
                             <th class="px-6 py-3 text-left">Hành Động</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        ${hdctList.map((hdct, index) => {
+                   <tbody class="bg-white divide-y divide-gray-200">
+    ${hdctList.map((hdct, index) => {
                         const tenSanPham = hdct.tenSanPham || 'Không rõ tên';
                         const mauSac = hdct.mauSac || 'Không rõ màu';
                         const donGia = hdct.donGia || 0;
                         const soLuong = hdct.soLuong || 0;
                         const tongTien = donGia * soLuong;
 
-                        return `
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">${index + 1}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <h4>${tenSanPham} - ${mauSac}</h4>
-                            <h7  style="color: red">Giá:${formatVND(donGia)}</h7>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">${soLuong}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">${formatVND(tongTien)}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                        <button class="deleteSP"  data-soluong="${hdct.soLuong}" data-idspct="${hdct.idSPCT}" data-id="${hdct.id}"><i class="fa-solid fa-delete-left"></i></button>
+                        // Kiểm tra xem hinhAnh có tồn tại và xử lý để lấy url
+                        let hinhAnhUrl = '/path/to/default-image.jpg';
+                        if (hdct.hinhAnh && hdct.hinhAnh.includes("url=")) {
+                            const urlMatch = hdct.hinhAnh.match(/url=([a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;%=]+(?:\.jpg|\.jpeg|\.png|\.gif))/);
+                            if (urlMatch) {
+                                hinhAnhUrl = '/api/san-pham-chi-tiet/desktop-images/' + urlMatch[1]; // Lấy URL ảnh
+                            }
+                        }
 
-                        </td>
-                    </tr>
-                `;
+                        return `
+            <tr>
+                <td class="px-6 py-4 whitespace-nowrap">${index + 1}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                   <img src="${hinhAnhUrl}" alt="Ảnh sản phẩm" style="width: 100px; height: auto;" class="object-cover" />
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <h4>${tenSanPham} - ${mauSac}</h4>
+                    <h7 style="color: red">Giá: ${formatVND(donGia)}</h7>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">${soLuong}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${formatVND(tongTien)}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <button class="deleteSP" data-soluong="${hdct.soLuong}" data-idspct="${hdct.idSPCT}" data-id="${hdct.id}">
+                        <i class="fa-solid fa-delete-left"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
                     }).join('')}
-                    </tbody>
+</tbody>
+
                 </table>
             `;
                 }
@@ -927,7 +949,6 @@
     }
 
 
-
     //add pgg vào hóa đơn //hai
     function addPhieuGiamGia(idHD, idPGG) {
         $.ajax({
@@ -992,81 +1013,94 @@
 
     function loadDanhSachSanPham() {
         $("#danhSachSanPham").html('<tr><td colspan="9" class="text-center">Đang tải...</td></tr>'); // Hiển thị thông báo đang tải
+
         $.ajax({
             url: '/api/ban-hang/danh-sach-san-pham-chi-tiet',  // Gọi API
             method: 'GET',
             success: function (result) {
-                // Lưu danh sách sản phẩm vào biến toàn cục
                 danhSachSanPham = result;
-
-                let list = "";
-                result.forEach((sp, index) => {
-                    let hinhAnhSrc = sp.hinhAnh ? `/desktop-images/${sp.hinhAnh}` : '/desktop-images/xs10109.jpg';
-
-                    list += `
-                <tr class="hover:bg-gray-100">
-                    <td class="text-center">${index + 1}</td>
-                    <td>
-                        <div style="border: 1px solid #ccc; text-align: center; padding: 2px;">
-                            <img src="${hinhAnhSrc}" alt="Hình ảnh"
-                                style="width: 50px; height: 40px; object-fit: cover; display: block; margin: 0 auto;" />
-                        </div>
-                    </td>
-                    <td class="font-bold">
-                        <h4>${sp.tenSanPham}</h4>
-                        <h7 style="color: #3dd5f3">${sp.thuongHieu}</h7>
-                        <h7 style="color: #3dd5f3">${sp.chatLieu}</h7>
-                    </td>
-                    <td>${sp.giaBan}</td>
-                    <td class="text-center">${sp.soLuong}</td>
-                    <td class="text-center">${sp.kichCo || 'N/A'}</td>
-                    <td class="text-center">${sp.mauSac || 'N/A'}</td>
-                    <td class="text-center">${sp.trangThai === 1 ? 'Còn hàng' : 'Hết hàng'}</td>
-                    <td class="text-center">
-                        <button class="themSanPham bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" data-id="${sp.id}" data-gia-ban="${sp.giaBan}">
-                            Thêm
-                        </button>
-                    </td>
-                </tr>`;
-                });
-                $("#danhSachSanPham").html(list);
-
-                // Hủy khởi tạo DataTable cũ (nếu có) trước khi khởi tạo lại
-                if ($.fn.dataTable.isDataTable('#tableDanhSachSanPham')) {
-                    $('#tableDanhSachSanPham').DataTable().destroy();
-                }
-
-                // Khởi tạo lại DataTable sau khi tải dữ liệu
-                $('#tableDanhSachSanPham').DataTable({
-                    "paging": true,
-                    "searching": false,
-                    "ordering": true,
-                    "info": true,
-                    "language": {
-                        "paginate": {
-                            "previous": "Trước",
-                            "next": "Sau"
-                        },
-                        "lengthMenu": "Hiển thị _MENU_ bản ghi mỗi trang",
-                        "zeroRecords": "Không tìm thấy kết quả phù hợp",
-                        "info": "Hiển thị trang _PAGE_ trong tổng số _PAGES_",
-                        "infoEmpty": "Không có dữ liệu",
-                        "infoFiltered": "(lọc từ tổng số _MAX_ bản ghi)"
-                    },
-                    "dom": 'lrtip'
-                });
-
+                filterData();  // Gọi hàm lọc
             },
             error: function () {
-                $("#danhSachSanPham").html('<tr><td colspan="9" class="text-center text-red-500">Không thể tải dữ liệu!</td></tr>');  // Thông báo lỗi khi không thể tải dữ liệu
+                $("#danhSachSanPham").html('<tr><td colspan="9" class="text-center text-red-500">Không thể tải dữ liệu!</td></tr>');
             }
         });
     }
 
+    // Hàm lọc
+    function filterData() {
+        let filteredData = danhSachSanPham;
+        let keyword = $('#searchInput').val().toLowerCase();
+        let kichCo = $('#kichCo').val();
+        let mauSac = $('#mauSac').val();
+        let chatLieu = $('#chatLieu').val();
+        let minPrice = parseInt($('#minPrice').val()) || 0;
+        let maxPrice = parseInt($('#maxPrice').val()) || Infinity;
 
+        filteredData = filteredData.filter(sp => {
+            return (sp.tenSanPham.toLowerCase().includes(keyword) || sp.thuongHieu.toLowerCase().includes(keyword)) &&
+                (kichCo ? sp.kichCo === kichCo : true) &&
+                (mauSac ? sp.mauSac === mauSac : true) &&
+                (chatLieu ? sp.chatLieu === chatLieu : true) &&
+                (sp.giaBan >= minPrice && sp.giaBan <= maxPrice);
+        });
+        renderTable(filteredData);
+    }
 
+    function renderTable(filteredData) {
+        let list = "";
+        filteredData.forEach((sp, index) => {
+            let hinhAnhSrc = sp.hinhAnh ? `/desktop-images/${sp.hinhAnh}` : '/desktop-images/xs10109.jpg';
 
+            list += `
+            <tr class="hover:bg-gray-100">
+                <td class="text-center">${index + 1}</td>
+                <td>
+                    <div style="border: 1px solid #ccc; text-align: center; padding: 2px;">
+                        <img src="${hinhAnhSrc}" alt="Hình ảnh"
+                             style="width: 50px; height: 40px; object-fit: cover; display: block; margin: 0 auto;" />
+                    </div>
+                </td>
+                <td class="font-bold">
+                    <h4>${sp.tenSanPham}</h4>
+                    <h7 style="color: #3dd5f3">${sp.thuongHieu}</h7>
+                    <h7 style="color: #3dd5f3">${sp.chatLieu}</h7>
+                </td>
+                <td>${sp.giaBan}</td>
+                <td class="text-center">${sp.soLuong}</td>
+                <td class="text-center">${sp.kichCo || 'N/A'}</td>
+                <td class="text-center">${sp.mauSac || 'N/A'}</td>
+                <td class="text-center">${sp.soLuong === 0 ? 'Hết hàng' : 'Còn hàng'}</td>
+                <td class="text-center">
+                    <button class="themSanPham bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" data-id="${sp.id}" data-gia-ban="${sp.giaBan}">
+                        Thêm
+                    </button>
+                </td>
+            </tr>`;
+        });
+        $("#danhSachSanPham").html(list);
+    }
 
+    // Gọi lại hàm lọc khi thay đổi bộ lọc
+    $('#searchForm select, #searchForm input').on('change', function () {
+        filterData(); // Gọi lại hàm lọc
+    });
+
+    // Gọi hàm loadDanhSachSanPham khi trang load
+    $(document).ready(function () {
+        loadDanhSachSanPham();
+    });
+
+    function resetForm() {
+        $('#searchInput').val('');
+        $('#kichCo').val('');
+        $('#mauSac').val('');
+        $('#chatLieu').val('');
+        $('#loaiGiay').val('');
+        $('#minPrice').val('');
+        $('#maxPrice').val('');
+        filterData();
+    }
 
 
     function laySoLuongSanPham(id) {
@@ -1240,7 +1274,7 @@
                 // Khởi tạo lại DataTable sau khi cập nhật dữ liệu
                 $('#tableKhachHang').DataTable({
                     "paging": true,
-                    "searching": false,
+                    "searching": true,
                     "ordering": true,
                     "info": true,
                     "language": {
@@ -1252,10 +1286,12 @@
                         "zeroRecords": "Không tìm thấy kết quả phù hợp",
                         "info": "Hiển thị trang _PAGE_ trong tổng số _PAGES_",
                         "infoEmpty": "Không có dữ liệu",
-                        "infoFiltered": "(lọc từ tổng số _MAX_ bản ghi)"
+                        "infoFiltered": "(lọc từ tổng số _MAX_ bản ghi)",
+                        "search": "Tìm kiếm:"
                     },
-                    "dom": 'lrtip'
+                    "dom": '<"top"f>rt<"bottom"lp><"clear">'
                 });
+
             },
             error: function () {
                 $("#listKhachHang").html('<tr><td colspan="6" class="text-center text-red-500">Không thể tải dữ liệu!</td></tr>');
@@ -1279,7 +1315,6 @@
             }
         });
     }
-
 
 
     //lấy thông tin khách hàng add vào hóa đơn chờ  //hai
@@ -1657,14 +1692,23 @@
         $('#btnTienMat').click(function () {
             var tienDaThanhToan = $('#inputSoTien').val();
             if (tienDaThanhToan && !isNaN(tienDaThanhToan)) {
-                addPhuongThucThanhToanTienMat(idTabHD, tienDaThanhToan);
-                setTimeout(() => {
-                    getDuLieu(idTabHD)
-                }, 500);
+                showConfirm1(
+                    "Bạn có chắc chắn muốn thanh toán bằng tiền mặt với số tiền này?",
+                    function () {
+                        addPhuongThucThanhToanTienMat(idTabHD, tienDaThanhToan);
+                        setTimeout(() => {
+                            getDuLieu(idTabHD)
+                        }, 500);
+                    },
+                    function () {
+                        console.log("Thanh toán đã bị hủy");
+                    }
+                );
             } else {
                 alert("Vui lòng nhập số tiền hợp lệ.");
             }
         });
+
 
         $('#btnChuyenKhoan').click(function () {
             const maHD = $('#maHD').val();
@@ -1674,7 +1718,17 @@
             }
             const tienDaThanhToan = $('#inputSoTien').val();
             if (tienDaThanhToan && !isNaN(tienDaThanhToan)) {
-                chuyenKhoan(tienDaThanhToan, maHD);
+                showConfirm1(
+                    "Bạn có chắc chắn muốn thực hiện chuyển khoản với số tiền này?",
+                    function () {
+                        chuyenKhoan(tienDaThanhToan, maHD);
+                        addHistoryLogBH(1, idTabHD);
+                        getDuLieu(idTabHD);
+                    },
+                    function () {
+                        console.log("Chuyển khoản đã bị hủy");
+                    }
+                );
             } else {
                 alert("Vui lòng nhập số tiền hợp lệ.");
             }
@@ -1691,7 +1745,7 @@
                         window.location.href = response.url;
                         getDuLieu(idTabHD);
                         PhieuGiamGiaPhuHop(tongTienTrongHD);
-                        updateTrangThaiHoaDon(3, idTabHD);
+                        updateTrangThaiHoaDon(1, idTabHD);
                         sessionStorage.setItem('paymentSuccess', 'true');
                     } else {
                         alert(response.message || "Không thể tạo thanh toán. Vui lòng thử lại.");
@@ -1705,7 +1759,7 @@
         }
 
         if (sessionStorage.getItem('paymentSuccess') === 'true') {
-            alert("Thanh toán thành công!");
+            showNotification("Thanh toán thành công", "thanhCong");
             sessionStorage.removeItem('paymentSuccess');
         }
 
@@ -1761,11 +1815,11 @@
                         showNotification("Thanh toán thất bại", "thatBai");
                     } else if (tienDaThanhToan < tongTienTrongHD - GiamToiDa) {
                         showNotification("Thanh toán thất bại", "thatBai");
-                    } else  {
+                    } else {
                         updateTrangThaiHoaDon(6, idTabHD);
-                        addHistoryLogBH(6,idTabHD);
+                        addHistoryLogBH(6, idTabHD);
                         showNotification("Thanh toán thành công", "thanhCong");
-
+                        addHistoryLogBH(1, idTabHD);
                         setTimeout(() => {
                             // Bỏ phần xuất hóa đơn ở đây
                             Swal.fire(
@@ -1781,7 +1835,7 @@
                     getFormData();
                     updateThongTinNguoiNhanCoTrangThai(ten, sdtNguoiNhan, fullAddress, getAddressName(tinhthanh), quanhuyen, phuongxa, noteThongTin, phiVanChuyen, idTabHD, 1);
                     // renderTabs();
-                    addHistoryLogBH(1,idTabHD);
+                    addHistoryLogBH(1, idTabHD);
                     console.log(updateThongTinNguoiNhanCoTrangThai)
                     showNotification("Đặt hàng thành công", "thanhCong");
                     window.location.href = 'http://localhost:8080/admin/ban-hang-tai-quay';
@@ -1989,6 +2043,7 @@
 
             console.log("Full Address:", fullAddress);
         }
+
         getThongTinKhachHang();
 
     });
