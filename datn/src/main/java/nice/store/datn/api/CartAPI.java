@@ -91,6 +91,39 @@ public class CartAPI {
     @Autowired
     private PhieuGiamGiaService phieuGiamGiaService;
 
+//    @GetMapping("/api/phieu-giam-gia-online")
+//    public ResponseEntity<List<PhieuGiamGia>> hienThi(@RequestParam("totalAmount") BigDecimal totalAmount) {
+//        List<PhieuGiamGia> danhSach = phieuGiamGiaService.findAll();
+//        LocalDate now = LocalDate.now();
+//
+//        // Lọc phiếu giảm giá phù hợp
+//        List<PhieuGiamGia> phieuGiamGiaPhuHop = danhSach.stream()
+//                .filter(pgg -> {
+//                    boolean isActive = pgg.getNgayBatDau() != null && pgg.getNgayKetThuc() != null
+//                            && !now.isBefore(pgg.getNgayBatDau()) && !now.isAfter(pgg.getNgayKetThuc());
+//                    boolean isTotalValid = totalAmount != null && totalAmount.compareTo(pgg.getDonToiThieu()) >= 0;
+//                    return isActive && isTotalValid;
+//                })
+//                .collect(Collectors.toList());
+//
+//        phieuGiamGiaPhuHop.forEach(pgg -> {
+//            if (pgg.getNgayBatDau() != null && pgg.getNgayKetThuc() != null) {
+//                if (now.isBefore(pgg.getNgayBatDau())) {
+//                    pgg.setTrangThai(2); // Chưa diễn ra
+//                } else if (now.isAfter(pgg.getNgayKetThuc())) {
+//                    pgg.setTrangThai(1); // Ngừng hoạt động
+//                } else {
+//                    pgg.setTrangThai(0); // Hoạt động
+//                }
+//            } else {
+//                pgg.setTrangThai(1);
+//            }
+//        });
+//
+//        return ResponseEntity.ok(phieuGiamGiaPhuHop);
+//    }
+
+
     @GetMapping("/api/phieu-giam-gia-online")
     public ResponseEntity<List<PhieuGiamGia>> hienThi(@RequestParam("totalAmount") BigDecimal totalAmount) {
         List<PhieuGiamGia> danhSach = phieuGiamGiaService.findAll();
@@ -99,19 +132,13 @@ public class CartAPI {
         // Lọc phiếu giảm giá phù hợp
         List<PhieuGiamGia> phieuGiamGiaPhuHop = danhSach.stream()
                 .filter(pgg -> {
-                    // Kiểm tra trạng thái: Ngày hiện tại phải nằm trong khoảng ngày bắt đầu và kết thúc
                     boolean isActive = pgg.getNgayBatDau() != null && pgg.getNgayKetThuc() != null
                             && !now.isBefore(pgg.getNgayBatDau()) && !now.isAfter(pgg.getNgayKetThuc());
-
-                    // Kiểm tra tổng tiền phải lớn hơn đơn tối thiểu
                     boolean isTotalValid = totalAmount != null && totalAmount.compareTo(pgg.getDonToiThieu()) >= 0;
-
-                    // Nếu cả 2 điều kiện trên thỏa mãn và phiếu giảm giá đang hoạt động
                     return isActive && isTotalValid;
                 })
                 .collect(Collectors.toList());
 
-        // Cập nhật trạng thái cho các phiếu giảm giá còn lại
         phieuGiamGiaPhuHop.forEach(pgg -> {
             if (pgg.getNgayBatDau() != null && pgg.getNgayKetThuc() != null) {
                 if (now.isBefore(pgg.getNgayBatDau())) {
@@ -123,6 +150,27 @@ public class CartAPI {
                 }
             } else {
                 pgg.setTrangThai(1);
+            }
+
+            // Tính toán giá trị giảm nếu phiếu giảm giá là phần trăm hoặc số tiền cố định
+            if (pgg.getLoaiVoucher() != null) {
+                BigDecimal giaTriGiam = BigDecimal.ZERO;
+
+                if ("Phần trăm".equals(pgg.getLoaiVoucher())) {
+                    // Tính giảm giá theo phần trăm
+                    giaTriGiam = totalAmount.multiply(pgg.getGiaTriGiam()).divide(new BigDecimal(100));
+                } else if ("Tiền mặt".equals(pgg.getLoaiVoucher())) {
+                    // Tính giảm giá theo số tiền cố định
+                    giaTriGiam = pgg.getGiaTriGiam();
+                }
+
+                // Kiểm tra giá trị giảm không vượt quá giới hạn tối đa
+                if (giaTriGiam.compareTo(pgg.getGiaTriMax()) > 0) {
+                    giaTriGiam = pgg.getGiaTriMax();
+                }
+
+                // Gán giá trị giảm vào phiếu giảm giá
+                pgg.setGiaTriMax(giaTriGiam);
             }
         });
 

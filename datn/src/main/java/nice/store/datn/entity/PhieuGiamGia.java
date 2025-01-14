@@ -76,13 +76,24 @@ public class PhieuGiamGia {
         return df.format(donToiThieu) + " VND";
     }
 
-    public String getFormattedGiaTriGiam() {
+    public String getFormattedGiaTriGiam(String loaiVoucher) {
         if (giaTriGiam == null) {
-            return "0 VND";  // Trả về giá trị mặc định khi giaTriGiam là null
+            return loaiVoucher.equals("Phần trăm") ? "0%" : "0 VND";
         }
-        DecimalFormat df = new DecimalFormat("#,###");
-        return df.format(giaTriGiam) + " VND";
+
+        // Định dạng cho phần trăm, chỉ giữ số nguyên
+        DecimalFormat df = new DecimalFormat("#");
+
+        if (loaiVoucher.equals("Phần trăm")) {
+            return df.format(giaTriGiam) + "%"; // Chỉ hiển thị số nguyên, không có số 0 thừa
+        } else if (loaiVoucher.equals("Tiền mặt")) {
+            return df.format(giaTriGiam) + " VND";
+        } else {
+            return "Không xác định"; // Trường hợp không rõ loại voucher
+        }
     }
+
+
 
     public String getFormattedGiaTriMax() {
         if (giaTriMax == null) {

@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface SanPhamChiTietRepository extends JpaRepository<SanPhamChiTiet, Integer> {
 
-
+    Optional<SanPhamChiTiet> findById(Integer id);
     List<SanPhamChiTiet> findBySanPhamId(Integer sanPhamId);
 
     @Query("SELECT s FROM SanPhamChiTiet s WHERE s.mauSac.id = :mauSacId AND s.kichCo.id = :kichCoId AND s.id = :idSp")

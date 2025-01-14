@@ -95,4 +95,23 @@ public class PhieuGiamGiaService {
 
         return true;
     }
+
+
+    public boolean reduceVoucherQuantityID(Integer id) {
+        Optional<PhieuGiamGia> optionalPhieuGiamGia = phieuGiamGiaRepository.findById(id);
+        if (optionalPhieuGiamGia.isPresent()) {
+            PhieuGiamGia phieuGiamGia = optionalPhieuGiamGia.get();
+            if (phieuGiamGia.getSoLuong() > 0) {
+                phieuGiamGia.setSoLuong(phieuGiamGia.getSoLuong() - 1);
+                phieuGiamGiaRepository.save(phieuGiamGia);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+
+
 }

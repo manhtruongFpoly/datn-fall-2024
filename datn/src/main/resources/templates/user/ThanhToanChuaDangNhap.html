@@ -140,7 +140,7 @@
 
                 <div class="col-md-6">
                     <label for="sdt" class="form-label">Số Điện Thoại:</label>
-                   1221212121 <input type="text" id="sdt" name="sdt" class="form-control" placeholder="Nhập SĐT">
+                    1221212121 <input type="text" id="sdt" name="sdt" class="form-control" placeholder="Nhập SĐT">
                     <div id="sdtError" class="text-danger"></div>
                 </div>
             </div>
@@ -179,7 +179,8 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="email" class="form-label">Email:</label>
-                nguyen2@gmail.com    <input type="email" id="email" name="email" class="form-control" placeholder="Nhập Email">
+                    nguyen2@gmail.com <input type="email" id="email" name="email" class="form-control"
+                                             placeholder="Nhập Email">
                     <div id="emailError" class="text-danger"></div>
                 </div>
 
@@ -537,7 +538,8 @@
     let giaTriGiam = 0;
     let couponId = 0;
     // Xử lý sự kiện khi nhấn nút 'Tiếp Tục'
-    $("#datHang").off('click', '.tiepTuc').on('click', '.tiepTuc', function () {
+    $("#datHang").off('click', '.tiepTuc').on('click', '.tiepTuc', function (event) {
+        event.preventDefault();
         var ten = document.getElementById('ten').value;
         var sdt = document.getElementById('sdt').value;
         var dc = document.getElementById('dc').value;
@@ -604,17 +606,33 @@
                 const tongTienGia = response.tongTien;
                 console.log("Hóa đơn được tạo với ID:", idHoaDon);
 
-                // Chạy các hàm và đảm bảo chúng hoàn thành trước khi chuyển trang
-                addSanPhamVaoHDCT(idHoaDon, function() {
-                    addPhieuGiamGia(idHoaDon, couponId, function() {
-                        addHistoryLog(1, idHoaDon, function() {
-                            addPhuongThucThanhToanTienMat(idHoaDon, tongTienGia, function() {
-                                // Sau khi tất cả các tác vụ hoàn thành, chuyển trang
-                                window.location.href = '/home';
+                // Chạy các hàm bất đồng bộ theo thứ tự
+                addSanPhamVaoHDCT(idHoaDon, function () {
+                    addPhieuGiamGia(idHoaDon, couponId, function () {
+                        addHistoryLog(1, idHoaDon, function () {
+                            addPhuongThucThanhToanTienMat(idHoaDon, tongTienGia, function () {
+                               // window.location.href = '/home';
                             });
                         });
                     });
                 });
+            },
+            error: function (xhr, status, error) {
+                console.error("Có lỗi xảy ra khi tạo hóa đơn:", error);
+                alert("Đã có lỗi trong quá trình tạo hóa đơn. Vui lòng thử lại!");
+            }
+        });
+    }
+
+
+    function reduceVoucherQuantityID(id) {
+        $.ajax({
+            url: '/api/ban-hang/gsl-pgg-id/reduceQuantity',
+            type: 'POST',
+            contentType: 'application/json',  // Đảm bảo contentType là application/json
+            data: JSON.stringify({ id: id }), // Dữ liệu gửi đi dưới dạng JSON
+            success: function(response) {
+                console.log("Giảm số lượng phiếu giảm giá thành công.");
             }
         });
     }
@@ -634,55 +652,50 @@
                 // Gọi callback sau khi thành công
                 callback();
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error("Lỗi khi thêm phương thức thanh toán:", error);
             }
         });
     }
 
-    function addSanPhamVaoHDCT(idHoaDon,callback) {
-            // Lấy danh sách sản phẩm từ sessionStorage
-            var cartItems = JSON.parse(sessionStorage.getItem("cartItems"));
+    function addSanPhamVaoHDCT(idHoaDon, callback) {
+        // Lấy danh sách sản phẩm từ sessionStorage
+        var cartItems = JSON.parse(sessionStorage.getItem("cartItems"));
 
-            cartItems.forEach(product => {
-                const productData = {
-                    sanPhamChiTiet: {id: product.productId}, // Lấy ID sản phẩm từ productId
-                    soLuong: parseInt(product.quantity), // Chuyển đổi quantity sang số nguyên
-                    donGia: parseFloat(product.price.replace(/,/g, '')), // Loại bỏ dấu phẩy và chuyển đổi sang số thực
-                    trangThai: 1 // Đặt trạng thái sản phẩm
-                };
+        cartItems.forEach(product => {
+            const productData = {
+                sanPhamChiTiet: {id: product.productId}, // Lấy ID sản phẩm từ productId
+                soLuong: parseInt(product.quantity), // Chuyển đổi quantity sang số nguyên
+                donGia: parseFloat(product.price.replace(/,/g, '')), // Loại bỏ dấu phẩy và chuyển đổi sang số thực
+                trangThai: 1 // Đặt trạng thái sản phẩm
+            };
 
-                // Gửi dữ liệu tới API
-                $.ajax({
-                    url: `/api/gio-hang/them-san-pham-vao-hoa-don/${idHoaDon}`,
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(productData),
-                    success: function (response) {
-                        // Log dữ liệu phản hồi từ server
-                        console.log("Sản phẩm đã được thêm vào hóa đơn:");
-                        console.log("ID sản phẩm:", response.sanPhamChiTiet.id);
-                        console.log("Số lượng:", response.soLuong);
-                        console.log("Đơn giá:", response.donGia);
+            // Gửi dữ liệu tới API
+            $.ajax({
+                url: `/api/gio-hang/them-san-pham-vao-hoa-don/${idHoaDon}`,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(productData),
+                success: function (response) {
+                    // Log dữ liệu phản hồi từ server
+                    console.log("Sản phẩm đã được thêm vào hóa đơn:");
+                    console.log("ID sản phẩm:", response.sanPhamChiTiet.id);
+                    console.log("Số lượng:", response.soLuong);
+                    console.log("Đơn giá:", response.donGia);
 
-                        callback();
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Lỗi khi thêm sản phẩm vào hóa đơn:", error);
-                    }
-                });
+                    callback();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi khi thêm sản phẩm vào hóa đơn:", error);
+                }
             });
+        });
+    }
 
-            // Xóa dữ liệu giỏ hàng khỏi sessionStorage sau khi xử lý
-            sessionStorage.removeItem('cartItems');
-        }
-
-    function addPhieuGiamGia(idHD, idPGG,callback) {
+    function addPhieuGiamGia(idHD, idPGG, callback) {
         if (idPGG === null || idPGG === null) {
             return;
         }
-
-        // Nếu có idPGG, gửi giá trị PhieuGiamGia bình thường
         $.ajax({
             url: `/api/hoa-don/update-phieu-giam-gia/${idHD}`,
             method: 'PUT',
@@ -693,8 +706,15 @@
                 }
             }),
             success: function (response) {
-                console.log("Cập nhật phiếu giảm giá thành công");
-            callback();
+                var cartData = JSON.parse(sessionStorage.getItem("cartData"));
+                if (cartData && cartData.couponId) {
+                    var couponId1 = cartData.couponId;  // Truy cập trực tiếp nếu là đối tượng
+                    console.log("Coupon ID: ", couponId1);
+                } else {
+                    console.log("Không có couponId trong giỏ hàng.");
+                }
+                reduceVoucherQuantityID(couponId1);
+                callback();
             }
         });
     }
@@ -733,6 +753,7 @@
 
         });
     }
+
     function deleteByIDGHCT1(productId) {
         var cartItems = JSON.parse(sessionStorage.getItem("cartItems"));
         if (cartItems && Array.isArray(cartItems)) {

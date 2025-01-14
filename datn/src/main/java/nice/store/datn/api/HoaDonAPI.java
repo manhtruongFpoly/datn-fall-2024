@@ -3,6 +3,7 @@ package nice.store.datn.api;
 import nice.store.datn.entity.*;
 import nice.store.datn.repository.PhieuGiamGiaRepository;
 import nice.store.datn.response.HoaDonChiTietDTO;
+import nice.store.datn.response.SPCTUpdateSLHoaDonDTO;
 import nice.store.datn.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class HoaDonAPI {
@@ -34,16 +36,28 @@ public class HoaDonAPI {
         return phieuGiamGiaService.PhieuGiamGiaPhuHop(max);
     }
 
+//    @PutMapping("/api/hoa-don/update-phieu-giam-gia/{id}")
+//    public ResponseEntity<?> updatePhieuGiamGia(@PathVariable("id") Integer id, @RequestBody HoaDon hoaDon) {
+//        HoaDon hd = hoaDonService.detail(id);
+//
+//        if (hoaDon.getPhieuGiamGia() != null) {
+//            PhieuGiamGia pgg = phieuGiamGiaRepository.findById(hoaDon.getPhieuGiamGia().getId())
+//                    .orElseThrow(() -> new RuntimeException("PhieuGiamGia not found"));
+//            hd.setPhieuGiamGia(pgg);
+//        } else {
+//            hd.setPhieuGiamGia(null);
+//        }
+//
+//        return ResponseEntity.ok(hoaDonService.updatePGG(id, hd));
+//    }
+
     @PutMapping("/api/hoa-don/update-phieu-giam-gia/{id}")
     public ResponseEntity<?> updatePhieuGiamGia(@PathVariable("id") Integer id, @RequestBody HoaDon hoaDon) {
         HoaDon hd = hoaDonService.detail(id);
 
+        // Chỉ cập nhật khi PhieuGiamGia không null
         if (hoaDon.getPhieuGiamGia() != null) {
-            PhieuGiamGia pgg = phieuGiamGiaRepository.findById(hoaDon.getPhieuGiamGia().getId())
-                    .orElseThrow(() -> new RuntimeException("PhieuGiamGia not found"));
-            hd.setPhieuGiamGia(pgg);
-        } else {
-            hd.setPhieuGiamGia(null);
+            phieuGiamGiaRepository.findById(hoaDon.getPhieuGiamGia().getId()).ifPresent(hd::setPhieuGiamGia);
         }
 
         return ResponseEntity.ok(hoaDonService.updatePGG(id, hd));
@@ -81,11 +95,42 @@ public class HoaDonAPI {
         return ResponseEntity.ok("Cập nhật thành công");
     }
 
-    //api phan hoa don detail
+    //api phan hoa don detail -------------------------------------------
     @GetMapping("/api/san-pham-ct-co-trong-hoa-don/{hoaDonId}")
     public List<HoaDonChiTietDTO> getHoaDonChiTiet(@PathVariable Integer hoaDonId) {
         return hoaDonChiTietService.getHoaDonChiTietByHoaDonId(hoaDonId);
     }
+
+    @Autowired SanPhamCTService sanPhamCTService;
+    @PutMapping("/api/don-hang/update-so-luong/xac-nhan")
+    public ResponseEntity<String> xacNhanDonHang(@RequestBody List<SPCTUpdateSLHoaDonDTO> sanPhamChiTietRequests) {
+        System.out.println("Nhận yêu cầu cập nhật số lượng: " + sanPhamChiTietRequests);
+        for (SPCTUpdateSLHoaDonDTO request : sanPhamChiTietRequests) {
+            Optional<SanPhamChiTiet> optionalSPCT = sanPhamCTService.getSanPhamChiTietById(request.getId());
+
+            if (optionalSPCT.isPresent()) {
+                SanPhamChiTiet sanPhamChiTiet = optionalSPCT.get();
+
+                // Kiểm tra nếu số lượng trong kho nhỏ hơn số lượng cần giảm
+                if (sanPhamChiTiet.getSoLuong() < request.getSoLuong()) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sản phẩm với ID " + request.getId() + " không đủ số lượng để giảm.");
+                }
+
+                // Cập nhật số lượng sản phẩm
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - request.getSoLuong());
+                sanPhamCTService.save(sanPhamChiTiet);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy sản phẩm chi tiết với ID " + request.getId());
+            }
+        }
+
+        return ResponseEntity.ok("Cập nhật số lượng sản phẩm thành công.");
+    }
+
+
+
+
+
 
     //api phan hoa don detail
     @PutMapping("/api/hoa-don/update-trang-thai-thanh-toan/{id}")
@@ -122,5 +167,6 @@ public class HoaDonAPI {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Thêm lịch sử hóa đơn thất bại: " + e.getMessage());
         }
     }
+
 
 }

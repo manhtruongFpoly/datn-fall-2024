@@ -382,4 +382,13 @@ public class BanHangAPI {
             return ResponseEntity.status(400).build();
         }
     }
+    @PostMapping("/api/ban-hang/gsl-pgg-id/reduceQuantity")
+    public ResponseEntity<Void> reduceVoucherQuantityID(@RequestBody Map<String, Integer> requestData) {
+        Integer id = requestData.get("id");
+        System.out.println("Received ID: " + id);  // In ra giá trị ID để kiểm tra
+        boolean success = phieuGiamGiaService.reduceVoucherQuantityID(id);
+        return success ? ResponseEntity.ok().build() : ResponseEntity.status(400).build();
+    }
+
+
 }

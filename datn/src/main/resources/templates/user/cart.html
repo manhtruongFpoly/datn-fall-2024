@@ -555,9 +555,9 @@
         $.ajax({
             url: '/api/phieu-giam-gia-online', // Đường dẫn API của bạn
             method: 'GET',
-            data: {totalAmount: totalValue}, // Truyền tổng tiền qua query parameter
+            data: {totalAmount: totalValue},
             success: function (data) {
-                coupons = data; // Lưu dữ liệu phiếu giảm giá vào biến coupons
+                coupons = data;
                 displayCoupons(currentPage); // Hiển thị trang đầu tiên
             },
             error: function (xhr, status, error) {
@@ -594,16 +594,7 @@
 
 
     //lưu tien voi pgg
-    // function saveCartToSessionStorage() {
-    //     var totalPrice = document.getElementById("total-price").textContent.trim();
-    //     var couponId = document.getElementById("coupon-id").value;
-    //     var cartData = {
-    //         totalPrice: totalPrice,
-    //         couponId: couponId
-    //     };
-    //     sessionStorage.setItem("cartData", JSON.stringify(cartData));
-    //     console.log(sessionStorage);
-    // }
+
     function saveCartToSessionStorage() {
         var totalPrice = document.getElementById("total-price").textContent.trim();
         var couponId = document.getElementById("coupon-id").value;
@@ -650,7 +641,7 @@
             <td>${coupon.ngayKetThuc}</td>
             <td>
                 <input type="radio" name="coupon" value="${coupon.id}" />  <!-- Nút chọn với coupon.id -->
-            </td>
+             </td>
              `;
             couponTableBody.appendChild(row);
         });

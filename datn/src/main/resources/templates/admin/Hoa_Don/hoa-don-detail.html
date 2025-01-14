@@ -673,7 +673,6 @@
         });
     }
 
-
     const getTrangThaiLichSu = (tt) => {
         tt = Number(tt); // Chuyển tt sang kiểu số
         switch (tt) {
@@ -702,7 +701,6 @@
         getLichSuHoaDon(idHD);
         $('#modalLichSu').modal('show');
     });
-
 
     function getDuLieuThanhToan(idHD) {
         //day la api nhan idhd de lay ra lich su thanh toan
@@ -781,7 +779,6 @@
             });
     }
 
-
     function getHoaDonChiTiet(idHoaDon) {
         const url = `/api/san-pham-ct-co-trong-hoa-don/${idHoaDon}`;
         fetch(url)
@@ -811,7 +808,8 @@
                         id: item.idSPCT,
                         soLuong: item.soLuong,
                         donGia: item.donGia, // Lưu giá trị donGia
-                        phiShip: item.phiShip
+                        phiShip: item.phiShip,
+                        loaiGiaoDich: item.loaiGiaoDich
                     });
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -856,13 +854,13 @@
     </div>
     <div class="d-flex justify-content-between mb-3">
         <span class="text-lg">Voucher:</span>
-        <span class="phieuGiamGia text-lg text-muted">-${data[0].giaTriMax} VNĐ</span>
+        <span class="phieuGiamGia text-lg text-muted">-${data[0].tienGiam} VNĐ</span>
     </div>
     <hr class="my-2">
     <div class="d-flex justify-content-between">
         <span class="text-xl text-orange-700">Tổng tiền thanh toán:</span>
         <span class="tongThanhToan text-danger fw-bold display-9">
-            ${totalAmount - data[0].giaTriMax + phiShip} VNĐ
+            ${totalAmount - data[0].tienGiam + phiShip} VNĐ
         </span>
     </div>
 `;
@@ -874,7 +872,6 @@
                 console.error('Đã xảy ra lỗi:', error);
             });
     }
-
 
     function addHistoryLog(trangThai, idHD) {
         const ghiChu = $('#noteText').val().trim();
@@ -992,19 +989,9 @@
                     alert('Hóa đơn đã hoàn thành hoặc bị hủy, không thể thay đổi trạng thái.');
                     return;
                 }
-
                 currentTrangThai++;
 
-                // // Kiểm tra và thực hiện các hành động khác dựa trên trạng thái
-                // if (currentTrangThai === 2 && confirm("Bạn có muốn in hóa đơn không?")) {
-                //     setTimeout(() => {
-                //         console.log('Bắt đầu in');
-                //         window.print();
-                //     }, 1000);
-                // }
-
                 if (currentTrangThai === 2 && confirm("Bạn có muốn in hóa đơn không?")) {
-
                     const url = `/admin/invoice/export-pdf/${idHD}`;
 
                     fetch(url, {method: 'GET'})
@@ -1026,11 +1013,31 @@
                         })
                         .catch(error => {
                             console.error("Lỗi:", error);
-                            x
                             alert("Không thể in hóa đơn. Vui lòng thử lại!");
                         });
                 }
 
+                if (currentTrangThai === 5) {
+                    if (idSP.every(item => item.loaiGiaoDich === "Online")) {
+                        fetch('/api/don-hang/update-so-luong/xac-nhan', {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(idSP)
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Cập nhật thành công:', data);
+                            })
+                            .catch(error => {
+                                console.error('Lỗi khi cập nhật đơn hàng:', error);
+                            });
+                    } else {
+                        console.log('Loại giao dịch không phải là Online, không gọi API.');
+                    }
+
+                }
                 const buttonList = document.querySelectorAll("#hienThiDanhSachSanPham, #thayDoiThongTinHoaDon");
 
                 if (buttonList.length > 0) {
@@ -1080,7 +1087,6 @@
     });
 
     //end xac nhan hd
-
 
     let danhSachSanPham = [];
 
@@ -1606,12 +1612,12 @@
         ${getIcon(stepNum)}  ${getTrangThaiLichSu(trangThai)}
         </h4>
         <p class="text-gray-600">${ngayTao != null ? new Date(ngayTao).toLocaleString('vi-VN', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
         }) : ''}
         </p>
         </div>
@@ -1621,7 +1627,7 @@
 
         return stepDiv;
 
-    }
+        }
 </script>
 
 </html>

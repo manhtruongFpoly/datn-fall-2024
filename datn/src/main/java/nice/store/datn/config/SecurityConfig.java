@@ -57,7 +57,8 @@ public class SecurityConfig {
                         "/css/**", "/js/**", "/images/**",
                         "/desktop-images/**",
 
-                        "/api/san-pham-ct-co-trong-hoa-don/{hoaDonId}"
+                        "/api/san-pham-ct-co-trong-hoa-don/{hoaDonId}",
+                        "/api/don-hang/update-so-luong/xac-nhan"
 
 
 

@@ -987,19 +987,19 @@
                 } else {
                     maPGG = response[0].ma;
                     idPGG = response[0].id;
-                    // if (response[0].loaiVoucher === true) {
-                    //     let phanTram = max / response[0].giaTriGiam;
-                    //     if (response[0].giaTriMax < phanTram) {
-                    //         GiamToiDa = response[0]?.giaTriMax || 0;
-                    //     } else {
-                    //         GiamToiDa = phanTram;
-                    //     }
-                    // } else {
-                    //     GiamToiDa = response[0]?.giaTriMax || 0;
-                    // }
+                    if (response[0].loaiVoucher === "Phần trăm") {
+                        let soTienGiam = (max * response[0].giaTriGiam) / 100;
+                        if (response[0].giaTriMax < soTienGiam) {
+                            GiamToiDa = response[0]?.giaTriMax || 0;
+                        } else {
+                            GiamToiDa = soTienGiam;
+                        }
+                        GiamToiDa = GiamToiDa + "%";
+                    } else {
+                        GiamToiDa = response[0]?.giaTriMax || 0;
+                    }
 
-
-                    GiamToiDa = response[0]?.giaTriMax || 0;
+                    //GiamToiDa = response[0]?.giaTriMax || 0;
                 }
                 if (idPGG) {
                     addPhieuGiamGia(idTabHD, idPGG);
@@ -1172,6 +1172,8 @@
                 alert(`Không thể cập nhật số lượng tồn kho: ${jqXHR.responseText || "Unknown error"}`);
             }
         });
+        PhieuGiamGiaPhuHop(tongTienTrongHD);
+        getDuLieu(idTabHD);
     });
 
     // Hàm goiApiAddUP
@@ -1185,8 +1187,8 @@
                 showNotification(successMessage, "thanhCong");
                 hideModalSoLuong();
                 hideModalDanhSachSanPham();
-                getDuLieu(idTabHD);
                 PhieuGiamGiaPhuHop(tongTienTrongHD);
+                getDuLieu(idTabHD);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error('Lỗi khi gọi API:', textStatus, errorThrown);
@@ -1847,6 +1849,10 @@
                     getFormData();
                     updateThongTinNguoiNhanCoTrangThai(ten, sdtNguoiNhan, fullAddress, getAddressName(tinhthanh), quanhuyen, phuongxa, noteThongTin, phiVanChuyen, idTabHD, 1);
                     addHistoryLogBH(1, idTabHD);
+                    if (maVoucher !== null && maVoucher !== '') {
+                        reduceVoucherQuantity(maVoucher);
+                        voucherUsed = true;
+                    }
                     showNotification("Đặt hàng thành công", "thanhCong");
                     window.location.href = 'http://localhost:8080/admin/ban-hang-tai-quay';
                 }

@@ -102,7 +102,8 @@
     <div class="container d-flex align-items-center justify-content-between py-3">
         <div class="d-flex align-items-center">
             <div class="sidebar-header">
-                <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo" style="text-align: center;width: 80%;height: 60px">
+                <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo"
+                     style="text-align: center;width: 80%;height: 60px">
             </div>
             <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -138,12 +139,17 @@
     <div class="product-detail">
         <div class="row">
             <!-- Hình ảnh sản phẩm -->
-            <div hidden> <h3 id="idSanPham" th:text="${sanPhamCT.idSanPham}"> ID SP</h3></div>
+            <div hidden><h3 id="idSanPham" th:text="${sanPhamCT.idSanPham}"> ID SP</h3></div>
             <div class="col-md-6">
                 <div class="product-image">
-                    <img th:if="${sanPhamCT.url != null}" th:src="@{/desktop-images/{url}(url=${sanPhamCT.url})}" alt="Product Image" class="img-fluid"/>
+                    <img th:if="${sanPhamCT.url != null}"
+                         th:src="@{/desktop-images/{url}(url=${sanPhamCT.url})}"
+                         alt="Product Image"
+                         class="img-fluid"
+                         id="product-image"/>
                     <p th:if="${sanPhamCT.url == null}">Không có ảnh</p>
                 </div>
+
 
             </div>
             <!-- Thông tin sản phẩm -->
@@ -183,7 +189,9 @@
                 </div>
 
 
-                <p><strong>Giá bán:</strong> <span id="giaBan" th:text="${#numbers.formatDecimal(sanPhamCT.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span></p>
+                <p><strong>Giá bán:</strong> <span id="giaBan"
+                                                   th:text="${#numbers.formatDecimal(sanPhamCT.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
+                </p>
 
 
                 <!--                Lấy số lượng ở đây -->
@@ -208,7 +216,8 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12 col-md-6 col-lg-3 mb-4 text-center">
-                <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo" style="text-align: center;width: 80%;height: 60px">
+                <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo"
+                     style="text-align: center;width: 80%;height: 60px">
                 <ul class="footer__list">
                     <li class="footer__item"><i class="fas fa-map-marker-alt"></i> Hà Nội, Viet Nam</li>
                     <li class="footer__item"><i class="fas fa-phone-alt"></i> <a href="tel:0123456789"
@@ -324,11 +333,10 @@
     });
 
 
-
-
     let SanPhamCTId = null;
     let soLuongTon = null;
-  //  Cập nhật số lượng sản phẩm có sẵn dựa trên màu sắc và kích cỡ đã chọn
+
+    //  Cập nhật số lượng sản phẩm có sẵn dựa trên màu sắc và kích cỡ đã chọn
     function updateAvailableQuantity() {
         const selectedColorButton = document.querySelector('.color-option button.active');
         const selectedSizeButton = document.querySelector('.size-option button.active');
@@ -336,7 +344,7 @@
         var thuongHieuId = thuongHieuElement.getAttribute('data-thuongHieu');
         const giaBan = document.getElementById("giaBan").innerText;
         const giaBanFormatted = giaBan.replace(' VNĐ', '').replace(/,/g, '');
-        console.log(thuongHieuId );
+        console.log(thuongHieuId);
         if (selectedColorButton && selectedSizeButton) {
             const colorId = selectedColorButton.value;
             const sizeId = selectedSizeButton.value;
@@ -349,13 +357,26 @@
                 .then(data => {
                     // Log dữ liệu trả về từ API
                     console.log("Dữ liệu trả về từ API:", data);
-                    const availableQuantity  = data.sanPhamCT.soLuong || 0;
+                    const availableQuantity = data.sanPhamCT.soLuong || 0;
                     SanPhamCTId = data.sanPhamCTId;
                     soLuongTon = availableQuantity;
-                    const  giaBanUp = data.sanPhamCT.giaBan;
+                    const giaBanUp = data.sanPhamCT.giaBan;
                     document.getElementById('available-quantity').textContent =
                         availableQuantity > 0 ? `Số lượng sản phẩm: ${availableQuantity}` : 'Hết hàng';
                     document.getElementById('giaBan').textContent = `${giaBanUp} VNĐ`;
+
+                    const hinhAnh = data.sanPhamCT.url;
+                    if (hinhAnh) {
+                        // Cập nhật src của hình ảnh
+                        document.getElementById("product-image").src = `/desktop-images/${hinhAnh}`;
+                    } else {
+                        // Nếu không có URL, hiển thị thông báo không có ảnh
+                        const imageElement = document.getElementById("product-image");
+                        imageElement.style.display = 'none';  // Ẩn thẻ img nếu không có ảnh
+                        const messageElement = document.createElement("p");
+                        messageElement.textContent = "Không có ảnh";
+                        imageElement.parentNode.appendChild(messageElement);
+                    }
 
 
                     // Log số lượng còn lại
@@ -388,7 +409,7 @@
     document.getElementById('add-to-cart-form').addEventListener('submit', function (event) {
         event.preventDefault(); // Ngăn hành vi mặc định (chuyển trang)
         const idSPCT = SanPhamCTId; // ID sản phẩm chi tiết (SanPhamCTId)
-        const  soLuongTonFE = soLuongTon;
+        const soLuongTonFE = soLuongTon;
         // Lấy số lượng từ input (input có id là 'quantityInput')
         const quantityInput = document.getElementById('quantityInput');
         let quantity = parseInt(quantityInput.value); // Chuyển giá trị nhập vào thành số
@@ -428,7 +449,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ productId: idSPCT, quantity: quantity }),
+                body: JSON.stringify({productId: idSPCT, quantity: quantity}),
             })
                 .then(response => response.json()) // Parse JSON từ server
                 .then(data => {
@@ -442,7 +463,6 @@
                     console.error('Error:', error);
                     alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
                 });
-
 
 
         } else {
