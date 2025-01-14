@@ -2,7 +2,7 @@ package nice.store.datn.service;
 
 import nice.store.datn.entity.NhanVien;
 import nice.store.datn.repository.NhanVienrepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 
@@ -15,7 +15,6 @@ public class NhanVienService {
 
     private final NhanVienrepository nhanvienRepository;
 
-    @Autowired
     public NhanVienService(NhanVienrepository nhanvienRepository) {
         this.nhanvienRepository = nhanvienRepository;
     }

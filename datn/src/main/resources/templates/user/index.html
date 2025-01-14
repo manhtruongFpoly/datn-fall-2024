@@ -267,16 +267,21 @@
       <a href="#" class="text-dark"><i class="fab fa-twitter"></i></a>
     </div>
     <div class="user-options">
-      <a href="#" class="text-dark mr-3">Đăng nhập</a>
-      <a href="#" class="text-dark">Đăng kí</a>
+      <!-- Kiểm tra đăng nhập -->
+      <div th:if="${session.user != null}"> <!-- Nếu đã đăng nhập -->
+        <span class="text-dark mr-3" th:text="'Xin chào, ' + ${session.user.hoTen}"></span>
+        <a href="/dang-xuat" class="text-dark">Đăng xuất</a>
+      </div>
+      <div th:unless="${session.user != null}"> <!-- Nếu chưa đăng nhập -->
+        <a href="/dang-nhap" class="text-dark mr-3">Đăng nhập</a>
+        <a href="/dang-ky" class="text-dark">Đăng ký</a>
+      </div>
       <div class="user-icons d-inline-block ml-3">
-        <div class="user-icons d-inline-block ml-3">
-          <a href="/cart/view" class="text-dark">
-            <i class="fa fa-shopping-cart"></i>
-            <!-- Hiển thị số lượng sản phẩm trong giỏ hàng -->
-            <span class="badge badge-danger" th:text="${cart != null ? cart.gioHangCTs.size() : 0}"></span>
-          </a>
-        </div>
+        <a href="/cart/view" class="text-dark">
+          <i class="fa fa-shopping-cart"></i>
+          <!-- Hiển thị số lượng sản phẩm trong giỏ hàng -->
+          <span class="badge badge-danger" th:text="${cart != null ? cart.gioHangCTs.size() : 0}"></span>
+        </a>
       </div>
     </div>
   </div>

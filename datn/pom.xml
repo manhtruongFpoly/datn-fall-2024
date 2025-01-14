@@ -108,11 +108,11 @@
             <artifactId>layout</artifactId>
             <version>7.2.5</version> <!-- Phiên bản có thể thay đổi tùy vào thời điểm -->
         </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-            <version>5.8.1</version> <!-- Hãy thay thế bằng phiên bản phù hợp -->
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.security</groupId>-->
+        <!--            <artifactId>spring-security-core</artifactId>-->
+        <!--            <version>5.8.1</version> &lt;!&ndash; Hãy thay thế bằng phiên bản phù hợp &ndash;&gt;-->
+        <!--        </dependency>-->
 
 
         <dependency>
@@ -130,6 +130,19 @@
             <artifactId>poi-ooxml-schemas</artifactId>
             <version>4.1.2</version> <!-- Phiên bản này cần thiết cho POI -->
         </dependency>
+
+        <!-- trưởng thêm    -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+
     </dependencies>
 
     <build>

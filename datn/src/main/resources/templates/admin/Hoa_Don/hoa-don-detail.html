@@ -219,9 +219,9 @@
                             <thead class="bg-primary text-white">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">STT</th>
-<!--                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Ảnh sản-->
-<!--                                    phẩm-->
-<!--                                </th>-->
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Ảnh sản
+                                    phẩm
+                                </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Thông tin
                                     sản phẩm
                                 </th>
@@ -231,8 +231,8 @@
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Tổng tiền
                                 </th>
-<!--                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Hành động-->
-<!--                                </th>-->
+                                <!--                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Hành động-->
+                                <!--                                </th>-->
                             </tr>
                             </thead>
                             <tbody id="tbodyHoaDonChiTiet">
@@ -623,7 +623,7 @@
                 let rows = '';
 
                 data.forEach(function (item, index) {
-                    stepsHistory.push({ trangThai: item.trangThai, ngayTao: item.ngayTao });
+                    stepsHistory.push({trangThai: item.trangThai, ngayTao: item.ngayTao});
 
                     if (index === 0) {
                         currentTrangThai1 = item.trangThai;
@@ -798,10 +798,15 @@
                 }
                 const tbody = document.querySelector('#tbodyHoaDonChiTiet');
                 tbody.innerHTML = '';
-
                 idSP = [];
-
                 data.forEach((item, index) => {
+                    let hinhAnhUrl = '/path/to/default-image.jpg';
+                    if (item.hinhAnh && item.hinhAnh.includes("url=")) {
+                        const urlMatch = item.hinhAnh.match(/url=([a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;%=]+(?:\.jpg|\.jpeg|\.png|\.gif))/);
+                        if (urlMatch) {
+                            hinhAnhUrl = '/desktop-images/' + urlMatch[1]; // Lấy URL ảnh
+                        }
+                    }
                     idSP.push({
                         id: item.idSPCT,
                         soLuong: item.soLuong,
@@ -811,6 +816,12 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                     <td class="px-6 py-4">${index + 1}</td>
+                    <td class="px-6 py-4">
+    <img src="${hinhAnhUrl}"
+         alt="Product Image"
+         onerror="this.src='/path/to/default-image.jpg'"
+         style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 8px;" />
+</td>
 
                     <td class="px-6 py-4 font-weight-bold">
                         <h1>${item.tenSanPham}</h1>
@@ -832,27 +843,30 @@
                 });
 
                 // Tính tổng tiền từ mảng idSP
-                const totalAmount = idSP.reduce((sum, item) => sum + (item.donGia * item.soLuong  ), 0);
+                const totalAmount = idSP.reduce((sum, item) => sum + (item.donGia * item.soLuong), 0);
                 const phiShip = idSP[0].phiShip;
                 document.querySelector('#tongTienChiTiet').innerHTML = `
-                <div class="d-flex justify-between mb-3">
-                    <span class="text-lg">Tổng tiền hàng:</span>
-                    <span class="tongTienHang text-lg text-primary">${totalAmount} VNĐ</span>
-                </div>
-                <div class="d-flex justify-between mb-3">
-                    <span class="text-lg">Phí vận chuyển:${phiShip} </span>
-                    <span class="text-lg text-muted"> VNĐ</span>
-                </div>
-                <div class="d-flex justify-between mb-3">
-                    <span class="text-lg">Voucher:</span>
-                    <span class="phieuGiamGia text-lg text-muted">${data[0].giaTriMax} VNĐ</span>
-                </div>
-                <hr class="my-2">
-                <div class="d-flex justify-between">
-                    <span class="text-xl text-orange-700">Tổng tiền thanh toán:</span>
-                    <span class="tongThanhToan text-xl text-orange-700">${totalAmount - data[0].giaTriMax + phiShip} VNĐ</span>
-                </div>
-            `;
+    <div class="d-flex justify-content-between mb-3">
+        <span class="text-lg">Tổng tiền hàng:</span>
+        <span class="tongTienHang text-lg text-primary">${totalAmount} VNĐ</span>
+    </div>
+    <div class="d-flex justify-content-between mb-3">
+        <span class="text-lg">Phí vận chuyển:</span>
+        <span class="text-lg text-muted">${phiShip} VNĐ</span>
+    </div>
+    <div class="d-flex justify-content-between mb-3">
+        <span class="text-lg">Voucher:</span>
+        <span class="phieuGiamGia text-lg text-muted">-${data[0].giaTriMax} VNĐ</span>
+    </div>
+    <hr class="my-2">
+    <div class="d-flex justify-content-between">
+        <span class="text-xl text-orange-700">Tổng tiền thanh toán:</span>
+        <span class="tongThanhToan text-danger fw-bold display-9">
+            ${totalAmount - data[0].giaTriMax + phiShip} VNĐ
+        </span>
+    </div>
+`;
+
                 console.log(idSP);
                 console.log(data[0].giaTriMax);
             })
@@ -1605,7 +1619,7 @@
         </div>
         `);
 
-         return stepDiv;
+        return stepDiv;
 
     }
 </script>

@@ -86,6 +86,7 @@ public class HoaDonAPI {
     public List<HoaDonChiTietDTO> getHoaDonChiTiet(@PathVariable Integer hoaDonId) {
         return hoaDonChiTietService.getHoaDonChiTietByHoaDonId(hoaDonId);
     }
+
     //api phan hoa don detail
     @PutMapping("/api/hoa-don/update-trang-thai-thanh-toan/{id}")
     public ResponseEntity<?> updateTrangThaiThanhToan(

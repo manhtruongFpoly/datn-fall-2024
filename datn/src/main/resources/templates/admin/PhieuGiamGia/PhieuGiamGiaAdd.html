@@ -144,6 +144,28 @@
             return;
         }
 
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (new Date(ngayBatDau) < today) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Ngày bắt đầu không thể nhỏ hơn ngày hiện tại.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        if (new Date(ngayKetThuc) < today) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Ngày kết thúc không thể nhỏ hơn ngày hiện tại.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
         if (new Date(ngayBatDau) > new Date(ngayKetThuc)) {
             Swal.fire({
                 title: 'Lỗi!',
@@ -153,6 +175,77 @@
             });
             return;
         }
+
+        // 1. Kiểm tra rỗng hoặc không hợp lệ
+        if (isNaN(donToiThieu) || donToiThieu < 0) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Đơn tối thiểu phải là số và không được âm.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        if (isNaN(giaTriGiam) || giaTriGiam <= 0) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Giá trị giảm phải là số và không được âm.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        if (isNaN(giaTriMax) || giaTriMax <= 0) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Giá trị tối đa phải là số lớn hơn 0.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        if (isNaN(soLuong) || soLuong <= 0) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Số lượng phải là số nguyên không được âm > 0.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+// 2. Kiểm tra quan hệ logic giữa các giá trị
+        if (giaTriGiam > giaTriMax) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Giá trị giảm không được lớn hơn giá trị tối đa.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+// 3. Kiểm tra trường hợp logic khác (nếu cần)
+        if (donToiThieu > 0 && giaTriMax < donToiThieu) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Giá trị tối đa không được nhỏ hơn đơn tối thiểu.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+// Nếu mọi thứ hợp lệ
+        Swal.fire({
+            title: 'Thành công!',
+            text: 'Dữ liệu hợp lệ.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
 
         Swal.fire({
             title: 'Bạn có muốn lưu Voucher?',

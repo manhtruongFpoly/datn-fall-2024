@@ -80,7 +80,6 @@
       margin-right: 8px; /* Khoảng cách giữa checkbox và text */
     }
 
-
     .btn-login {
       background-color: #ff9800;
       color: white;
@@ -131,7 +130,6 @@
     .forgot-password:hover {
       color: #ff9800;
     }
-
   </style>
 </head>
 <body>
@@ -140,15 +138,15 @@
 <div class="login-container">
   <h3 class="title-heading">Đăng Nhập</h3>
 
-  <form action="" method="POST" class="form" id="login-form">
+  <form action="/dang-nhap" method="POST" class="form" id="login-form">
     <div class="form-group">
-      <label for="username" class="form-label">Tài Khoản</label>
-      <input id="username" name="username" type="text" placeholder="Nhập tài khoản" class="form-control">
+      <label for="email" class="form-label">Email</label>
+      <input id="email" name="email" type="email" placeholder="Nhập email" class="form-control" required>
       <span class="form-message"></span>
     </div>
     <div class="form-group">
       <label for="password" class="form-label">Mật Khẩu</label>
-      <input id="password" name="password" type="password" placeholder="Nhập mật khẩu" class="form-control">
+      <input id="password" name="password" type="password" placeholder="Nhập mật khẩu" class="form-control" required>
       <span class="form-message"></span>
     </div>
     <div class="form-group">
@@ -157,13 +155,12 @@
       </label>
     </div>
     <div class="form-group d-flex justify-content-center mt-4">
-      <button class="btn btn-login">Đăng Nhập</button>
+      <button type="submit" class="btn btn-login">Đăng Nhập</button>
     </div>
     <div class="form-group text-center">
-      <a href="#" class="forgot-password">Quên mật khẩu?</a>
+      <a href="/quen-mat-khau" class="forgot-password">Quên mật khẩu?</a>
       <a href="/dang-ky" class="forgot-password">Đăng Ký?</a>
     </div>
-
   </form>
 </div>
 

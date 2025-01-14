@@ -1803,6 +1803,7 @@
 
 
 //Xu li thanh toan hai
+
         $('#thanhToanTong').click(function () {
             showConfirm1("Bạn có chắc chắn muốn thanh toán không?", function () {
                 if (!idTabHD) {
@@ -1810,18 +1811,28 @@
                     return;
                 }
 
+                // Lấy mã phiếu giảm giá từ input
+                const maVoucher = document.getElementById('tenPGGGen').value;
+                console.log(maVoucher);
+                let voucherUsed = false;
+
                 if (checkThanhToan === 0) {
                     if (tongTienTrongHD - GiamToiDa === 0) {
                         showNotification("Thanh toán thất bại", "thatBai");
                     } else if (tienDaThanhToan < tongTienTrongHD - GiamToiDa) {
                         showNotification("Thanh toán thất bại", "thatBai");
                     } else {
+                        // Kiểm tra và giảm số lượng phiếu giảm giá nếu có mã
+                        if (maVoucher !== null && maVoucher !== '') {
+                            reduceVoucherQuantity(maVoucher);
+                            voucherUsed = true;
+                        }
+
+                        // Cập nhật trạng thái hóa đơn
                         updateTrangThaiHoaDon(6, idTabHD);
                         addHistoryLogBH(6, idTabHD);
                         showNotification("Thanh toán thành công", "thanhCong");
-                        addHistoryLogBH(1, idTabHD);
                         setTimeout(() => {
-                            // Bỏ phần xuất hóa đơn ở đây
                             Swal.fire(
                                 'Hoàn tất!',
                                 'Bạn đã thanh toán thành công.',
@@ -1832,16 +1843,33 @@
                         }, 500); // Thời gian chờ
                     }
                 } else if (checkThanhToan === 1) {
+                    // Đặt hàng thành công (nếu có)
                     getFormData();
                     updateThongTinNguoiNhanCoTrangThai(ten, sdtNguoiNhan, fullAddress, getAddressName(tinhthanh), quanhuyen, phuongxa, noteThongTin, phiVanChuyen, idTabHD, 1);
-                    // renderTabs();
                     addHistoryLogBH(1, idTabHD);
-                    console.log(updateThongTinNguoiNhanCoTrangThai)
                     showNotification("Đặt hàng thành công", "thanhCong");
                     window.location.href = 'http://localhost:8080/admin/ban-hang-tai-quay';
                 }
             });
         });
+
+        function reduceVoucherQuantity(maVoucher) {
+            $.ajax({
+                url: '/api/ban-hang/gsl-pgg/reduceQuantity',
+                type: 'POST',
+                data: { maVoucher: maVoucher },
+                success: function(response) {
+                    if (response.success) {
+                        console.log("Giảm số lượng phiếu giảm giá thành công.");
+                    } else {
+                        console.log("Có lỗi xảy ra khi giảm số lượng phiếu giảm giá.");
+                    }
+                },
+                error: function(error) {
+                    console.log("Lỗi khi gọi API giảm số lượng phiếu giảm giá.", error);
+                }
+            });
+        }
 
         function addHistoryLogBH(trangThai, idHD) {
             const ghiChu = "";

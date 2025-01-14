@@ -1,5 +1,6 @@
 package nice.store.datn.controller.user;
 
+import jakarta.servlet.http.HttpSession;
 import nice.store.datn.response.SanPhamCTResponse;
 import nice.store.datn.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +41,16 @@ public class ClientController {
     private MauSacService mauSacService;
 
     @RequestMapping("/home")
-    public String loginSubmit(){
-        return "/user/index";
+    public String home(HttpSession session, Model model) {
+        // Lấy thông tin người dùng từ session
+        Object user = session.getAttribute("user");
+
+        // Kiểm tra xem người dùng đã đăng nhập hay chưa
+        if (user != null) {
+            model.addAttribute("user", user); // Truyền thông tin người dùng vào model
+        }
+
+        return "/user/index"; // Trả về trang home
     }
 
     @GetMapping("/product-use")
@@ -75,15 +84,8 @@ public class ClientController {
         return "/user/tracuu";
     }
 
-    @GetMapping("/login")
-    public String loginUser(){
-        return "/user/login";
-    }
 
-    @GetMapping("/dang-ky")
-    public String RegistrationUser(){
-        return "/user/registration";
-    }
+
 
     @GetMapping("/gio-hang")
     public String cartUser(){

@@ -370,5 +370,16 @@ public class BanHangAPI {
     }
 
 
+    @Autowired PhieuGiamGiaService phieuGiamGiaService;
 
+    @PostMapping("/api/ban-hang/gsl-pgg/reduceQuantity")
+    public ResponseEntity<Void> reduceVoucherQuantity(@RequestParam String maVoucher) {
+        boolean success = phieuGiamGiaService.reduceVoucherQuantity(maVoucher);
+
+        if (success) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(400).build();
+        }
+    }
 }
