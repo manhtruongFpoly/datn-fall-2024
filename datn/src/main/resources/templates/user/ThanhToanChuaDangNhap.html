@@ -140,7 +140,7 @@
 
                 <div class="col-md-6">
                     <label for="sdt" class="form-label">Số Điện Thoại:</label>
-                    1221212121 <input type="text" id="sdt" name="sdt" class="form-control" placeholder="Nhập SĐT">
+                     <input type="text" id="sdt" name="sdt" class="form-control" placeholder="Nhập SĐT">
                     <div id="sdtError" class="text-danger"></div>
                 </div>
             </div>
@@ -169,7 +169,7 @@
                 </div>
 
                 <textarea class="form-control" id="diachi" name="diachi" rows="3"
-                          placeholder="Nhập địa chỉ chi tiết" oninput="validateForm()">12</textarea>
+                          placeholder="Nhập địa chỉ chi tiết" oninput="validateForm()"></textarea>
                 <input class="col-12" id="dc" name="dc" rows="3"
                        style="display: none"></input>
                 <div id="dcError" class="text-danger"></div>
@@ -179,7 +179,7 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="email" class="form-label">Email:</label>
-                    nguyen2@gmail.com <input type="email" id="email" name="email" class="form-control"
+                    <input type="email" id="email" name="email" class="form-control"
                                              placeholder="Nhập Email">
                     <div id="emailError" class="text-danger"></div>
                 </div>
@@ -539,7 +539,7 @@
     let couponId = 0;
     // Xử lý sự kiện khi nhấn nút 'Tiếp Tục'
     $("#datHang").off('click', '.tiepTuc').on('click', '.tiepTuc', function (event) {
-        event.preventDefault();
+      //  event.preventDefault();
         var ten = document.getElementById('ten').value;
         var sdt = document.getElementById('sdt').value;
         var dc = document.getElementById('dc').value;
@@ -571,7 +571,6 @@
 
                 taoHoaDonDatHang(nguoiNhan2, tongTien2, tienGiam2, sdtNguoiNhan2, diaChiNguoiNhan, ship2);
 
-                // Nếu muốn chuyển trang, xóa event.preventDefault()
 
             } else if ($('#btnVNPAY').hasClass('active')) {
                 console.log("Phương thức thanh toán VNPAY đã được chọn.");
@@ -611,7 +610,7 @@
                     addPhieuGiamGia(idHoaDon, couponId, function () {
                         addHistoryLog(1, idHoaDon, function () {
                             addPhuongThucThanhToanTienMat(idHoaDon, tongTienGia, function () {
-                               // window.location.href = '/home';
+                                window.location.href = '/home';
                             });
                         });
                     });

@@ -38,6 +38,8 @@ public class CartController {
                             RedirectAttributes redirectAttributes) {
         try {
             cartService.addToCart(productId, quantity, session);
+            Integer cartId = (Integer) session.getAttribute("cartId"); // Lấy cartId từ session
+            redirectAttributes.addFlashAttribute("cartId", cartId); // Thêm cartId vào FlashAttributes
             redirectAttributes.addFlashAttribute("success", "Sản phẩm đã được thêm vào giỏ hàng.");
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -46,6 +48,7 @@ public class CartController {
         }
         return "redirect:/cart/view";
     }
+
 
     @GetMapping("/view")
     public String viewCart1(Model model, HttpSession session) {

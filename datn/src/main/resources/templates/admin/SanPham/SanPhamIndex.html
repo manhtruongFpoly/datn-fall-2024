@@ -230,8 +230,12 @@
                                 <i class="fas fa-eye"></i>
                             </a>
 
-                            <a th:href="@{/san-phamct}" class="btn btn-light btn-sm"
-                               title="Thêm SPCT">
+<!--                            <a th:href="@{/san-phamct}" class="btn btn-light btn-sm"-->
+<!--                               title="Thêm SPCT">-->
+<!--                                <i class="fa-solid fa-plus"></i>-->
+<!--                            </a>-->
+
+                            <a th:href="@{'/san-phamct?tenSP=' + ${product.tenSP}}" class="btn btn-light btn-sm" title="Thêm SPCT">
                                 <i class="fa-solid fa-plus"></i>
                             </a>
 

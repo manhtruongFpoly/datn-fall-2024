@@ -30,8 +30,10 @@ public class CartAPI {
             Integer productId = (Integer) requestData.get("productId");
             Integer quantity = (Integer) requestData.get("quantity");
             cartService.addToCart(productId, quantity, session);
+            Integer cartId = (Integer) session.getAttribute("cartId");
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
+            response.put("cartId", cartId);
             response.put("message", "Sản phẩm đã được thêm vào giỏ hàng.");
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
@@ -227,10 +229,18 @@ public class CartAPI {
     }
 
 
-    @Autowired GioHangService gioHangCTService;
-    @PostMapping("/api/gio-hang/delete-sp/{id}")
-    public ResponseEntity<?> deleteSP(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(gioHangCTService.deleteById(id));
+    @Autowired GioHangService gioHangService;
+    @PostMapping("/delete-sp/{cartId}/{productId}")
+    public ResponseEntity<?> deleteSP(@PathVariable("cartId") Integer cartId,
+                                      @PathVariable("productId") Integer productId) {
+        try {
+            String responseMessage = gioHangService.deleteById(cartId, productId);
+            return ResponseEntity.ok(Map.of("status", "success", "message", responseMessage));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("status", "error", "message", e.getMessage()));
+        }
     }
+
 
 }

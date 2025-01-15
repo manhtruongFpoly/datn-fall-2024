@@ -25,10 +25,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -99,8 +96,6 @@ public class ThongKeAPI {
         return result;
     }
 
-
-
     @GetMapping("/thong-ke-hoadon")
     public Map<String, Object> getThongKeHoadon(@RequestParam("startDate") String startDate,
                                                 @RequestParam("endDate") String endDate) {
@@ -110,8 +105,16 @@ public class ThongKeAPI {
         LocalDateTime start = LocalDateTime.parse(startDate, formatter);
         LocalDateTime end = LocalDateTime.parse(endDate, formatter);
 
-        // Gọi service
-        List<HoaDon> hoaDons = thongKeService.getThongKeHoaDon(start, end);
+        // Danh sách trạng thái cần lọc (có thể thay đổi theo nhu cầu)
+        List<Integer> trangThais = Arrays.asList(6);  // Giả sử trạng thái 6 là trạng thái hợp lệ
+
+        // Lọc hóa đơn theo trạng thái và khoảng thời gian
+        List<HoaDon> hoaDons = thongKeService.getThongKeHoaDon(start, end, trangThais);
+
+        // Kiểm tra nếu hoaDons rỗng hoặc null
+        if (hoaDons == null || hoaDons.isEmpty()) {
+            hoaDons = Collections.emptyList();
+        }
 
         Map<String, List<HoaDon>> groupedByDate = hoaDons.stream()
                 .collect(Collectors.groupingBy(hd -> hd.getNgayTao().toLocalDate().toString()));
@@ -122,8 +125,8 @@ public class ThongKeAPI {
                 .collect(Collectors.toList());
         List<BigDecimal> revenueData = labels.stream()
                 .map(label -> groupedByDate.get(label).stream()
-                        .map(HoaDon::getTongTien)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add))
+                        .map(hd -> Optional.ofNullable(hd.getTongTien()).orElse(BigDecimal.ZERO)) // Xử lý null
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)) // Tổng doanh thu
                 .collect(Collectors.toList());
 
         Map<String, Object> result = new HashMap<>();
@@ -133,6 +136,7 @@ public class ThongKeAPI {
 
         return result;
     }
+
 
     @GetMapping("/thong-ke-trang-thai")
     public Map<String, Object> getThongKeTrangThai() {
@@ -151,15 +155,74 @@ public class ThongKeAPI {
         return result;
     }
 
+//    @GetMapping("/export-excel")
+//    public ResponseEntity<byte[]> exportExcel(@RequestParam("startDate") String startDate,
+//                                              @RequestParam("endDate") String endDate) throws IOException, IOException {
+//        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+//        LocalDateTime start = LocalDateTime.parse(startDate, formatter);
+//        LocalDateTime end = LocalDateTime.parse(endDate, formatter);
+//
+//        // Lấy dữ liệu từ API thống kê
+//        List<HoaDon> hoaDons = thongKeService.getThongKeHoaDon(start, end);
+//
+//        // Xử lý dữ liệu (giống như trong API cũ)
+//        Map<String, List<HoaDon>> groupedByDate = hoaDons.stream()
+//                .collect(Collectors.groupingBy(hd -> hd.getNgayTao().toLocalDate().toString()));
+//
+//        List<String> labels = new ArrayList<>(groupedByDate.keySet());
+//        List<Integer> invoiceData = labels.stream()
+//                .map(label -> groupedByDate.get(label).size())
+//                .collect(Collectors.toList());
+//        List<BigDecimal> revenueData = labels.stream()
+//                .map(label -> groupedByDate.get(label).stream()
+//                        .map(HoaDon::getTongTien)
+//                        .reduce(BigDecimal.ZERO, BigDecimal::add))
+//                .collect(Collectors.toList());
+//
+//        // Tạo file Excel
+//        Workbook workbook = new XSSFWorkbook();
+//        Sheet sheet = workbook.createSheet("Thong Ke Hoa Don");
+//
+//        // Tạo tiêu đề cho các cột
+//        Row headerRow = sheet.createRow(0);
+//        headerRow.createCell(0).setCellValue("Ngày");
+//        headerRow.createCell(1).setCellValue("Số Lượng Hóa Đơn");
+//        headerRow.createCell(2).setCellValue("Doanh Thu");
+//
+//        // Thêm dữ liệu vào bảng
+//        for (int i = 0; i < labels.size(); i++) {
+//            Row row = sheet.createRow(i + 1);
+//            row.createCell(0).setCellValue(labels.get(i));
+//            row.createCell(1).setCellValue(invoiceData.get(i));
+//            row.createCell(2).setCellValue(revenueData.get(i).doubleValue());
+//        }
+//
+//        // Đóng gói dữ liệu thành byte array
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//        workbook.write(byteArrayOutputStream);
+//        workbook.close();
+//
+//        // Trả về file Excel
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("Content-Disposition", "attachment; filename=ThongKeHoaDon.xlsx");
+//
+//        return new ResponseEntity<>(byteArrayOutputStream.toByteArray(), headers, HttpStatus.OK);
+//    }
+
     @GetMapping("/export-excel")
     public ResponseEntity<byte[]> exportExcel(@RequestParam("startDate") String startDate,
-                                              @RequestParam("endDate") String endDate) throws IOException, IOException {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+                                              @RequestParam("endDate") String endDate) throws IOException {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME; // Định dạng ISO
+
+        // Chuyển đổi chuỗi thành LocalDateTime
         LocalDateTime start = LocalDateTime.parse(startDate, formatter);
         LocalDateTime end = LocalDateTime.parse(endDate, formatter);
 
-        // Lấy dữ liệu từ API thống kê
-        List<HoaDon> hoaDons = thongKeService.getThongKeHoaDon(start, end);
+        // Danh sách trạng thái cần lọc (giả sử trạng thái 6 là trạng thái hợp lệ)
+        List<Integer> trangThais = Arrays.asList(6); // Bạn có thể thay đổi nếu cần
+
+        // Lấy dữ liệu từ API thống kê (lọc theo trạng thái và ngày)
+        List<HoaDon> hoaDons = thongKeService.getThongKeHoaDon(start, end, trangThais);
 
         // Xử lý dữ liệu (giống như trong API cũ)
         Map<String, List<HoaDon>> groupedByDate = hoaDons.stream()
@@ -204,4 +267,5 @@ public class ThongKeAPI {
 
         return new ResponseEntity<>(byteArrayOutputStream.toByteArray(), headers, HttpStatus.OK);
     }
+
 }

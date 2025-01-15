@@ -96,10 +96,10 @@ public class ThongKeService {
         LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
 
         // Danh sách trạng thái cần lọc
-        List<Integer> trangThais = Arrays.asList(2, 3, 4, 5, 6);
+        List<Integer> trangThais = Arrays.asList(6);
 
         // Gọi repository với danh sách trạng thái
-        return thongKeRepository.findByTrangThaiInAndNgayThanhToanBetween(trangThais, startOfDay, endOfDay);
+        return thongKeRepository.findByTrangThaiInAndNgayTaoBetween(trangThais, startOfDay, endOfDay);
     }
 
     public List<HoaDon> getDoanhThuThangNay() {
@@ -111,8 +111,8 @@ public class ThongKeService {
 
         LocalDateTime startOfMonth = firstDayOfMonth.atStartOfDay();  // 00:00 ngày đầu tháng
         LocalDateTime endOfMonth = lastDayOfMonth.atTime(LocalTime.MAX);  // 23:59 ngày cuối tháng
-        List<Integer> trangThais = Arrays.asList(2, 3, 4, 5, 6);
-        return thongKeRepository.findByTrangThaiInAndNgayThanhToanBetween(trangThais, startOfMonth, endOfMonth);
+        List<Integer> trangThais = Arrays.asList(6);
+        return thongKeRepository.findByTrangThaiInAndNgayTaoBetween(trangThais, startOfMonth, endOfMonth);
     }
 
     public List<HoaDon> getDoanhThuNamNay() {
@@ -124,15 +124,20 @@ public class ThongKeService {
         // Chuyển đổi sang LocalDateTime
         LocalDateTime startOfYear = firstDayOfYear.atStartOfDay();
         LocalDateTime endOfYear = lastDayOfYear.atTime(LocalTime.MAX);
-        List<Integer> trangThais = Arrays.asList(2, 3, 4, 5, 6);
-        return thongKeRepository.findByTrangThaiInAndNgayThanhToanBetween(trangThais, startOfYear, endOfYear);
+        List<Integer> trangThais = Arrays.asList(6);
+        return thongKeRepository.findByTrangThaiInAndNgayTaoBetween(trangThais, startOfYear, endOfYear);
     }
 
 
-    public List<HoaDon> getThongKeHoaDon(LocalDateTime startDate, LocalDateTime endDate) {
-        // Lọc hóa đơn theo khoảng thời gian
-        return thongKeRepository.findByNgayTaoBetween(startDate, endDate);
-    }
+//    public List<HoaDon> getThongKeHoaDon(LocalDateTime startDate, LocalDateTime endDate) {
+//        // Lọc hóa đơn theo khoảng thời gian
+//        return thongKeRepository.findByNgayTaoBetween(startDate, endDate);
+//    }
+
+public List<HoaDon> getThongKeHoaDon(LocalDateTime startDate, LocalDateTime endDate, List<Integer> trangThais) {
+    // Lọc hóa đơn theo trạng thái và thời gian
+    return thongKeRepository.findByTrangThaiInAndNgayTaoBetween(trangThais, startDate, endDate);
+}
 
 
     public List<HoaDon> getAllHoaDons() {

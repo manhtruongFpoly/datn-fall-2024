@@ -454,9 +454,12 @@
                 .then(response => response.json()) // Parse JSON từ server
                 .then(data => {
                     if (data.status === "success") {
-                        alert(data.message); // Hiển thị thông báo thành công
+                        const cartId = data.cartId; // Lấy cartId từ response
+                        console.log("Cart ID:", cartId);
+                        sessionStorage.setItem('cartId', cartId);
+                        alert(data.message);
                     } else {
-                        alert(data.message); // Hiển thị lỗi từ server
+                        alert(data.message);
                     }
                 })
                 .catch(error => {

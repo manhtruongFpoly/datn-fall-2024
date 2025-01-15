@@ -524,9 +524,17 @@
 
     //rest lại sesson mỗi khi truy cập gio ahngf để lấy sl đúng nhất
     window.onload = function () {
+        var cartId = sessionStorage.getItem("cartId");
         sessionStorage.clear();
         console.log("sessionStorage đã được reset.");
-    }
+        if (cartId) {
+            sessionStorage.setItem("cartId", cartId);
+            console.log("Cart ID đã được khôi phục:", cartId);
+        } else {
+            console.log("Không có Cart ID để khôi phục.");
+        }
+    };
+
     let currentPage = 1;
     const itemsPerPage = 10;
     let coupons = [];
@@ -646,7 +654,7 @@
             couponTableBody.appendChild(row);
         });
 
-        // Cập nhật nút phân trang
+         // Cập nhật nút phân trang
         updatePagination();
     }
 </script>

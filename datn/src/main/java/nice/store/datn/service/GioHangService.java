@@ -66,6 +66,13 @@ public class GioHangService {
         }).orElse(null);
     }
 
-
+    public String deleteById(Integer cartId, Integer productId) {
+        try {
+            gioHangChiTietRepository.deleteByCartIdAndProductId(cartId, productId);
+            return "Sản phẩm đã được xóa khỏi giỏ hàng.";
+        } catch (Exception e) {
+            throw new RuntimeException("Có lỗi xảy ra khi xóa sản phẩm.");
+        }
+    }
 }
 

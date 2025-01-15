@@ -79,7 +79,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
 //                                                        @Param("endDate") LocalDateTime endDate);
 
     @Query(value = "SELECT * FROM HOA_DON WHERE TRANG_THAI IN :trangThais AND NGAY_TAO BETWEEN :startDate AND :endDate", nativeQuery = true)
-    List<HoaDon> findByTrangThaiInAndNgayThanhToanBetween(@Param("trangThais") List<Integer> trangThais,
+    List<HoaDon> findByTrangThaiInAndNgayTaoBetween(@Param("trangThais") List<Integer> trangThais,
                                                           @Param("startDate") LocalDateTime startDate,
                                                           @Param("endDate") LocalDateTime endDate);
 
