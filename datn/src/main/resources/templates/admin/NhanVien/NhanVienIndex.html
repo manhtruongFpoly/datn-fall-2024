@@ -50,7 +50,7 @@
                         <tr th:each="nv, iterStat : ${listNhanVien}">
                             <td th:text="${iterStat.index + 1}"></td>
                             <td th:text="${nv.maNv}"></td>
-                            <td th:text="${nv.sdt}"></td>
+                            <td th:text="'0' +${nv.sdt}"></td>
                             <td th:text="${nv.email}"></td>
 
                             <td th:text="${nv.ho + ' ' + nv.tenDem + ' ' + nv.ten}"></td>

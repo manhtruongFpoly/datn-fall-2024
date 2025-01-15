@@ -1,7 +1,10 @@
 package nice.store.datn.service;
 
+import nice.store.datn.config.SHA256PasswordEncoder;
 import nice.store.datn.entity.KhachHang;
+import nice.store.datn.entity.Role;
 import nice.store.datn.repository.KhachHangRepository;
+import nice.store.datn.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -15,11 +18,36 @@ public class KhachHangService {
 
     @Autowired
     private KhachHangRepository khachHangRepository;
+    private SHA256PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
-
+    public KhachHangService(KhachHangRepository khachHangRepository, RoleRepository roleRepository) {
+        this.khachHangRepository = khachHangRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = new SHA256PasswordEncoder(); // Initialize here
+    }
     public KhachHang createKH(KhachHang kh) {
+        String maKH = generateMaKH();
+        while (khachHangRepository.findByMaKH(maKH).isPresent()) {
+
+            maKH = generateMaKH();
+        }
+        kh.setMaKH(maKH);
+        Role roleKhachHang = roleRepository.findById(2)
+                .orElseThrow(() -> new RuntimeException("Role với id = 2 không tồn tại"));
+
+        // Gán Role vào khách hàng
+        kh.setIdRole(roleKhachHang);
+        String encodedPassword = passwordEncoder.encode(kh.getMatKhau());
+        kh.setMatKhau(encodedPassword);
         kh.setNgayTao(LocalDateTime.now());
+
         return khachHangRepository.save(kh);
+    }
+
+    private String generateMaKH() {
+
+        return "KH" + String.format("%03d", (int) (Math.random() * 10000));
     }
 
     public List<KhachHang> findAllOrderedByDate() {
@@ -51,7 +79,10 @@ public class KhachHangService {
             khachHang.setSdt(kh.getSdt());
             khachHang.setEmail(kh.getEmail());
             khachHang.setTrangThai(kh.getTrangThai());
-            khachHang.setMatKhau(kh.getMatKhau());
+            if (kh.getMatKhau() != null && !kh.getMatKhau().isEmpty()) {
+                String encodedPassword = passwordEncoder.encode(kh.getMatKhau());
+                khachHang.setMatKhau(encodedPassword);
+            }
 
             // Cập nhật danh sách địa chỉ (DiaChi)
             if (kh.getDiaChi() != null) {

@@ -1,5 +1,6 @@
 package nice.store.datn.service;
 
+import nice.store.datn.config.SHA256PasswordEncoder;
 import nice.store.datn.entity.NhanVien;
 import nice.store.datn.repository.NhanVienrepository;
 
@@ -13,11 +14,15 @@ import java.util.Optional;
 @Service
 public class NhanVienService {
 
+    private SHA256PasswordEncoder passwordEncoder;
+
     private final NhanVienrepository nhanvienRepository;
 
     public NhanVienService(NhanVienrepository nhanvienRepository) {
         this.nhanvienRepository = nhanvienRepository;
+        this.passwordEncoder = new SHA256PasswordEncoder(); // Initialize here
     }
+
 
 
     public NhanVien create(NhanVien nv) {
@@ -29,10 +34,11 @@ public class NhanVienService {
         }
 
         nv.setMaNv(maNV);
-        nv.setIdRole(2);
+        nv.setIdRole(3);
         nv.setNgayTao(LocalDateTime.now());
         nv.setNgaySua(LocalDateTime.now());
-
+        String encodedPassword = passwordEncoder.encode(nv.getMatKhau());
+        nv.setMatKhau(encodedPassword);
         return nhanvienRepository.save(nv);
     }
     private String generateMaNV() {
@@ -70,8 +76,13 @@ public class NhanVienService {
         existingNv.setDiaChi(updatedNv.getDiaChi());
         existingNv.setNgaySinh(updatedNv.getNgaySinh());
         existingNv.setTrangThai(updatedNv.getTrangThai());
-        existingNv.setMatKhau(updatedNv.getMatKhau());
+        if (updatedNv.getMatKhau() != null && !updatedNv.getMatKhau().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(updatedNv.getMatKhau());
+            existingNv.setMatKhau(encodedPassword);
+        }
 
+        // Cập nhật thời gian sửa đổi
+        existingNv.setNgaySua(LocalDateTime.now());
         // Update modification time
         existingNv.setNgaySua(LocalDateTime.now());
 

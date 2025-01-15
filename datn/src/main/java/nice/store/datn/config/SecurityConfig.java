@@ -63,6 +63,7 @@ public class SecurityConfig {
 
 
 
+
                 ).permitAll() // Cho phép truy cập công khai
                 .requestMatchers("/khach-hang/**").hasRole("KHACH_HANG")
                 .requestMatchers("/admin/**").hasAnyRole("NHAN_VIEN", "ADMIN")

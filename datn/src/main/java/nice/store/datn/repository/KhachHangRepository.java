@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface KhachHangRepository extends JpaRepository<KhachHang, Integer> {
 
-    KhachHang findByTen(String username);
+    Optional<KhachHang> findByMaKH(String maKH);
     @Query("SELECT kh FROM KhachHang kh WHERE kh.maKH = :maKh OR kh.email = :email")
     Optional<KhachHang> findByMaKhOrEmail(@Param("maKh") String maKh, @Param("email") String email);
     KhachHang findByEmail(String email);
