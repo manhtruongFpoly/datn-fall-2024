@@ -111,8 +111,13 @@
                         <div id="modalDachSachSanPham" class="modal-overlay-danh-sach-san-pham-unique"
                              style="display: none;">
                             <div class="modal-content-danh-sach-san-pham-unique">
-                                <h1>Danh sách sản phẩm</h1>
-                                <!--                                boLoc spct-->
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <h1>Danh sách sản phẩm</h1>
+                                    <button onclick="hideModalDanhSachSanPham()" style="padding: 8px 16px; background-color: #c10d24; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                       X
+                                    </button>
+                                </div>
+
                                 <div class="col-md-12 mb-4">
                                     <form method="get" id="searchForm" class="p-3 border rounded search-form">
                                         <h2 class="text-start">Lọc Tìm Kiếm </h2>
@@ -221,7 +226,7 @@
                                     </tbody>
                                 </table>
 
-                                <button onclick="hideModalDanhSachSanPham()">Đóng</button>
+
                             </div>
                         </div>
 
@@ -1026,7 +1031,6 @@
             }
         });
     }
-
     // Hàm lọc
     function filterData() {
         let filteredData = danhSachSanPham;
@@ -1080,24 +1084,24 @@
         });
         $("#danhSachSanPham").html(list);
 
-        if ($.fn.DataTable.isDataTable("#tableDanhSachSanPham")) {
-            $("#tableDanhSachSanPham").DataTable().destroy();
-        }
-
-        // Khởi tạo DataTables sau khi nội dung được thêm
-        $('#tableDanhSachSanPham').DataTable({
-            paging: true,
-            searching: false,
-            ordering: false,
-            language: {
-                paginate: {
-                    previous: "Trước",
-                    next: "Sau"
-                },
-                info: "Hiển thị trang _PAGE_ trong tổng số _PAGES_",
-                zeroRecords: "Không tìm thấy kết quả phù hợp"
-            }
-        });
+        // if ($.fn.DataTable.isDataTable("#tableDanhSachSanPham")) {
+        //     $("#tableDanhSachSanPham").DataTable().destroy();
+        // }
+        //
+        // // Khởi tạo DataTables sau khi nội dung được thêm
+        // $('#tableDanhSachSanPham').DataTable({
+        //     paging: true,
+        //     searching: false,
+        //     ordering: false,
+        //     language: {
+        //         paginate: {
+        //             previous: "Trước",
+        //             next: "Sau"
+        //         },
+        //         info: "Hiển thị trang _PAGE_ trong tổng số _PAGES_",
+        //         zeroRecords: "Không tìm thấy kết quả phù hợp"
+        //     }
+        // });
     }
 
     // Gọi lại hàm lọc khi thay đổi bộ lọc

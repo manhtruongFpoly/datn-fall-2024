@@ -219,7 +219,7 @@
                         <td>
                             <div>
                                 <!-- Hiển thị ID và tên sản phẩm -->
-                                <h5 th:id="'productId-' + ${item.productId}" th:text="${item.productId}">ID</h5>
+                                <h5 th:id="'productId-' + ${item.productId}" th:text="${item.productId}" hidden="hidden">ID</h5>
                                 <h5 th:id="'productName-' + ${item.productId}" th:text="${item.tenSanPham}">Tên sản
                                     phẩm</h5>
 
@@ -275,9 +275,7 @@
                     <div class="col-md-3">
                         <div class="coupon-section">
                             <h4>Chọn phiếu giảm giá</h4>
-                            <button type="button" class="btn btn-warning" data-toggle="modal"
-                                    data-target="#couponModal">Chọn phiếu
-                            </button>
+                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#couponModal" onclick="loadCoupons()">Chọn phiếu</button>
                             <br>
                             <div>
                                 <h5 hidden id="coupon-display-id"></h5>
@@ -415,37 +413,95 @@
 
 <script>
 
+    // function logSelectedProduct(checkbox) {
+    //     var row = checkbox.closest("tr");
+    //
+    //     // Lấy ID sản phẩm từ thẻ <h5> chứa ID sản phẩm
+    //     var productIdElement = row.querySelector("h5[id^='productId-']");
+    //     var productId = productIdElement ? productIdElement.textContent.trim() : "";
+    //
+    //     // Lấy tên sản phẩm từ thẻ <h5> chứa tên sản phẩm
+    //     var productNameElement = row.querySelector("h5[id^='productName-']");
+    //     var productName = productNameElement ? productNameElement.textContent.trim() : "";
+    //
+    //     // Lấy số lượng sản phẩm
+    //     var quantityElement = row.querySelector("span[id^='quantity-']");
+    //     var quantity = quantityElement ? quantityElement.textContent.trim() : "Không có số lượng";
+    //
+    //     // Lấy giá bán
+    //     var priceElement = row.querySelector("span[id^='price-']");
+    //     var price = priceElement ? priceElement.textContent.trim() : "Không có giá";
+    //
+    //     // Lấy màu sắc
+    //     var colorElement = row.querySelector("span[id^='color-']");
+    //     var color = colorElement ? colorElement.textContent.trim() : "Chưa có màu sắc";
+    //
+    //     // Lấy kích cỡ
+    //     var sizeElement = row.querySelector("span[id^='size-']");
+    //     var size = sizeElement ? sizeElement.textContent.trim() : "Chưa có kích cỡ";
+    //
+    //     // Lấy ảnh sản phẩm
+    //     var imageElement = row.querySelector("img");
+    //     var image = imageElement ? imageElement.getAttribute("src") : "Không có ảnh";
+    //
+    //     // Tạo đối tượng sản phẩm
+    //     var productData = {
+    //         productId: productId,
+    //         productName: productName,
+    //         quantity: quantity,
+    //         price: price,
+    //         color: color,
+    //         size: size,
+    //         image: image
+    //     };
+    //
+    //     // Lấy mảng cartItems từ sessionStorage hoặc tạo mới nếu chưa có
+    //     var cartItems = JSON.parse(sessionStorage.getItem("cartItems")) || [];
+    //
+    //     if (checkbox.checked) {
+    //         // Nếu checkbox được chọn, kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+    //         var productExists = cartItems.some(item => item.productId === productId);
+    //
+    //         if (!productExists) {
+    //             // Nếu sản phẩm chưa có trong giỏ hàng, thêm vào
+    //             cartItems.push(productData);
+    //         }
+    //     } else {
+    //         // Nếu checkbox bị bỏ chọn, tìm và xóa sản phẩm khỏi giỏ hàng
+    //         cartItems = cartItems.filter(item => item.productId !== productId);
+    //     }
+    //
+    //     // Lưu lại mảng vào sessionStorage
+    //     sessionStorage.setItem("cartItems", JSON.stringify(cartItems));
+    //
+    //     // In ra console để kiểm tra
+    //     console.log("Cart items in sessionStorage:", cartItems);
+    // }
+
+    // Lưu trữ tham chiếu tới phần tử tổng tiền
+    var totalPriceElement = document.querySelector("#total-price");
+
     function logSelectedProduct(checkbox) {
-        // Tìm đến dòng chứa checkbox
         var row = checkbox.closest("tr");
 
         // Lấy ID sản phẩm từ thẻ <h5> chứa ID sản phẩm
         var productIdElement = row.querySelector("h5[id^='productId-']");
         var productId = productIdElement ? productIdElement.textContent.trim() : "";
 
+        // Lấy giá bán và số lượng
+        var priceElement = row.querySelector("span[id^='price-']");
+        var price = priceElement ? parseFloat(priceElement.textContent.trim().replace(/[^0-9.-]+/g, "")) : 0;
+        var quantityElement = row.querySelector("span[id^='quantity-']");
+        var quantity = quantityElement ? parseInt(quantityElement.textContent.trim()) : 0;
         // Lấy tên sản phẩm từ thẻ <h5> chứa tên sản phẩm
         var productNameElement = row.querySelector("h5[id^='productName-']");
         var productName = productNameElement ? productNameElement.textContent.trim() : "";
-
-        // Lấy số lượng sản phẩm
-        var quantityElement = row.querySelector("span[id^='quantity-']");
-        var quantity = quantityElement ? quantityElement.textContent.trim() : "Không có số lượng";
-
-        // Lấy giá bán
-        var priceElement = row.querySelector("span[id^='price-']");
-        var price = priceElement ? priceElement.textContent.trim() : "Không có giá";
-
-        // Lấy màu sắc
-        var colorElement = row.querySelector("span[id^='color-']");
-        var color = colorElement ? colorElement.textContent.trim() : "Chưa có màu sắc";
-
-        // Lấy kích cỡ
-        var sizeElement = row.querySelector("span[id^='size-']");
-        var size = sizeElement ? sizeElement.textContent.trim() : "Chưa có kích cỡ";
-
-        // Lấy ảnh sản phẩm
         var imageElement = row.querySelector("img");
         var image = imageElement ? imageElement.getAttribute("src") : "Không có ảnh";
+        var colorElement = row.querySelector("span[id^='color-']");
+        var color = colorElement ? colorElement.textContent.trim() : "Chưa có màu sắc";
+        var sizeElement = row.querySelector("span[id^='size-']");
+        var size = sizeElement ? sizeElement.textContent.trim() : "Chưa có kích cỡ";
 
         // Tạo đối tượng sản phẩm
         var productData = {
@@ -456,30 +512,49 @@
             color: color,
             size: size,
             image: image
+
         };
 
         // Lấy mảng cartItems từ sessionStorage hoặc tạo mới nếu chưa có
         var cartItems = JSON.parse(sessionStorage.getItem("cartItems")) || [];
 
         if (checkbox.checked) {
-            // Nếu checkbox được chọn, kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-            var productExists = cartItems.some(item => item.productId === productId);
-
-            if (!productExists) {
-                // Nếu sản phẩm chưa có trong giỏ hàng, thêm vào
-                cartItems.push(productData);
-            }
+            // Nếu checkbox được chọn, thêm sản phẩm vào giỏ hàng
+            cartItems.push(productData);
         } else {
-            // Nếu checkbox bị bỏ chọn, tìm và xóa sản phẩm khỏi giỏ hàng
+            // Nếu checkbox bị bỏ chọn, xóa sản phẩm khỏi giỏ hàng
             cartItems = cartItems.filter(item => item.productId !== productId);
         }
 
         // Lưu lại mảng vào sessionStorage
         sessionStorage.setItem("cartItems", JSON.stringify(cartItems));
 
-        // In ra console để kiểm tra
-        console.log("Cart items in sessionStorage:", cartItems);
+        // Cập nhật lại tổng tiền
+        updateTotalPrice();
     }
+
+    // Cập nhật tổng tiền
+    function updateTotalPrice() {
+        var cartItems = JSON.parse(sessionStorage.getItem("cartItems")) || [];
+        var total = 0;
+
+        // Tính tổng tiền
+        cartItems.forEach(item => {
+            total += item.price * item.quantity;
+        });
+
+        // Cập nhật tổng tiền vào phần tử HTML
+        if (totalPriceElement) {
+            totalPriceElement.setAttribute('data-total', total);
+            totalPriceElement.innerText = total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        }
+    }
+
+    // Gọi hàm updateTotalPrice khi trang được tải hoặc giỏ hàng đã được khôi phục
+    document.addEventListener("DOMContentLoaded", function() {
+        updateTotalPrice();
+    });
+
 
     //rest lại sesson mỗi khi truy cập gio ahngf để lấy sl đúng nhất
     window.onload = function () {
@@ -501,7 +576,7 @@
     function updatePagination() {
         const totalPages = Math.ceil(coupons.length / itemsPerPage);
         const pagination = document.querySelector('#pagination');
-        pagination.innerHTML = ''; // Xóa nút phân trang hiện tại
+        pagination.innerHTML = '';
 
         for (let i = 1; i <= totalPages; i++) {
             const pageButton = document.createElement('button');
@@ -513,19 +588,41 @@
             pagination.appendChild(pageButton);
         }
     }
+    // function loadCoupons() {
+    //     var totalText = document.getElementById('total-price').innerText;
+    //     var totalWithoutComma = totalText.replace(/,/g, ''); // Loại bỏ dấu phẩy
+    //     var totalValue = parseFloat(totalWithoutComma);
+    //     console.log(totalPriceElement);
+    //     // Gọi API và truyền totalAmount vào yêu cầu
+    //     $.ajax({
+    //         url: '/api/phieu-giam-gia-online', // Đường dẫn API của bạn
+    //         method: 'GET',
+    //         data: {totalAmount: totalPriceElement},
+    //         success: function (data) {
+    //             coupons = data;
+    //             displayCoupons(currentPage); // Hiển thị trang đầu tiên
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error('Error loading coupons:', error);
+    //         }
+    //     });
+    // }
     function loadCoupons() {
+        // Lấy giá trị tổng tiền từ phần tử có id="total-price"
         var totalText = document.getElementById('total-price').innerText;
-        var totalWithoutComma = totalText.replace(/,/g, ''); // Loại bỏ dấu phẩy
-        var totalValue = parseFloat(totalWithoutComma);
-        console.log(totalValue);
-        // Gọi API và truyền totalAmount vào yêu cầu
+        var totalWithoutComma = totalText.replace(/\./g, ''); // Loại bỏ dấu chấm (phân cách hàng nghìn)
+        var totalValue = parseFloat(totalWithoutComma.replace(/,/g, '')); // Loại bỏ dấu phẩy và chuyển thành số
+
+        console.log("Total Value: ", totalValue);
+
+        // Gọi API và truyền totalValue vào yêu cầu
         $.ajax({
             url: '/api/phieu-giam-gia-online', // Đường dẫn API của bạn
             method: 'GET',
-            data: {totalAmount: totalValue},
+            data: { totalAmount: totalValue }, // Truyền totalValue vào API
             success: function (data) {
-                coupons = data;
-                displayCoupons(currentPage); // Hiển thị trang đầu tiên
+                coupons = data; // Giả sử API trả về danh sách phiếu giảm giá
+                displayCoupons(currentPage); // Hiển thị phiếu giảm giá
             },
             error: function (xhr, status, error) {
                 console.error('Error loading coupons:', error);
@@ -533,10 +630,11 @@
         });
     }
 
-    $(document).ready(function () {
-        loadCoupons();
 
-    });
+    // $(document).ready(function () {
+    //     loadCoupons();
+    //
+    // });
 
     function applyCoupon() {
         const selectedCoupon = document.querySelector('input[name="coupon"]:checked');
@@ -563,13 +661,17 @@
     //lưu tien voi pgg
 
     function saveCartToSessionStorage() {
-        var totalPrice = document.getElementById("total-price").textContent.trim();
+        var totalText = document.getElementById('total-price').innerText;
+        var totalWithoutComma = totalText.replace(/\./g, ''); // Loại bỏ dấu chấm (phân cách hàng nghìn)
+        var totalValue = parseFloat(totalWithoutComma.replace(/,/g, '')); // Loại bỏ dấu phẩy và chuyển thành số
+
+        console.log("Total Value: ", totalValue);
         var couponId = document.getElementById("coupon-id").value;
         var couponName = document.getElementById("coupon-name").textContent.replace('Tên: ', '');  // Lấy tên phiếu giảm giá
         var discountValue = document.getElementById("giaTriGiamMax").value;  // Lấy giá trị giảm giá
 
         var cartData = {
-            totalPrice: totalPrice,
+            totalPrice: totalValue,
             couponId: couponId,
             couponName: couponName,
             discountValue: discountValue
@@ -615,7 +717,7 @@
 
          // Cập nhật nút phân trang
         updatePagination();
-    }
+     }
 </script>
 
 

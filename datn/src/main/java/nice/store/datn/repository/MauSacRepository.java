@@ -16,8 +16,9 @@ public interface MauSacRepository extends JpaRepository<MauSac, Integer> {
 
     @Query("SELECT ms FROM MauSac ms " +
             "JOIN SanPhamChiTiet spct ON spct.mauSac.id = ms.id " +
-            "WHERE spct.sanPham.id = :productId")
+            "WHERE spct.sanPham.id = :productId AND spct.trangThai = 1")
     List<MauSac> findByProductId(@Param("productId") Integer productId);
+
     Optional<MauSac> findById(Integer id);
 
 

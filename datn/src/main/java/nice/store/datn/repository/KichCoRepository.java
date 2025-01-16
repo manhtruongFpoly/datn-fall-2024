@@ -16,8 +16,9 @@ public interface KichCoRepository extends JpaRepository<KichCo, Integer> {
 
     @Query("SELECT kc FROM KichCo kc " +
             "JOIN SanPhamChiTiet spct ON spct.kichCo.id = kc.id " +
-            "WHERE spct.sanPham.id = :productId")
+            "WHERE spct.sanPham.id = :productId AND spct.trangThai = 1")
     List<KichCo> findByProductId(@Param("productId") Integer productId);
+
 
     Optional<KichCo> findKichCoBySize(String size);
 

@@ -681,9 +681,9 @@
 
         cartItems.forEach(product => {
             const productData = {
-                sanPhamChiTiet: {id: product.productId}, // Lấy ID sản phẩm từ productId
-                soLuong: parseInt(product.quantity), // Chuyển đổi quantity sang số nguyên
-                donGia: parseFloat(product.price.replace(/,/g, '')), // Loại bỏ dấu phẩy và chuyển đổi sang số thực
+                sanPhamChiTiet: {id: product.productId},
+                soLuong: parseInt(product.quantity),
+                donGia: parseFloat(product.price),
                 trangThai: 1 // Đặt trạng thái sản phẩm
             };
 
@@ -811,15 +811,15 @@
             <td>${item.size}</td>
             <td>${item.price}</td>
             <td>${item.quantity}</td>
-            <td>${(parseFloat(item.price.replace(/,/g, '')) * parseInt(item.quantity)).toLocaleString()} VNĐ</td>
+           <td>${(parseFloat(item.price) * parseInt(item.quantity)).toLocaleString()} VNĐ</td>
         `;
 
             // Thêm dòng
             cartTableBody.appendChild(row);
 
-            // Cộng dồn số lượng và tổng tiền
             totalQuantity += parseInt(item.quantity);
-            totalPrice += parseFloat(item.price.replace(',', '')) * parseInt(item.quantity);
+            totalPrice += item.price * parseInt(item.quantity);
+
         });
 
         // Hiển thị

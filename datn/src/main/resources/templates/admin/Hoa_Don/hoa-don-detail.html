@@ -623,7 +623,7 @@
 
                 data.forEach(function (item, index) {
                     stepsHistory.push({trangThai: item.trangThai, ngayTao: item.ngayTao});
-                    allTrangThai.push(item.trangThai, 7);
+                    allTrangThai.push(item.trangThai);
                     console.log(allTrangThai)
                     rows += `
             <tr>
@@ -1604,16 +1604,29 @@
     document.querySelector("#huyHoaDon").addEventListener("click", function () {
         const isConfirmed = confirm("Bạn có chắc chắn muốn hủy hóa đơn này?");
         if (isConfirmed) {
-            updateTrangThai(7);
-            getThongTinHoaDon(idHD);
+            try {
+                updateTrangThai(7);
+                console.log("Trạng thái hóa đơn đã được cập nhật.");
+            } catch (error) {
+                console.error("Lỗi khi cập nhật trạng thái hóa đơn:", error);
+            }
+            try {
+                addHistoryLog(7, idHD);
+                console.log("Lịch sử đã được ghi lại.");
+            } catch (error) {
+                console.error("Lỗi khi ghi lại lịch sử:", error);
+            }
             document.querySelector("#huyHoaDon").style.display = "none";
             document.querySelector("#hienThiGhiChu").style.display = "none";
             document.querySelector("#hienThiDanhSachSanPham").style.display = "none";
             document.querySelector("#thayDoiThongTinHoaDon").style.display = "none";
+
+            console.log("Hóa đơn đã được xử lý hủy.");
         } else {
             console.log("Hủy hành động hủy hóa đơn.");
         }
     });
+
 
 
 
@@ -1644,7 +1657,7 @@
         </div>
         `);
 
-        return stepDiv;
+         return stepDiv;
 
         }
 </script>
