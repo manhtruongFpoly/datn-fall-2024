@@ -628,8 +628,8 @@
         $.ajax({
             url: '/api/ban-hang/gsl-pgg-id/reduceQuantity',
             type: 'POST',
-            contentType: 'application/json',  // Đảm bảo contentType là application/json
-            data: JSON.stringify({ id: id }), // Dữ liệu gửi đi dưới dạng JSON
+            contentType: 'application/json',
+            data: JSON.stringify({ id: id }),
             success: function(response) {
                 console.log("Giảm số lượng phiếu giảm giá thành công.");
             }
