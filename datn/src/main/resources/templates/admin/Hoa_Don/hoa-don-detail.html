@@ -615,24 +615,21 @@
     function getLichSuHoaDon(id) {
         $.get(`/api/lich-su-hoa-don1/${id}`, function (data) {
             console.log("Data nhận được:", data);
-
             stepsHistory = [];
             let currentTrangThai1 = null;
-
             if (data && data.length > 0) {
                 let rows = '';
+                let allTrangThai = [];
 
                 data.forEach(function (item, index) {
                     stepsHistory.push({trangThai: item.trangThai, ngayTao: item.ngayTao});
-
-                    if (index === 0) {
-                        currentTrangThai1 = item.trangThai;
-                    }
+                    allTrangThai.push(item.trangThai, 7);
+                    console.log(allTrangThai)
                     rows += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${getTrangThaiLichSu(item.trangThai)}</td>
-                        <td>${new Date(item.ngayTao).toLocaleString('vi-VN', {
+            <tr>
+                <td>${index + 1}</td>
+                <td>${getTrangThaiLichSu(item.trangThai)}</td>
+                <td>${new Date(item.ngayTao).toLocaleString('vi-VN', {
                         day: '2-digit',
                         month: '2-digit',
                         year: 'numeric',
@@ -640,35 +637,32 @@
                         minute: '2-digit',
                         second: '2-digit'
                     })}</td>
-                        <td>Admin</td>
-                        <td>${item.ghiChu || 'Không có ghi chú'}</td>
-                    </tr>
-                `;
+                <td>Admin</td>
+                <td>${item.ghiChu || 'Không có ghi chú'}</td>
+            </tr>
+        `;
                 });
                 $('#listLichSu').html(rows);
+                const buttonList1 = document.querySelectorAll("#hienThiDanhSachSanPham, #thayDoiThongTinHoaDon , #huyHoaDon");
+                const shouldShowButtons = allTrangThai.every(trangThai => trangThai === "0" || trangThai === "1");
+
+                if (shouldShowButtons) {
+                    console.log("Hiển thị nút: Chỉ có trạng thái 0 hoặc 1.");
+                    buttonList1.forEach(button => {
+                        button.style.display = 'inline-block';
+                    });
+                } else {
+                    console.log("Ẩn nút: Có trạng thái ngoài 0 hoặc 1.");
+                    buttonList1.forEach(button => {
+                        button.style.display = 'none';
+                    });
+                }
             } else {
                 $('#listLichSu').html('<tr><td colspan="5" class="text-center">Không có dữ liệu lịch sử.</td></tr>');
             }
-
-            // Kiểm tra trạng thái để hiển thị hoặc ẩn các nút
-            const buttonList1 = document.querySelectorAll("#hienThiDanhSachSanPham, #thayDoiThongTinHoaDon");
-
-            if (currentTrangThai1 == 0 || currentTrangThai1 == 1) {
-                buttonList1.forEach(button => {
-                    console.log("Hiển thị nút");
-                    button.style.display = 'inline-block';
-                });
-            } else {
-                buttonList1.forEach(button => {
-                    console.log("Ẩn nút");
-                    button.style.display = 'none';
-                });
-            }
-
             updateButtonsState();
         }).fail(function (error) {
             console.error("Lỗi khi gọi API:", error);
-            // Xử lý trường hợp lỗi (nếu cần)
             $('#listLichSu').html('<tr><td colspan="5" class="text-center">Không thể tải dữ liệu lịch sử.</td></tr>');
         });
     }
@@ -779,6 +773,7 @@
             });
     }
 
+    let tienGiamVocher = 0;
     function getHoaDonChiTiet(idHoaDon) {
         const url = `/api/san-pham-ct-co-trong-hoa-don/${idHoaDon}`;
         fetch(url)
@@ -815,10 +810,14 @@
                     row.innerHTML = `
                     <td class="px-6 py-4">${index + 1}</td>
                     <td class="px-6 py-4">
-    <img src="${hinhAnhUrl}"
+   <div style="position: relative; width: 100px; height: 100px;">
+    <img id="product-image"
+         src="${hinhAnhUrl}"
          alt="Product Image"
-         onerror="this.src='/path/to/default-image.jpg'"
+         onerror="this.style.display='none'; this.parentNode.innerHTML='<p style=\\'text-align: center; font-size: 14px;\\'>Không có ảnh</p>';"
          style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 8px;" />
+</div>
+
 </td>
 
                     <td class="px-6 py-4 font-weight-bold">
@@ -843,6 +842,9 @@
                 // Tính tổng tiền từ mảng idSP
                 const totalAmount = idSP.reduce((sum, item) => sum + (item.donGia * item.soLuong), 0);
                 const phiShip = idSP[0].phiShip;
+                let tienGiam = data[0].tienGiam;
+                tienGiam = tienGiamVocher; // Không gặp lỗi
+
                 document.querySelector('#tongTienChiTiet').innerHTML = `
     <div class="d-flex justify-content-between mb-3">
         <span class="text-lg">Tổng tiền hàng:</span>
@@ -977,8 +979,6 @@
             $('#noteError').addClass('hidden');
         }
 
-
-        // Lấy trạng thái hiện tại của hóa đơn từ API
         $.ajax({
             url: `/api/hoa-don/detail/${idHD}`,
             method: 'GET',
@@ -1038,7 +1038,8 @@
                     }
 
                 }
-                const buttonList = document.querySelectorAll("#hienThiDanhSachSanPham, #thayDoiThongTinHoaDon");
+
+                const buttonList = document.querySelectorAll("#hienThiDanhSachSanPham, #thayDoiThongTinHoaDon, #huyHoaDon");
 
                 if (buttonList.length > 0) {
                     buttonList.forEach(button => {
@@ -1246,10 +1247,11 @@
                 getHoaDonChiTiet(idHD);
                 setTimeout(function () {
                     const totalAmount = idSP.reduce((sum, item) => sum + (item.donGia * item.soLuong), 0);
+                    const phiShip = idSP[0].phiShip;
                     const giaTriMax = document.querySelector('.phieuGiamGia').textContent.replace(' VNĐ', '');
                     console.log("Tổng tiền sau khi thêm sản phẩm: " + totalAmount + giaTriMax);
-                    updateTongTienHD(idHD, totalAmount - giaTriMax, giaTriMax);
-                    PhieuGiamGiaPhuHopHD(totalAmount); // Cập nhật voucher
+                    updateTongTienHD(idHD, totalAmount + phiShip - tienGiamVocher, tienGiamVocher);
+                    PhieuGiamGiaPhuHopHD(totalAmount + phiShip -tienGiamVocher); // Cập nhật voucher
                 }, 1000);
 
                 closeModal();
@@ -1319,22 +1321,20 @@
                 } else {
                     maPGG = response[0].ma;
                     idPGG = response[0].id;
-                    // if (response[0].loaiVoucher === true) {
-                    //     let phanTram = max / response[0].giaTriGiam;
-                    //     if (response[0].giaTriMax < phanTram) {
-                    //         GiamToiDa = response[0]?.giaTriMax || 0;
-                    //     } else {
-                    //         GiamToiDa = phanTram;
-                    //     }
-                    // } else {
-                    //     GiamToiDa = response[0]?.giaTriMax || 0;
-                    // }
-
-
-                    GiamToiDa = response[0]?.giaTriMax || 0;
+                    if (response[0].loaiVoucher === "Phần trăm") {
+                        let soTienGiam = (max * response[0].giaTriGiam) / 100;
+                        if (response[0].giaTriMax < soTienGiam) {
+                            GiamToiDa = response[0]?.giaTriMax || 0;
+                        } else {
+                            GiamToiDa = soTienGiam;
+                        }
+                        GiamToiDa = GiamToiDa;
+                    } else {
+                        GiamToiDa = response[0]?.giaTriMax || 0;
+                    }
                 }
                 if (idPGG) {
-                    addPhieuGiamGiaHD(idHD, idPGG);
+                    addPhieuGiamGiaHD(idTabHD, idPGG);
                 } else {
                 }
             },
@@ -1598,6 +1598,25 @@
 
         console.log("Full Address:", fullAddress);
     }
+
+
+    //huy hoa don
+    document.querySelector("#huyHoaDon").addEventListener("click", function () {
+        const isConfirmed = confirm("Bạn có chắc chắn muốn hủy hóa đơn này?");
+        if (isConfirmed) {
+            updateTrangThai(7);
+            getThongTinHoaDon(idHD);
+            document.querySelector("#huyHoaDon").style.display = "none";
+            document.querySelector("#hienThiGhiChu").style.display = "none";
+            document.querySelector("#hienThiDanhSachSanPham").style.display = "none";
+            document.querySelector("#thayDoiThongTinHoaDon").style.display = "none";
+        } else {
+            console.log("Hủy hành động hủy hóa đơn.");
+        }
+    });
+
+
+
 
 
     function createStep(trangThai, ngayTao, stepNum) {
