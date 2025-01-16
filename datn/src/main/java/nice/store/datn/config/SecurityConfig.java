@@ -56,10 +56,12 @@ public class SecurityConfig {
                         "/api/hoa-don/lich-su-hoa-don/add/{idHD}",
                         "/css/**", "/js/**", "/images/**",
                         "/desktop-images/**",
+                        "/khach-hang/**",
 
                         "/api/san-pham-ct-co-trong-hoa-don/{hoaDonId}",
                         "/api/don-hang/update-so-luong/xac-nhan",
                         "/thong-ke-hoadon"
+
 
 
 

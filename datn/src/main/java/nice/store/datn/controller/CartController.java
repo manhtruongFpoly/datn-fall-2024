@@ -73,21 +73,7 @@ public class CartController {
 
 
 
-    // Xóa sản phẩm khỏi giỏ hàng
-    @PostMapping("/remove")
-    public String removeCartItem(@RequestParam("productId") Integer productId,
-                                 HttpSession session,
-                                 RedirectAttributes redirectAttributes) {
-        try {
-            cartService.removeCartItem(productId, session);
-            redirectAttributes.addFlashAttribute("success", "Sản phẩm đã được xóa khỏi giỏ hàng.");
-        } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra khi xóa sản phẩm khỏi giỏ hàng.");
-        }
-        return "redirect:/cart/view";
-    }
+
 
     // Xóa toàn bộ giỏ hàng
     @PostMapping("/clear")
@@ -105,6 +91,21 @@ public class CartController {
         return "redirect:/cart/view";
     }
 
+    // Xóa sản phẩm khỏi giỏ hàng
+    @PostMapping("/remove")
+    public String removeCartItem(@RequestParam("productId") Integer productId,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            cartService.removeCartItem(productId, session);
+            redirectAttributes.addFlashAttribute("success", "Sản phẩm đã được xóa khỏi giỏ hàng.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra khi xóa sản phẩm khỏi giỏ hàng.");
+        }
+        return "redirect:/cart/view";
+    }
     // Cập nhật số lượng sản phẩm trong giỏ hàng
     @PostMapping("/update")
     public String updateCartItem(@RequestParam("productId") Integer productId,

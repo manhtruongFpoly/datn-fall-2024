@@ -33,8 +33,8 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Mã KH</label>
-                        <input type="text" class="form-control" th:field="*{maKH}" placeholder="Nhập mã khách hàng" required>
-                        <div th:if="${#fields.hasErrors('maKH')}" th:errors="*{maKH}" class="text-danger"></div>
+                        <input type="text" class="form-control" th:field="*{maKH}" placeholder="Mã tự tạo" readonly>
+                        <div th:if="${#fields.hasErrors('maKH')}" th:errors="*{maKH}" class="text-danger" ></div>
                     </div>
 
                     <div class="col-md-6">
