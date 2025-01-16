@@ -137,7 +137,9 @@ public class CartAPI {
                     boolean isActive = pgg.getNgayBatDau() != null && pgg.getNgayKetThuc() != null
                             && !now.isBefore(pgg.getNgayBatDau()) && !now.isAfter(pgg.getNgayKetThuc());
                     boolean isTotalValid = totalAmount != null && totalAmount.compareTo(pgg.getDonToiThieu()) >= 0;
-                    return isActive && isTotalValid;
+                    boolean isQuantityValid = pgg.getSoLuong() > 0;
+                    boolean isTT = pgg.getTrangThai() == 0;
+                    return isActive && isTotalValid && isQuantityValid && isTT;
                 })
                 .collect(Collectors.toList());
 
