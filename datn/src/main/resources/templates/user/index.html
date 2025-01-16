@@ -254,81 +254,6 @@
     .product-card button:hover {
       background: linear-gradient(90deg, #218838, #28a745);
     }
- /*trưởng thêm*/
-    .new-product-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center; /* Căn giữa các sản phẩm theo chiều ngang */
-      gap: 20px; /* Khoảng cách giữa các sản phẩm */
-      padding: 20px 0; /* Thêm padding trên và dưới */
-      max-width: 1200px; /* Giới hạn chiều rộng tối đa của container */
-      margin: 0 auto; /* Căn giữa container trong trang */
-    }
-
-    .new-product-container .col-12.col-md-4.mb-4 {
-      flex: 0 0 calc(33.333% - 20px); /* Mỗi sản phẩm chiếm 1/3 chiều rộng, trừ đi khoảng cách */
-      max-width: calc(33.333% - 20px); /* Giới hạn chiều rộng tối đa của mỗi sản phẩm */
-      display: flex;
-      justify-content: center; /* Căn giữa nội dung trong mỗi sản phẩm */
-    }
-
-    .product-card {
-      width: 100%; /* Đảm bảo sản phẩm chiếm toàn bộ chiều rộng của cột */
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      background: white;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .product-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .product-card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      transition: transform 0.3s;
-    }
-
-    .product-card:hover img {
-      transform: scale(1.1);
-    }
-
-    .product-card .product-info {
-      padding: 15px;
-      text-align: center; /* Căn giữa nội dung trong product-info */
-    }
-
-    .product-card .product-name {
-      font-size: 1.2em;
-      margin: 10px 0;
-      text-transform: capitalize;
-    }
-
-    .product-card .product-price {
-      color: #28a745;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .product-card .text-center {
-      margin-top: 15px; /* Khoảng cách giữa nút và nội dung phía trên */
-    }
-
-    .product-card .btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-
-    .product-card .btn-primary:hover {
-      background-color: #0056b3;
-      border-color: #004085;
-    }
   </style>
 </head>
 <body>
@@ -367,8 +292,8 @@
   <div class="container d-flex align-items-center justify-content-between py-3">
     <!-- Logo -->
     <div class="d-flex align-items-center">
-      <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo" style="text-align: center;width: 80%;height: 60px">
-
+      <img th:src="@{/img/logo1r.jpg}" alt="Logo" width="80" height="80"
+           style="border-radius: 50%; border: 2px solid #fff; margin-right: 20px;">
 
       <!-- Toggler Button cho Mobile -->
       <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -485,8 +410,8 @@
       <div class="col-sm-6 col-md-6 col-lg-4 mb-4 mb-lg-0" data-aos="fade" data-aos-delay="">
         <a class="block-2-item" href="/product-use">
           <figure class="image">
-            <img th:src="@{/api/san-pham-chi-tiet/desktop-images/author-item.jpg}" alt="Logo" style="text-align: center;width: 100%;height: 200px">
-
+            <img th:src="@{/img/b.jpg}" alt=""
+                 class="img-fluid"/>
           </figure>
           <div class="text">
             <span class="text-uppercase">Bộ sưu tập</span>
@@ -497,7 +422,8 @@
       <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="100">
         <a class="block-2-item" href="/product-use">
           <figure class="image">
-            <img th:src="@{/api/san-pham-chi-tiet/desktop-images/card-large-item2.jpg}" alt="Logo" style="text-align: center;width: 100%;height: 200px">
+            <img th:src="@{/img/b.jpg}"
+                 class="img-fluid"/>
           </figure>
           <div class="text">
             <span class="text-uppercase">Bộ sưu tập</span>
@@ -508,8 +434,8 @@
       <div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="200">
         <a class="block-2-item" href="/product-use">
           <figure class="image">
-            <img th:src="@{/api/san-pham-chi-tiet/desktop-images/card-item9.jpg}" alt="Logo" style="text-align: center;width: 100%;height: 200px">
-
+            <img th:src="@{/img/b.jpg}" alt=""
+                 class="img-fluid"/>
           </figure>
           <div class="text">
             <span class="text-uppercase">Bộ sưu tập</span>
@@ -520,46 +446,15 @@
     </div>
   </div>
 </div>
-<h2 class="text-center mb-4">Danh Sách Sản Phẩm</h2>
-<div style="display: flex; justify-content: center; align-items: center">
-<div class="col-md-9">
-  <div class="new-product-container row" > <!-- Sử dụng class ở đây -->
-    <div class="col-12 col-md-4 mb-4" th:each="sp, iterStat : ${listSanPhamCT}"
-         th:if="${iterStat.index < 6}"
-         th:data-thuong-hieu="${sp.tenThuongHieu}"
-         th:data-size="${sp.tenKichCo}"
-         th:data-color="${sp.tenMauSac}"
-         th:data-price="${sp.giaBan}"
-         th:data-name="${sp.tenSP}"
-         th:data-soluong="${sp.soLuong}"
-         th:data-mota="${sp.moTa}">
 
-      <div class="product-card">
-        <div class="product-image-wrapper">
-          <!-- Hiển thị hình ảnh sản phẩm -->
-          <img th:src="@{/desktop-images/{url}(url=${sp.url})}"
-               alt="product-image" class="product-image">
-        </div>
-        <div class="product-info">
-          <div class="product-name" th:text="${sp.tenSP }"></div>
-          <div class="product-price" th:text="${#numbers.formatDecimal(sp.giaBan, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></div>
-        </div>
-        <!-- Căn giữa nút "Xem chi tiết" -->
-        <div class="text-center">
-          <a class="btn btn-primary" th:href="@{/product-detail/{productId}(productId=${sp.idSanPham})}">Xem chi tiết</a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Pagination -->
-</div>
-</div>
+
+
 <footer style="background-color: #000; color: #fff; padding: 40px 0;">
   <div class="container">
     <div class="row">
       <!-- Logo và Thông tin liên hệ -->
       <div class="col-sm-12 col-md-6 col-lg-3 mb-4 text-center">
-        <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo" width="80" height="80"
+        <img th:src="@{/images/logo1r.jpg}" alt="Logo" width="80" height="80"
              style="border-radius: 50%; border: 2px solid #fff; margin-bottom: 20px;">
         <ul class="footer__list" style="list-style: none; padding: 0;">
           <li class="footer__item"><i class="fas fa-map-marker-alt"></i> Hà Nội, Viet Nam</li>

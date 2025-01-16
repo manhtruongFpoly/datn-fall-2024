@@ -19,7 +19,20 @@ public class MauSacService {
     public List<MauSac> getMauSacByProductId(Integer productId) {
         return mauSacRepository.findByProductId(productId);
     }
-    public MauSac create(MauSac mauSac) {
+    private String generateMaMauSac() {
+        String prefix = "MS";
+        int count = (int) mauSacRepository.count() + 1;
+        return prefix + String.format("%05d", count);
+    }
+    public Object create(MauSac mauSac) {
+        Optional<MauSac> existsByTenMauSac = mauSacRepository.findByTenMauSac(mauSac.getTenMauSac());
+        if (existsByTenMauSac.isPresent()) {
+            return "Tên chất liệu đã tồn tại!";
+        }
+
+
+        String generatedMa = generateMaMauSac();
+        mauSac.setMaMauSac(generatedMa);
         mauSac.setNgayTao(LocalDateTime.now());
         return mauSacRepository.save(mauSac);
     }

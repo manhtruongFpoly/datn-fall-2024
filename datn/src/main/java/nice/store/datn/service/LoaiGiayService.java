@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LoaiGiayService {
@@ -19,8 +20,19 @@ public class LoaiGiayService {
     public LoaiGiay findById(Integer id) {
         return loaiGiayRepository.findById(id).orElse(null);
     }
+    private String generateMaLoaiGiay() {
+        String prefix = "LG";
+        int count = (int) loaiGiayRepository.count() + 1;
+        return prefix + String.format("%05d", count);
+    }
+    public Object save(LoaiGiay loaiGiay) {
+        Optional<LoaiGiay> existingDeGiay = loaiGiayRepository.findByTenLoaiGiay(loaiGiay.getTenLoaiGiay());
+        if (existingDeGiay.isPresent()) {
+            return "Tên đế giày đã tồn tại!";
+        }
 
-    public LoaiGiay save(LoaiGiay loaiGiay) {
+        String generatedMa = generateMaLoaiGiay();
+        loaiGiay.setMaLoaiGiay(generatedMa);
         return loaiGiayRepository.save(loaiGiay);
     }
 

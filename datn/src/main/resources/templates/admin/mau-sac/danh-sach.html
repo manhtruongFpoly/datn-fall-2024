@@ -78,7 +78,7 @@
                                 <td th:text="${iterStat.index + 1}"></td>
                                 <td th:text="${mauSac.maMauSac}"></td>
                                 <td th:text="${mauSac.tenMauSac}"></td>
-                                <td th:text="${mauSac.trangThai == 0 ? 'Hoạt động' : 'Không hoạt động'}"></td>
+                                <td th:text="${mauSac.trangThai == 1 ? 'Hoạt động' : 'Không hoạt động'}"></td>
 
                                 <td>
                                     <a th:href="@{/mau-sac/update/{id}(id=${mauSac.id})}" class="btn btn-link">

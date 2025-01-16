@@ -124,20 +124,38 @@
             <h1>Cập Nhật Màu Sắc</h1>
             <!-- Form Container with White Border -->
             <div class="form-container">
-                <form th:action="@{/mau-sac/update/{id}(id=${mauSac.id})}" th:object="${mauSac}" method="post" id="updateMauSacForm" class="container" style="max-width: 500px;">
+
+                    <form th:action="@{/mau-sac/update/{id}(id=${mauSac.id})}" th:object="${mauSac}" method="post" id="updateMauSacForm" class="container" style="max-width: 500px;">
                     <div class="mb-3">
                         <label for="maMauSac" class="form-label">Mã Màu Sắc:</label>
-                        <input type="text" id="maMauSac" name="maMauSac" class="form-control form-control-sm" readonly th:value="${mauSac.maMauSac}" placeholder="Tự động tạo">
+                        <input type="text" id="maMauSac" name="maMauSac"
+                               class="form-control form-control-sm" readonly
+                               th:value="${mauSac.maMauSac}" placeholder="Tự động tạo">
                     </div>
 
-                    <div class="mb-3">
-                        <label for="tenMauSac" class="form-label">Tên Màu Sắc:</label>
-                        <input type="text" id="tenMauSac" name="tenMauSac" class="form-control form-control-sm" required maxlength="50" placeholder="Nhập tên màu sắc" th:value="${mauSac.tenMauSac}" th:classappend="${#fields.hasErrors('tenMauSac')} ? 'is-invalid' : ''">
-                        <div th:if="${#fields.hasErrors('tenMauSac')}" class="invalid-feedback">
-                            <span th:text="${#fields.errors('tenMauSac')[0]}"></span>
+                    <div class="mb-3 d-flex flex-column">
+                        <div class="d-flex align-items-center">
+                            <label for="tenMauSac" class="form-label mb-0" style="flex-grow: 1;">Tên Màu Sắc:</label>
+
+                            <!-- Thông báo lỗi với biểu tượng tin nhắn và khung -->
+                            <div th:if="${#fields.hasErrors('tenMauSac')}" class="alert alert-danger alert-dismissible small d-flex align-items-center" id="errorMessage" style="min-height: 30px;">
+                                <i class="fas fa-comment-dots"></i>
+                                <span th:text="${#fields.errors('tenMauSac')[0]}"></span>
+                            </div>
+                            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible small d-flex align-items-center" id="errorMessage" style="min-height: 30px;">
+                                <i class="fas fa-comment-dots"></i>
+                                <span th:text="${errorMessage}"></span>
+                            </div>
                         </div>
+
+                        <input type="text" id="tenMauSac" name="tenMauSac"
+                               class="form-control form-control-sm"
+                               required maxlength="50" placeholder="Nhập tên màu sắc"
+                               th:value="${mauSac.tenMauSac}"
+                               th:classappend="${#fields.hasErrors('tenMauSac')} ? 'is-invalid' : ''">
                     </div>
 
+                    <!-- Trạng thái -->
                     <div class="mb-3">
                         <label for="trangThai" class="form-label">Trạng thái:</label>
                         <select id="trangThai" name="trangThai" class="form-control form-control-sm" required>
@@ -149,10 +167,9 @@
 
                     <div>
                         <button type="submit" class="btn btn-primary btn-sm">Cập Nhật</button>
-                        <a th:href="@{/mau-sac}" class="btn btn-secondary btn-sm">Hủy</a>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="resetForm()">Làm Mới</button>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>

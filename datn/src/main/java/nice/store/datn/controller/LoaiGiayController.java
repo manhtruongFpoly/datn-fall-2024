@@ -38,7 +38,7 @@ public class LoaiGiayController {
         return "redirect:/loai-giay";
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/loai-giay/edit/{id}")
     public String showEditForm(@PathVariable("id") Integer id, Model model) {
         LoaiGiay loaiGiay = loaiGiayService.findById(id);  // Kiểm tra xem loaiGiay có null không
         if (loaiGiay == null) {
@@ -62,7 +62,7 @@ public class LoaiGiayController {
         return "redirect:/loai-giay";
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/loai-giay/delete/{id}")
     public String deleteLoaiGiay(@PathVariable("id") Integer id) {
         loaiGiayService.deleteById(id);
         return "redirect:/loai-giay";

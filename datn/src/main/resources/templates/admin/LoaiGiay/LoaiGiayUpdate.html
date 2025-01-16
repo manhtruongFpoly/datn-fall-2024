@@ -34,7 +34,7 @@
                                 <form th:action="@{'/updateLoaiGiay/' + ${loaiGiay.id}}" th:object="${loaiGiay}" method="post">
                                     <div class="form-group">
                                         <label for="maLoaiGiay">Mã Loại Giày:</label>
-                                        <input type="text" th:field="*{maLoaiGiay}" class="form-control" id="maLoaiGiay" placeholder="Nhập mã loại giày" required>
+                                        <input type="text" th:field="*{maLoaiGiay}" class="form-control" id="maLoaiGiay" readonly>
                                     </div>
                                     <div class="form-group">
                                         <label for="tenLoaiGiay">Tên Loại Giày:</label>

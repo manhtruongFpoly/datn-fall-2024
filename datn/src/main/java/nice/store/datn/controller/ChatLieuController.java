@@ -38,7 +38,7 @@ public class ChatLieuController {
         if (chatLieu.getNgayTao() == null) {
             chatLieu.setNgayTao(LocalDate.now()); // Đặt ngày hiện tại
         }
-        chatLieuService.saveChatLieu(chatLieu);
+        chatLieuService.addChatLieu(chatLieu);
         return "redirect:/chat-lieu";
     }
 

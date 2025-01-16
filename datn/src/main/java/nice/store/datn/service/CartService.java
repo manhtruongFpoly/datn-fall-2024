@@ -177,12 +177,6 @@ public class CartService {
 
 
 
-
-
-
-
-
-
     //Xóa sản phẩm khỏi giỏ hàng
     public void removeCartItem(Integer productId, HttpSession session) {
         GioHang cart = getCartFromSession(session);
