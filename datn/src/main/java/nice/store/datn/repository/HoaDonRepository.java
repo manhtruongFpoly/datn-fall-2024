@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
@@ -84,5 +85,8 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
                                                           @Param("endDate") LocalDateTime endDate);
 
     List<HoaDon> findByNgayTaoBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+
+    Optional<HoaDon> findByMaHdAndSdt(String maHd, String sdt);
 
 }

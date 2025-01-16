@@ -11,6 +11,7 @@
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f9;
         }
+
         .nav-link {
             color: #000; /* Màu đen mặc định */
             transition: color 0.3s ease, border-bottom 0.3s ease; /* Thêm hiệu ứng cho màu chữ và gạch chân */
@@ -40,23 +41,29 @@
             background-color: #ffffff;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
         .social-links a {
             color: #333;
             font-size: 1.2em;
         }
+
         .social-links a:hover {
             color: #f15a22;
         }
+
         .user-options a {
             color: #333;
             font-size: 1.1em;
         }
+
         .user-options a:hover {
             color: #f15a22;
         }
+
         .user-icons .badge {
             background-color: #f15a22;
         }
+
         /* Carousel */
         .carousel-item img {
             width: 100%;
@@ -128,6 +135,7 @@
                 padding: 20px;
             }
         }
+
         /* Footer */
         .footer__heading {
             font-size: 16px;
@@ -164,7 +172,79 @@
         .social-icon:hover {
             color: #ff9800;
         }
+
+        #form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input {
+            margin: 10px 5px;
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result-container {
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 20px;
+            width: 80%;
+            max-width: 500px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .text-danger {
+            color: red;
+            font-weight: bold;
+        }
+        .result-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .result-content p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
     </style>
+
+
 </head>
 <body>
 
@@ -181,7 +261,8 @@
             <a href="#" class="text-dark mr-3">Đăng nhập</a>
             <a href="#" class="text-dark">Đăng kí</a>
             <div class="user-icons d-inline-block ml-3">
-                <a href="#" class="text-dark"><i class="fa fa-shopping-cart"></i><span class="badge badge-danger">3</span></a>
+                <a href="#" class="text-dark"><i class="fa fa-shopping-cart"></i><span
+                        class="badge badge-danger">3</span></a>
             </div>
         </div>
     </div>
@@ -192,9 +273,11 @@
     <div class="container d-flex align-items-center justify-content-between py-3">
         <!-- Logo -->
         <div class="d-flex align-items-center">
-            <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo" style="text-align: center;width: 80%;height: 60px">
+            <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo"
+                 style="text-align: center;width: 80%;height: 60px">
 
-            <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
@@ -229,38 +312,46 @@
 <div class="page-login">
     <h1 class="title-heading" style="text-align: center">Tra cứu đơn hàng</h1>
 
-    <form action="" method="POST" class="form" id="form-1">
+    <form action="/tra-cuu-hoa-don" method="POST" class="form" id="form-1">
         <div class="form-group">
             <label for="invoice-id" class="form-label">Mã hóa đơn</label>
-            <input id="invoice-id" name="invoice-id" type="text" placeholder="VD: #123456" class="form-control">
+            <input id="invoice-id" name="maHd" type="text" placeholder="VD: #123456" class="form-control">
             <span class="form-message"></span>
         </div>
         <div class="form-group">
             <label for="phone" class="form-label">Số điện thoại</label>
-            <input id="phone" pattern="[0-9]{10}" name="phone" type="tel" placeholder="0912*******" class="form-control">
+            <input id="phone" pattern="[0-9]{10}" name="sdt" type="tel" placeholder="0912*******" class="form-control">
             <span class="form-message"></span>
         </div>
         <div class="form-group d-flex justify-content-center mt-4">
             <button class="btn btn-danger btn-lg px-4 py-2">Tra cứu</button>
         </div>
     </form>
+    <div id="result"></div>
+
 </div>
 
 <!-- Footer Section -->
-<footer style="background-color: #000; color: #fff; padding: 40px 0; margin-top: 30px" >
+<footer style="background-color: #000; color: #fff; padding: 40px 0; margin-top: 30px">
     <footer style="background-color: #000; color: #fff; padding: 40px 0;">
         <div class="container">
             <div class="row">
                 <!-- Logo và Thông tin liên hệ -->
                 <div class="col-sm-12 col-md-6 col-lg-3 mb-4 text-center">
-                    <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo" style="text-align: center;width: 80%;height: 60px">
+                    <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo"
+                         style="text-align: center;width: 80%;height: 60px">
 
                     <ul class="footer__list" style="list-style: none; padding: 0;">
                         <li class="footer__item"><i class="fas fa-map-marker-alt"></i> Hà Nội, Viet Nam</li>
-                        <li class="footer__item"><i class="fas fa-phone-alt"></i> <a href="tel:0123456789" style="color: #fff;">0123456789</a></li>
-                        <li class="footer__item"><i class="fas fa-envelope"></i> <a href="mailto:abc@gmail.com" style="color: #fff;">abc@gmail.com</a></li>
+                        <li class="footer__item"><i class="fas fa-phone-alt"></i> <a href="tel:0123456789"
+                                                                                     style="color: #fff;">0123456789</a>
+                        </li>
+                        <li class="footer__item"><i class="fas fa-envelope"></i> <a href="mailto:abc@gmail.com"
+                                                                                    style="color: #fff;">abc@gmail.com</a>
+                        </li>
                         <li>
-                            <a href="#" class="social-icon"><i class="fab fa-facebook-f" style="margin-right: 10px;"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-facebook-f"
+                                                               style="margin-right: 10px;"></i></a>
                             <a href="#" class="social-icon" style="color: #e1306c;"><i class="fab fa-instagram"></i></a>
                             <a href="#" class="social-icon" style="color: #ff0000;"><i class="fab fa-youtube"></i></a>
                             <a href="#" class="social-icon"><i class="fab fa-twitter" style="color: #00acee;"></i></a>
@@ -272,8 +363,10 @@
                 <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
                     <h6 class="footer__heading">Thông tin của chúng tôi</h6>
                     <ul class="footer__list">
-                        <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 1:   13 P. Trịnh Văn Bô, Xuân Phương, Nam Từ Liêm, Hà Nội, Việt Nam</a></li>
-                        <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 2: 583 Vũ Tông Phan, Thanh Xuân , Hà Nội, Việt Nam</a></li>
+                        <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 1: 13 P. Trịnh Văn Bô,
+                            Xuân Phương, Nam Từ Liêm, Hà Nội, Việt Nam</a></li>
+                        <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 2: 583 Vũ Tông Phan, Thanh
+                            Xuân , Hà Nội, Việt Nam</a></li>
 
                     </ul>
                 </div>
@@ -285,7 +378,8 @@
                         <li class="footer__item"><a href="#" class="footer__item--link">Chính sách bảo hành</a></li>
                         <li class="footer__item"><a href="#" class="footer__item--link">Chính sách đổi trả</a></li>
                         <li class="footer__item"><a href="#" class="footer__item--link">Chính sách thanh toán</a></li>
-                        <li class="footer__item"><a href="#" class="footer__item--link">Chính sách giao nhận hàng</a></li>
+                        <li class="footer__item"><a href="#" class="footer__item--link">Chính sách giao nhận hàng</a>
+                        </li>
                         <li class="footer__item"><a href="#" class="footer__item--link">Chính sách bảo mật</a></li>
                     </ul>
                 </div>
@@ -295,7 +389,8 @@
                     <h6 class="footer__heading">Hỗ trợ chung</h6>
                     <ul class="footer__list">
                         <li class="footer__item"><a href="#" class="footer__item--link">Trang chủ</a></li>
-                        <li class="footer__item"><a href="user/intro.html" class="footer__item--link">Giới thiệu</a></li>
+                        <li class="footer__item"><a href="user/intro.html" class="footer__item--link">Giới thiệu</a>
+                        </li>
                         <li class="footer__item"><a href="./Product.html" class="footer__item--link">Sản phẩm</a></li>
                         <li class="footer__item"><a href="user/contact.html" class="footer__item--link">Liên hệ</a></li>
                     </ul>
@@ -312,9 +407,87 @@
     </footer>
 
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
+
+<script>
+    // document.querySelector("#form-1").addEventListener("submit", function (event) {
+    //     event.preventDefault(); // Ngăn form reload trang
+    //     const maHd = document.querySelector("#invoice-id").value.trim();
+    //     const sdt = document.querySelector("#phone").value.trim();
+    //
+    //     if (maHd && sdt) {
+    //         fetch('/tra-cuu-hoa-don', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({ maHd, sdt }),
+    //         })
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 const resultDiv = document.querySelector("#result");
+    //                 if (data.success) {
+    //                     resultDiv.innerHTML = `
+    //                     <p>Mã hóa đơn: ${data.hoaDon.maHd}</p>
+    //                     <p>Tên người nhận: ${data.hoaDon.tenNguoiNhan}</p>
+    //                     <p>Tổng tiền: ${data.hoaDon.tongTienFormatted}</p>
+    //                     <p>Trạng thái: ${data.hoaDon.trangThai}</p>
+    //                 `;
+    //                 } else {
+    //                     resultDiv.innerHTML = `<p class="text-danger">${data.message}</p>`;
+    //                 }
+    //             })
+    //             .catch(error => {
+    //                 console.error("Lỗi tra cứu hóa đơn:", error);
+    //                 document.querySelector("#result").innerHTML = `<p class="text-danger">Lỗi hệ thống, vui lòng thử lại sau!</p>`;
+    //             });
+    //     } else {
+    //         alert("Vui lòng nhập đầy đủ thông tin!");
+    //     }
+    // });
+
+    document.querySelector("#form-1").addEventListener("submit", function (event) {
+        event.preventDefault(); // Ngăn form reload trang
+        const maHd = document.querySelector("#invoice-id").value.trim();
+        const sdt = document.querySelector("#phone").value.trim();
+
+        if (maHd && sdt) {
+            fetch('/tra-cuu-hoa-don', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({maHd, sdt}),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const resultDiv = document.querySelector("#result");
+                    if (data.success) {
+                        resultDiv.innerHTML = `
+                        <div class="result-content">
+                            <p>Mã hóa đơn: ${data.hoaDon.maHd}</p>
+                            <p>Tên người nhận: ${data.hoaDon.tenNguoiNhan}</p>
+                            <p>Tổng tiền: ${data.hoaDon.tongTienFormatted}</p>
+                            <p>Trạng thái: ${data.hoaDon.trangThai}</p>
+                        </div>
+                    `;
+
+                    } else {
+                        resultDiv.innerHTML = `<p class="text-danger">${data.message}</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error("Lỗi tra cứu hóa đơn:", error);
+                    document.querySelector("#result").innerHTML = `<p class="text-danger">Lỗi hệ thống, vui lòng thử lại sau!</p>`;
+                });
+        } else {
+            alert("Vui lòng nhập đầy đủ thông tin!");
+        }
+    });
+
+</script>
 </html>

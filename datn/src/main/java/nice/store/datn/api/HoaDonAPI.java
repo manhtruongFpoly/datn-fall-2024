@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -174,6 +175,29 @@ public class HoaDonAPI {
             return ResponseEntity.ok("Thêm lịch sử hóa đơn thành công.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Thêm lịch sử hóa đơn thất bại: " + e.getMessage());
+        }
+    }
+    @PostMapping("/tra-cuu-hoa-don")
+    public ResponseEntity<?> traCuuHoaDon(@RequestBody Map<String, String> request) {
+        String maHd = request.get("maHd");
+        String sdt = request.get("sdt");
+
+        HoaDon hoaDon = hoaDonService.traCuuHoaDon(maHd, sdt);
+        if (hoaDon != null) {
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "hoaDon", Map.of(
+                            "maHd", hoaDon.getMaHd(),
+                            "tenNguoiNhan", hoaDon.getTenNguoiNhan(),
+                            "tongTienFormatted", hoaDon.getFormattedTongTien(),
+                            "trangThai", hoaDon.getStringTrangThai()
+                    )
+            ));
+        } else {
+            return ResponseEntity.ok(Map.of(
+                    "success", false,
+                    "message", "Không tìm thấy hóa đơn với thông tin đã cung cấp!"
+            ));
         }
     }
 

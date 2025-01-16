@@ -204,5 +204,7 @@ public class HoaDonService {
         return dto;
     }
 
-
+    public HoaDon traCuuHoaDon(String maHd, String sdt) {
+        return hoaDonRepository.findByMaHdAndSdt(maHd, sdt).orElse(null);
+    }
 }
