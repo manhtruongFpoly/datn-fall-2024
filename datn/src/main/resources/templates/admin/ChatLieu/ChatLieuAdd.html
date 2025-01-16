@@ -44,7 +44,7 @@
                                     <form th:action="@{/saveChatLieu}" th:object="${chatLieu}" method="post">
                                         <div class="form-group">
                                             <label for="maChatLieu">Mã Chất Liệu:</label>
-                                            <input type="text" th:field="*{maChatLieu}" class="form-control" id="maChatLieu" placeholder="Nhập mã chất liệu" required>
+                                            <input type="text" th:field="*{maChatLieu}" class="form-control" id="maChatLieu" placeholder="Nhập mã chất liệu" readonly>
                                         </div>
 
                                         <div class="form-group">

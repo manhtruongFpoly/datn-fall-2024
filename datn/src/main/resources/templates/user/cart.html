@@ -601,7 +601,7 @@
             <td>${coupon.ma}</td>
             <td>${coupon.ten}</td>
             <td>${coupon.soLuong}</td>
-            <td>${coupon.giaTriGiam}%</td>
+           <td>${coupon.loaiVoucher === "Phần trăm" ? coupon.giaTriGiam + "%" : coupon.giaTriGiam.toLocaleString('vi-VN') + " VND"}</td>
             <td>${coupon.donToiThieu ? coupon.donToiThieu.toLocaleString('vi-VN') + ' VNĐ' : 'Không yêu cầu'}</td>
             <td>${coupon.giaTriMax ? coupon.giaTriMax.toLocaleString('vi-VN') + ' VNĐ' : 'Không yêu cầu'}</td>
             <td>${coupon.ngayBatDau}</td>

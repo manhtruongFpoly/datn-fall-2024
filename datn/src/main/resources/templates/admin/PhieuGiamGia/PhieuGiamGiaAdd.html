@@ -217,7 +217,6 @@
             return;
         }
 
-// 2. Kiểm tra quan hệ logic giữa các giá trị
         if (giaTriGiam > giaTriMax) {
             Swal.fire({
                 title: 'Lỗi!',
@@ -228,18 +227,16 @@
             return;
         }
 
-// 3. Kiểm tra trường hợp logic khác (nếu cần)
-        if (donToiThieu > 0 && giaTriMax < donToiThieu) {
+        if (donToiThieu > 0 && giaTriMax >= donToiThieu) {
             Swal.fire({
                 title: 'Lỗi!',
-                text: 'Giá trị tối đa không được nhỏ hơn đơn tối thiểu.',
+                text: 'Giảm giá tối đa phải nhỏ hơn đơn tối thiểu.',
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
             return;
         }
 
-// Nếu mọi thứ hợp lệ
         Swal.fire({
             title: 'Thành công!',
             text: 'Dữ liệu hợp lệ.',

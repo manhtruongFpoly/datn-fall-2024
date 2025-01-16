@@ -75,10 +75,13 @@
                                 <td th:text="${loaiGiay.tenLoaiGiay}"></td>
                                 <td th:text="${loaiGiay.ngayTao}"></td>
                                 <td th:text="${loaiGiay.ngaySua}"></td>
-                                <td th:text="${loaiGiay.trangThai == 0 ? 'Đang Hoạt Động' : 'Ngừng Hoạt Động'}"></td>
+                                <td th:text="${loaiGiay.trangThai == 1 ? 'Đang Hoạt Động' : 'Ngừng Hoạt Động'}"></td>
                                 <td>
-                                    <a th:href="@{'/edit/' + ${loaiGiay.id}}" class="btn btn-link">
+                                    <a th:href="@{'/loai-giày/edit/' + ${loaiGiay.id}}" class="btn btn-link">
                                         <i class="fa-regular fa-pen-to-square"></i>
+                                    </a>
+                                    <a th:href="@{'/loai-giay/delete/' + ${loaiGiay.id}}" class="btn btn-link">
+                                        <i class="fa-regular fa-trash-can"></i>
                                     </a>
                                 </td>
                             </tr>

@@ -471,12 +471,17 @@
     }
 
 
-    // Sự kiện áp dụng khoảng thời gian
+
     $('#apply-dates').click(function() {
         const startDate = $('#startDate').val();
         const endDate = $('#endDate').val();
+        if (!startDate || !endDate) {
+            alert("Vui lòng nhập đầy đủ ngày bắt đầu và ngày kết thúc!");
+            return;
+        }
         drawChart(startDate, endDate);
     });
+
 
     // Sự kiện cho các nút nhanh (7 ngày, 1 tháng)
     $('#last-7-days').click(function() {

@@ -11,17 +11,24 @@
     <link rel="stylesheet" th:href="@{/css/Chart.min.css}">
     <link rel="stylesheet" th:href="@{/css/perfect-scrollbar.css}">
     <link rel="stylesheet" th:href="@{/css/app.css}">
-
-
 </head>
+<style>
+    .center-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
 <body>
 
-<div id="app"><!--Main content-->
+<div id="app">
+    <!-- Main content -->
     <span th:replace="~{fragments/sidebar :: sidebar}"></span>
-    <div id="main"><!--Content id-->
+    <div id="main">
+        <!-- Content id -->
         <span th:replace="~{fragments/header :: header}"></span>
-        <div class="main-content container-fluid" layout:fragment="content"><!--dynamic content-->
-
+        <div class="main-content container-fluid" layout:fragment="content">
+            <!-- Dynamic content -->
             <div class="row">
                 <div class="col-md-12 mb-4">
                     <h1 class="text-lg-center">Danh Sách Thương Hiệu</h1>
@@ -30,76 +37,35 @@
                     <span th:text="${errorMessage}"></span>
                 </div>
                 <div class="col-md-12">
-                    <!--backup-->
-                    <!--tim kiem-->
-<!--                    <form th:action="@{/tim-kiem-thuong-hieu}" method="get">-->
-<!--                        <label for="searchTerm">Tìm kiếm:</label>-->
-<!--                        <input type="text" id="searchTerm" name="searchTerm" />-->
-
-<!--                        <button class="btn btn-primary" type="submit">Tìm Kiếm</button>-->
-<!--                    </form>-->
-                    <!-- end tim kiem-->
-                    <!-- Tìm kiếm -->
-<!--                    <div class="row">-->
-<!--                        <div>-->
-<!--                            <label for="searchTerm">Tìm kiếm:</label>-->
-<!--                            <input type="text" id="searchTerm" onkeyup="searchThuongHieu()"/>-->
-<!--                        </div>-->
-
-<!--                        <div>-->
-<!--                            <form th:action="@{/loc-trang-thai}" method="get" class="form-inline mb-3">-->
-<!--                                <label for="trangThai" class="mr-2">Lọc theo trạng thái:</label>-->
-<!--                                <select id="trangThai" name="trangThai" class="form-control" onchange="this.form.submit()">-->
-<!--                                    <option value="" th:selected="${trangThai == null}">Tất cả</option>-->
-<!--                                    <option value="1" th:selected="${trangThai == 1}">Hoạt Động</option>-->
-<!--                                    <option value="0" th:selected="${trangThai == 0}">Không Hoạt Động</option>-->
-<!--                                    <option value="2" th:selected="${trangThai == 2}">Đang chờ xử lý</option>-->
-<!--                                </select>-->
-<!--                            </form>-->
-<!--                        </div>-->
-<!--                        <div>-->
-<!--                            <a th:href="@{/add-view}" class="btn btn-primary" id="add-view">+ Thêm</a>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    <!-- Tìm kiếm và lọc -->
                     <div class="row">
-                        <!-- Tìm kiếm -->
+                        <!-- Tìm kiếm theo mã và tên thương hiệu -->
                         <div class="col-md-4 mb-3">
-                            <label for="searchTerm">Tìm kiếm:</label>
-                            <input type="text" id="searchTerm" class="form-control" onkeyup="searchThuongHieu()"/>
+                            <label for="searchTerm">Tìm kiếm :</label>
+                            <input type="text" id="searchTerm" class="form-control" onkeyup="searchThuongHieu()"
+                                   placeholder="Tìm theo mã, tên thương hiệu"/>
                         </div>
 
                         <!-- Lọc theo trạng thái -->
                         <div class="col-md-4 mb-3">
-                            <form th:action="@{/loc-trang-thai}" method="get" class="form-inline">
-                                <label for="trangThai" class="mr-2">Lọc theo trạng thái:</label>
-                                <select id="trangThai" name="trangThai" class="form-control" onchange="this.form.submit()">
-                                    <option value="" th:selected="${trangThai == null}">Tất cả</option>
-                                    <option value="1" th:selected="${trangThai == 1}">Hoạt Động</option>
-                                    <option value="0" th:selected="${trangThai == 0}">Không Hoạt Động</option>
-                                    <option value="2" th:selected="${trangThai == 2}">Đang chờ xử lý</option>
-                                </select>
-                            </form>
+                            <label for="trangThai">Lọc theo trạng thái:</label>
+                            <select id="trangThai" class="form-control" onchange="searchThuongHieu()">
+                                <option value="">Tất cả</option>
+                                <option value="Hoạt Động">Hoạt Động</option>
+                                <option value="Không Hoạt Động">Không Hoạt Động</option>
+                                <option value="Đang chờ xử lý">Đang chờ xử lý</option>
+                            </select>
+
+
                         </div>
+
                         <!-- Nút thêm -->
-                        <div class="col-md-4 mb-3 text-right">
-                            <a th:href="@{/add-view}" class="btn btn-primary" id="add-view">+ Thêm</a>
-                        </div>
-                        <!-- Lọc theo ngày -->
-                        <div class="col-md-4 mb-3 ">
-                            <form th:action="@{/tim-kiem-theo-khoang-ngay}" method="get" class="form-inline">
-                                <label for="ngayBatDau" class="mr-2">Từ ngày:</label>
-                                <input type="text" id="ngayBatDau" name="ngayBatDau" class="form-control" placeholder="DD-MM-YYYY" />
-
-                                <label for="ngayKetThuc" class="mr-2 ml-3">Đến ngày:</label>
-                                <input type="text" id="ngayKetThuc" name="ngayKetThuc" class="form-control" placeholder="DD-MM-YYYY" />
-
-                                <button type="submit" class="btn btn-primary ml-3">Tìm kiếm</button>
-                            </form>
+                        <div class="col-md-4 mb-3 center-button">
+                            <a th:href="@{/add-view/th}" class="btn btn-primary" id="add-view">+ Thêm</a>
                         </div>
                     </div>
 
-
-
+                    <!-- Bảng danh sách thương hiệu -->
                     <table id="ThuongHieuTable" class="table table-striped table-hover">
                         <thead class="bg-blue-300">
                         <tr>
@@ -110,7 +76,6 @@
                             <th scope="col">Ngày sửa</th>
                             <th scope="col">Trạng thái</th>
                             <th scope="col">Thao tác</th>
-
                         </tr>
                         </thead>
                         <tbody>
@@ -118,17 +83,13 @@
                             <td th:text="${iterStat.index + 1}"></td>
                             <td th:text="${sp.maThuongHieu}"></td>
                             <td th:text="${sp.TenThuongHieu}"></td>
-                            <td th:text="${#temporals.format(sp.ngayTao,'dd-MM-yyyy   ')}"></td>
-
+                            <td th:text="${#temporals.format(sp.ngayTao,'dd-MM-yyyy')}"></td>
                             <td th:text="${#temporals.format(sp.ngaySua,'dd-MM-yyyy HH:mm:ss')}"></td>
-
                             <td th:text="${sp.trangThai == 1 ? 'Hoạt Động' : (sp.trangThai == 0 ? 'Không Hoạt Động' : 'Đang chờ xử lý')}"></td>
                             <td>
                                 <a th:href="@{'/update-view-th/' + ${sp.id}}" class="btn btn-link">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </a>
-                            </td>
-                            <td>
                                 <a th:href="@{/delete-thuong-hieu/{id}(id=${sp.id})}" class="btn btn-danger"
                                    onclick="return confirm('Bạn có chắc chắn muốn xóa Thương Hiệu này không?');">
                                     <i class="fa-regular fa-trash-can"></i>
@@ -137,68 +98,24 @@
                         </tr>
                         </tbody>
                     </table>
+
                     <!-- Phân trang -->
                     <div class="pagination">
                         <span th:if="${currentPage > 0}">
-                         <a th:href="@{/tim-kiem-thuong-hieu(page=${currentPage - 1}, size=${size}, searchTerm=${searchTerm})}">Prev</a>
+                            <a th:href="@{/tim-kiem-thuong-hieu(page=${currentPage - 1}, size=${size}, searchTerm=${searchTerm})}">Prev</a>
                         </span>
                         <span th:if="${currentPage < totalPages - 1}">
                             <a th:href="@{/tim-kiem-thuong-hieu(page=${currentPage + 1}, size=${size}, searchTerm=${searchTerm})}">Next</a>
                         </span>
                     </div>
-<!--                    <div class="pagination">-->
-<!--    <span th:if="${currentPage > 0}">-->
-<!--        <a th:href="@{/tim-kiem-thuong-hieu?page=${currentPage - 1}&size=${size}&searchTerm=${searchTerm}}">Prev</a>-->
-<!--    </span>-->
-<!--                        <span th:if="${currentPage < totalPages - 1}">-->
-<!--        <a th:href="@{/tim-kiem-thuong-hieu?page=${currentPage + 1}&size=${size}&searchTerm=${searchTerm}}">Next</a>-->
-<!--    </span>-->
-
-<!--                        &lt;!&ndash; Hiển thị phân trang đầy đủ từ 1 đến totalPages &ndash;&gt;-->
-<!--                        <ul class="pagination">-->
-<!--                            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"-->
-<!--                                th:classappend="${i == currentPage} ? 'active' : ''">-->
-<!--                                <a th:href="@{/tim-kiem-thuong-hieu?page=${i}&size=${size}&searchTerm=${searchTerm}}"-->
-<!--                                   th:text="${i + 1}">1</a>-->
-<!--                            </li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-
-
                 </div>
-
-
-
-                <script>
-                    function searchThuongHieu() {
-                        var input = document.getElementById("searchTerm");
-                        var filter = input.value.toLowerCase();
-                        var table = document.getElementById("ThuongHieuTable");
-                        var rows = table.getElementsByTagName("tr");
-
-                        for (var i = 1; i < rows.length; i++) {
-                            var cells = rows[i].getElementsByTagName("td");
-                            var brandName = cells[2].textContent || cells[2].innerText; // Cột "Tên Thương hiệu"
-                            var brandCode = cells[1].textContent || cells[1].innerText; // Cột "Mã"
-
-                            // Tìm kiếm trong cả tên và mã thương hiệu
-                            if (brandName.toLowerCase().indexOf(filter) > -1 || brandCode.toLowerCase().indexOf(filter) > -1) {
-                                rows[i].style.display = "";
-                            } else {
-                                rows[i].style.display = "none";
-                            }
-                        }
-                    }
-                </script>
             </div>
-
-
         </div>
         <span th:replace="~{fragments/footer :: footer}"></span>
     </div>
 </div>
 
-
+<!-- Scripts -->
 <script th:src="@{/js/feather.min.js}"></script>
 <script th:src="@{/js/perfect-scrollbar.min.js}"></script>
 <script th:src="@{/js/app.js}"></script>
@@ -206,5 +123,31 @@
 <script th:src="@{/js/apexcharts.min.js}"></script>
 <script th:src="@{/js/dashboard.js}"></script>
 <script th:src="@{/js/main.js}"></script>
+
+<!-- Script tìm kiếm và lọc -->
+<script>
+    function searchThuongHieu() {
+        var input = document.getElementById("searchTerm");
+        var filter = input.value.toLowerCase();
+        var statusFilter = document.getElementById("trangThai").value.toLowerCase();
+        var table = document.getElementById("ThuongHieuTable");
+        var rows = table.getElementsByTagName("tr");
+
+        for (var i = 1; i < rows.length; i++) {
+            var cells = rows[i].getElementsByTagName("td");
+            var brandName = cells[2].textContent || cells[2].innerText; // Cột "Tên Thương hiệu"
+            var brandCode = cells[1].textContent || cells[1].innerText; // Cột "Mã"
+            var status = cells[5].textContent || cells[5].innerText; // Cột "Trạng thái"
+
+            // Tìm kiếm theo mã hoặc tên thương hiệu và lọc theo trạng thái
+            if ((brandName.toLowerCase().indexOf(filter) > -1 || brandCode.toLowerCase().indexOf(filter) > -1) &&
+                (statusFilter === "" || status.toLowerCase() === statusFilter)) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+</script>
 </body>
 </html>

@@ -35,10 +35,17 @@ public class ThuongHieuService {
         return THrepository.findById(id).orElse(null);
     }
 
+    private String generateMaThuongHieu() {
+        String prefix = "TH";
+        int count = (int) THrepository.count() + 1;
+        return prefix + String.format("%05d", count);
+    }
     public ThuongHieu create(ThuongHieu sp) {
         if (THrepository.findByMaThuongHieu(sp.getMaThuongHieu()).isPresent()) {
             throw new RuntimeException("Mã sản phẩm đã tồn tại: " + sp.getMaThuongHieu());
         }
+        String generatedMa = generateMaThuongHieu();
+        sp.setMaThuongHieu(generatedMa);
         sp.setNgayTao(LocalDate.now());
         sp.setNgaySua(LocalDateTime.now());
         return THrepository.save(sp);
