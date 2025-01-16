@@ -1079,6 +1079,25 @@
             </tr>`;
         });
         $("#danhSachSanPham").html(list);
+
+        if ($.fn.DataTable.isDataTable("#tableDanhSachSanPham")) {
+            $("#tableDanhSachSanPham").DataTable().destroy();
+        }
+
+        // Khởi tạo DataTables sau khi nội dung được thêm
+        $('#tableDanhSachSanPham').DataTable({
+            paging: true,
+            searching: false,
+            ordering: false,
+            language: {
+                paginate: {
+                    previous: "Trước",
+                    next: "Sau"
+                },
+                info: "Hiển thị trang _PAGE_ trong tổng số _PAGES_",
+                zeroRecords: "Không tìm thấy kết quả phù hợp"
+            }
+        });
     }
 
     // Gọi lại hàm lọc khi thay đổi bộ lọc

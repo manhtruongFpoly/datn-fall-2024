@@ -38,8 +38,8 @@ public class CartController {
                             RedirectAttributes redirectAttributes) {
         try {
             cartService.addToCart(productId, quantity, session);
-            Integer cartId = (Integer) session.getAttribute("cartId"); // Lấy cartId từ session
-            redirectAttributes.addFlashAttribute("cartId", cartId); // Thêm cartId vào FlashAttributes
+            Integer cartId = (Integer) session.getAttribute("cartId");
+            redirectAttributes.addFlashAttribute("cartId", cartId);
             redirectAttributes.addFlashAttribute("success", "Sản phẩm đã được thêm vào giỏ hàng.");
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
