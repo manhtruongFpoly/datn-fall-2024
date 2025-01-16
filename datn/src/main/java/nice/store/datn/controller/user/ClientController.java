@@ -50,6 +50,20 @@ public class ClientController {
             model.addAttribute("user", user); // Truyền thông tin người dùng vào model
         }
 
+        List<SanPhamCTResponse> sanPhamCTResponses = sanPhamCTService.getAllSanPhamCTResponses();
+
+        // Add the list of product responses to the model
+        model.addAttribute("listSanPhamCT", sanPhamCTResponses);
+
+        // Fetch other necessary lists and add them to the model
+        model.addAttribute("listSanPham", sanPhamService.getAllSanPham());
+        model.addAttribute("listHinhAnh", hinhAnhService.getAllImages());
+        model.addAttribute("listThuongHieu", thuongHieuService.getAllTh());
+        model.addAttribute("listChatLieu", chatLieuService.getAllChatLieu());
+        model.addAttribute("listDeGiay", deGiayService.getAllDeGiay());
+        model.addAttribute("listLoaiGiay", loaiGiayService.findAll());
+        model.addAttribute("listKichCo", kichCoService.getAllKichCo());
+        model.addAttribute("listMauSac", mauSacService.getAllMauSac());
         return "/user/index"; // Trả về trang home
     }
 
