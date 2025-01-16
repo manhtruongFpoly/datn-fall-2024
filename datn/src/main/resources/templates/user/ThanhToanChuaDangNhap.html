@@ -265,50 +265,68 @@
             </div>
         </div>
 
-        <hr>
-        <footer class="bg-dark text-white mt-5 py-4">
+        <footer style="background-color: #000; color: #fff; padding: 40px 0;">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-3 text-center">
-                        <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo"
-                             style="text-align: center;width: 80%;height: 60px">
+                    <!-- Logo và Thông tin liên hệ -->
+                    <div class="col-sm-12 col-md-6 col-lg-3 mb-4 text-center">
+                        <img th:src="@{/api/san-pham-chi-tiet/desktop-images/logo.jpg}" alt="Logo" width="80" height="80"
+                             style="border-radius: 50%; border: 2px solid #fff; margin-bottom: 20px;">
+                        <ul class="footer__list" style="list-style: none; padding: 0;">
+                            <li class="footer__item"><i class="fas fa-map-marker-alt"></i> Hà Nội, Viet Nam</li>
+                            <li class="footer__item"><i class="fas fa-phone-alt"></i> <a href="tel:0123456789" style="color: #fff;">0123456789</a></li>
+                            <li class="footer__item"><i class="fas fa-envelope"></i> <a href="mailto:abc@gmail.com" style="color: #fff;">abc@gmail.com</a></li>
+                            <li>
+                                <a href="#" class="social-icon"><i class="fab fa-facebook-f" style="margin-right: 10px;"></i></a>
+                                <a href="#" class="social-icon" style="color: #e1306c;"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="social-icon" style="color: #ff0000;"><i class="fab fa-youtube"></i></a>
+                                <a href="#" class="social-icon"><i class="fab fa-twitter" style="color: #00acee;"></i></a>
+                            </li>
+                        </ul>
+                    </div>
 
-                        <div>
-                            <a href="#" class="text-white mr-3"><i class="fab fa-facebook"></i></a>
-                            <a href="#" class="text-white mr-3"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="text-white mr-3"><i class="fab fa-youtube"></i></a>
-                            <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <h5>Thông tin liên hệ</h5>
-                        <ul class="list-unstyled">
-                            <li>Địa chỉ: Hà Nội, Việt Nam</li>
-                            <li>Email: contact@example.com</li>
-                            <li>Phone: (084) 123 456 789</li>
+                    <!-- Thông tin của chúng tôi -->
+                    <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+                        <h6 class="footer__heading">Thông tin của chúng tôi</h6>
+                        <ul class="footer__list">
+                            <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 1:   13 P. Trịnh Văn Bô, Xuân Phương, Nam Từ Liêm, Hà Nội, Việt Nam</a></li>
+                            <li class="footer__item"><a href="#" class="footer__item--link">Cơ sở 2: 583 Vũ Tông Phan, Thanh Xuân , Hà Nội, Việt Nam</a></li>
+
                         </ul>
                     </div>
-                    <div class="col-md-3">
-                        <h5>Chính sách</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="#" class="text-white">Chính sách bảo hành</a></li>
-                            <li><a href="#" class="text-white">Chính sách đổi trả</a></li>
-                            <li><a href="#" class="text-white">Chính sách vận chuyển</a></li>
+
+                    <!-- Chính sách -->
+                    <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+                        <h6 class="footer__heading">Chính sách</h6>
+                        <ul class="footer__list">
+                            <li class="footer__item"><a href="#" class="footer__item--link">Chính sách bảo hành</a></li>
+                            <li class="footer__item"><a href="#" class="footer__item--link">Chính sách đổi trả</a></li>
+                            <li class="footer__item"><a href="#" class="footer__item--link">Chính sách thanh toán</a></li>
+                            <li class="footer__item"><a href="#" class="footer__item--link">Chính sách giao nhận hàng</a></li>
+                            <li class="footer__item"><a href="#" class="footer__item--link">Chính sách bảo mật</a></li>
                         </ul>
                     </div>
-                    <div class="col-md-3">
-                        <h5>Hỗ trợ</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="#" class="text-white">FAQs</a></li>
-                            <li><a href="#" class="text-white">Hướng dẫn mua hàng</a></li>
-                            <li><a href="#" class="text-white">Tra cứu đơn hàng</a></li>
+
+                    <!-- Hỗ trợ chung -->
+                    <div class="col-sm-12 col-md-6 col-lg-3 mb-4">
+                        <h6 class="footer__heading">Hỗ trợ chung</h6>
+                        <ul class="footer__list">
+                            <li class="footer__item"><a href="#" class="footer__item--link">Trang chủ</a></li>
+                            <li class="footer__item"><a href="user/intro.html" class="footer__item--link">Giới thiệu</a></li>
+                            <li class="footer__item"><a href="./Product.html" class="footer__item--link">Sản phẩm</a></li>
+                            <li class="footer__item"><a href="user/contact.html" class="footer__item--link">Liên hệ</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+
+            <!-- Dòng cuối Footer -->
+            <div class="text-center" style="padding-top: 20px; border-top: 1px solid #333; margin-top: 20px;">
+                <p>&copy; 2024 NICE STORE. All rights reserved.</p>
+                <a href="#" style="text-decoration: none; color: #fff; margin-right: 10px;">Privacy Policy</a> |
+                <a href="#" style="text-decoration: none; color: #fff; margin-left: 10px;">Terms of Service</a>
+            </div>
         </footer>
-    </div>
-</div>
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
